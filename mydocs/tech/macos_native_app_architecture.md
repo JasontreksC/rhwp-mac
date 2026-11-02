@@ -28,6 +28,14 @@ SwiftUI/AppKit 앱
           └ Rust 코어 (DocumentCore)
 ```
 
+## 저장소 정리 방침
+
+이 포크는 업스트림 rhwp에 "맥 호환을 추가"하는 것이 아니다. **macOS 네이티브 앱이 동작하는 데 필요한 것만 남긴다.**
+그래서 웹 편집기·브라우저/에디터 확장·Tauri 앱·CI·CLI·에이전트 도구(MCP, 캡슐, RAG, 스킬)·WASM 전용 출력은 지운다.
+남기는 것은 엔진(`model`, `parser`, `serializer`, `document_core`, `renderer`, `paint`, `wmf`·`emf`·`eps`, `ole_chart`,
+`crates/*`), 앱이 쓰는 C ABI(`bindings/Native`), Swift 앱(`macos/`), 그리고 렌더 충실도 검증의 기준 자료인
+`samples`·`pdf`다. 삭제는 git 기록에 남아 되살릴 수 있다.
+
 ## 0단계 스파이크
 
 ### 질문
