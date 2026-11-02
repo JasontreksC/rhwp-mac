@@ -1,0 +1,2 @@
+# build-xcframework.sh 산출물(헤더 스테이징, XCFramework, 스모크 실행 파일)
+build/
