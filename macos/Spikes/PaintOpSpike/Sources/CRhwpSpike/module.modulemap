@@ -1,0 +1,5 @@
+module CRhwpSpike [system] {
+  header "rhwp_spike.h"
+  link "rhwp_native_ffi"
+  export *
+}
