@@ -1,4 +1,4 @@
-import CRhwpSpike
+import CRhwp
 import Foundation
 
 // 0단계 스파이크 진입점.
@@ -6,14 +6,31 @@ import Foundation
 // 출력이 .json 이면 Rust가 돌려준 레이어 트리 원문만 저장하고(형식 확인용),
 // .png 이면 CoreGraphics/CoreText로 재생한 결과를 저장한다.
 
-/// Rust FFI로 한 쪽의 레이어 트리 JSON 원문을 받아 온다.
+/// Rust FFI로 문서를 열어 한 쪽의 레이어 트리 JSON 원문을 받아 온다.
+/// 핸들 기반 API(1단계)를 쓰므로 문서는 열린 동안 한 번만 파싱된다.
 /// 반환 문자열은 Rust 할당자 소유이므로 반드시 `rhwp_string_free`로 해제한다.
 func fetchLayerTreeJSON(path: String, page: Int32) throws -> Data {
-    guard let raw = rhwp_page_layer_tree(path, page) else {
+    guard page >= 0 else { throw SpikeError.usage }
+
+    var openError: UnsafeMutablePointer<CChar>?
+    guard let document = rhwp_document_open(path, &openError) else {
+        throw SpikeError.nativeError(takeString(openError))
+    }
+    defer { rhwp_document_free(document) }
+
+    guard let raw = rhwp_document_page_layer_tree(document, UInt32(page)) else {
         throw SpikeError.nullResult
     }
+    // Swift 쪽으로 복사한 뒤에 해제한다. 해제 후의 포인터는 읽으면 안 된다.
     defer { rhwp_string_free(raw) }
     return Data(bytes: raw, count: strlen(raw))
+}
+
+/// Rust가 돌려준 문자열을 Swift로 옮기고 Rust 쪽 할당을 해제한다.
+func takeString(_ raw: UnsafeMutablePointer<CChar>?) -> String {
+    guard let raw else { return "(null)" }
+    defer { rhwp_string_free(raw) }
+    return String(cString: raw)
 }
 
 enum SpikeError: Error, CustomStringConvertible {
