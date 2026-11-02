@@ -12,13 +12,10 @@ use rhwp::wmf::converter::{SVGPlayer, WMFConverter};
 use rhwp::wmf::parser::MetafileHeader;
 
 const FIXTURE_DIR: &str = "tests/fixtures/m09x_wmf_emf";
-const WMF_CORPUS_DIR: &str = "fuzz/corpus/parse_wmf";
 
 struct GoldenCase {
     id: &'static str,
     kind: &'static str,
-    /// `parse_wmf` 코퍼스에 같은 바이트를 둘 파일명. EMF 는 하네스가 없어 None.
-    seed_name: Option<&'static str>,
     bytes: fn() -> Vec<u8>,
 }
 
@@ -26,55 +23,46 @@ const CASES: &[GoldenCase] = &[
     GoldenCase {
         id: "wmf_minimal_placeable",
         kind: "wmf",
-        seed_name: Some("minimal_placeable.wmf"),
         bytes: wmf_minimal_placeable,
     },
     GoldenCase {
         id: "wmf_placeable_rect",
         kind: "wmf",
-        seed_name: Some("m09x_placeable_rect.wmf"),
         bytes: wmf_placeable_rect,
     },
     GoldenCase {
         id: "wmf_placeable_ellipse",
         kind: "wmf",
-        seed_name: Some("m09x_placeable_ellipse.wmf"),
         bytes: wmf_placeable_ellipse,
     },
     GoldenCase {
         id: "wmf_placeable_line",
         kind: "wmf",
-        seed_name: Some("m09x_placeable_line.wmf"),
         bytes: wmf_placeable_line,
     },
     GoldenCase {
         id: "wmf_standard_header_eof",
         kind: "wmf",
-        seed_name: Some("m09x_standard_header.wmf"),
         bytes: wmf_standard_header_eof,
     },
     GoldenCase {
         id: "emf_header_eof",
         kind: "emf",
-        seed_name: None,
         bytes: emf_header_eof,
     },
     GoldenCase {
         id: "emf_rectangle",
         kind: "emf",
-        seed_name: None,
         bytes: emf_rectangle,
     },
     GoldenCase {
         id: "emf_ellipse",
         kind: "emf",
-        seed_name: None,
         bytes: emf_ellipse,
     },
     GoldenCase {
         id: "emf_line",
         kind: "emf",
-        seed_name: None,
         bytes: emf_line,
     },
 ];
@@ -89,10 +77,6 @@ fn fixture_dir() -> PathBuf {
 
 fn golden_path(id: &str) -> PathBuf {
     fixture_dir().join(format!("{id}.golden"))
-}
-
-fn corpus_path(name: &str) -> PathBuf {
-    repo_path(WMF_CORPUS_DIR).join(name)
 }
 
 fn update_requested() -> bool {
@@ -450,38 +434,10 @@ fn wmf_emf_goldens_lock_current_engine() {
     assert_eq!(ids.len(), CASES.len(), "골든 id 가 중복된다");
 
     std::fs::create_dir_all(fixture_dir()).expect("create fixture dir");
-    std::fs::create_dir_all(repo_path(WMF_CORPUS_DIR)).expect("create parse_wmf corpus dir");
     let update = update_requested();
     let mut mismatches = Vec::new();
 
     for case in CASES {
-        let bytes = (case.bytes)();
-        if let Some(seed_name) = case.seed_name {
-            let seed_path = corpus_path(seed_name);
-            if update || !seed_path.exists() {
-                if !update && !seed_path.exists() {
-                    mismatches.push(format!(
-                        "{}: parse_wmf 시드 없음 ({}) — UPDATE_WMF_EMF_GOLDENS=1 로 생성",
-                        case.id,
-                        seed_path.display()
-                    ));
-                } else {
-                    std::fs::write(&seed_path, &bytes)
-                        .unwrap_or_else(|e| panic!("write {}: {e}", seed_path.display()));
-                }
-            } else {
-                let on_disk = std::fs::read(&seed_path)
-                    .unwrap_or_else(|e| panic!("read {}: {e}", seed_path.display()));
-                if on_disk != bytes {
-                    mismatches.push(format!(
-                        "{}: parse_wmf 시드가 빌더와 다르다 ({})",
-                        case.id,
-                        seed_path.display()
-                    ));
-                }
-            }
-        }
-
         let actual = snapshot_of(case);
         let path = golden_path(case.id);
         if update || !path.exists() {

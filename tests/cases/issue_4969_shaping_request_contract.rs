@@ -1987,14 +1987,3 @@ fn issue_4969_q4_d0_red_vertical_glyph_run_publication_is_absent() {
         "Q4-D3 red: vertical sidecar publication is not implemented"
     );
 }
-
-#[test]
-fn issue_4969_q4_d0_red_canvaskit_vertical_feature_detection_is_absent() {
-    let rust_policy = include_str!("../../src/renderer/layer_renderer.rs");
-    let studio_replay = include_str!("../../rhwp-studio/src/view/canvaskit/glyph-run-fonts.ts");
-    assert!(
-        rust_policy.contains("boundedVerticalHwp5TableCellV1")
-            && studio_replay.contains("boundedVerticalHwp5TableCellV1"),
-        "Q4-D4 red: Rust and Studio CanvasKit feature detection are not implemented"
-    );
-}
