@@ -72,10 +72,15 @@ Rust가 만드는 레이어 트리(`PageLayerTree`, PaintOp IR) JSON만으로 Sw
    복제하게 되므로 Rust가 축 좌표를 직접 내보내는 방안을 2단계에서 검토한다.
 2. **dylib는 macOS 27 dyld가 거부한다.** `librhwp_native_ffi.dylib`를 `dlopen`하면
    `mis-aligned LINKEDIT string pool`로 실패한다. 정적 라이브러리(`.a`)를 Swift 링크 단계에 넣는 방식은
-   정상 동작한다. 제품은 정적 XCFramework로 간다. (기존 `bindings/swift`가 이름으로 링크하는 방식이 이
-   환경에서 dylib를 고르면 같은 문제가 날 수 있으나 확인하지 않았다.)
+   정상 동작한다. 제품은 정적 XCFramework로 간다(1단계에서 구현). (기존 `bindings/swift`가 이름으로 링크하는
+   방식이 이 환경에서 dylib를 고르면 같은 문제가 날 수 있으나 확인하지 않았다.)
 3. **Rust 정적 라이브러리의 배포 타깃 경고.** Rust를 기본값으로 빌드하면 `blake3_neon.o`가 macOS 27.2용으로
-   만들어져 최소 26.0 링크에서 경고가 난다. 1단계 빌드 스크립트는 `MACOSX_DEPLOYMENT_TARGET=26.0`을 지정한다.
+   만들어져 최소 26.0 링크에서 경고가 난다. 1단계 빌드 스크립트는 `MACOSX_DEPLOYMENT_TARGET=26.0`을 지정하고,
+   그 결과 `blake3_neon.o`의 `minos`가 26.0이 되어 경고가 사라진 것을 확인했다.
+   **캐시 함정:** Cargo는 이 환경변수가 바뀌어도 `blake3`를 `Fresh`로 보고 이전 객체를 그대로 쓴다.
+   그래서 이미 27.2용으로 빌드된 `target/pr-review`에서는 변수를 줘도 경고가 남는다. 새 클론은 영향이 없고,
+   기존 캐시에서는 한 패키지만 무효화한다: `cargo clean -p blake3 --release --target-dir target/pr-review`
+   (이후 약 3분 재빌드).
 4. **미지원 op.** 4개 문서(HWP 2, HWPX 2)에서 고른 11쪽에서 건너뛴 op는 `textDecoration`과 `tabLeader`뿐이었다. SVG 타원호(`arcTo`)는
    직선으로 근사했다. 4단계 구현 범위에 포함한다.
 5. **글꼴 공급이 렌더 충실도의 핵심 과제다.** Rust 조판은 글꼴 메트릭 DB로 배치하고 실제 글리프는
@@ -91,12 +96,44 @@ macos/Spikes/PaintOpSpike/build-and-run.sh samples/KTX.hwp 0 /tmp/ktx_p0.png
 Rust 툴체인(`rust-toolchain.toml`의 1.93.1)이 필요하다. `.json` 확장자를 주면 레이어 트리 원문만 저장한다.
 비교용 PDF 래스터화와 실루엣 계산은 위 방법 절의 명령을 따른다.
 
+## 1단계: 핸들 기반 FFI와 XCFramework
+
+0단계의 무상태 함수(`rhwp_page_layer_tree`, 호출마다 재파싱)를 지우고, 열린 문서를 불투명 핸들로 돌려주는
+C ABI로 바꿨다. 정본 구현은 `bindings/Native/src/lib.rs`, 정본 헤더는 `bindings/Native/include/rhwp_native.h`다.
+
+| 함수 | 역할 |
+| --- | --- |
+| `rhwp_document_open(path, &err)` / `rhwp_document_open_bytes(data, len, &err)` | 문서를 열어 핸들을 돌려준다. 실패하면 `NULL`과 오류 JSON(`err`). 성공하면 `*err`는 `NULL` |
+| `rhwp_document_page_count(doc)` | 쪽수. 널 핸들·poison된 문서는 -1 |
+| `rhwp_document_page_layer_tree(doc, page)` | `{"ok":true,"pageCount":N,"page":P,"layerTree":{...}}` 또는 오류 봉투 |
+| `rhwp_document_free(doc)` | 핸들 해제(널 무시) |
+| `rhwp_string_free(s)` | 돌려받은 모든 문자열(`err` 포함) 해제 |
+
+- **소유권:** 핸들과 문자열은 호출자 소유이며 각각 한 번만 해제한다. `open_bytes`는 호출 안에서 바이트를 복사한다.
+- **동시성:** 핸들은 스레드 안전을 약속하지 않는다. Swift의 actor가 호출을 직렬화해야 한다. 내부 `Mutex`는
+  실수로 동시에 호출해도 데이터 경쟁을 막는 안전장치다.
+- **panic:** C 쪽으로 풀려나가지 않고 오류 봉투로 바뀐다. 잠금 **바깥**에서 잡기 때문에 `Mutex`가 poison되고,
+  이후 호출은 손상됐을 수 있는 문서를 다시 쓰지 않고 오류를 돌려준다(문서를 다시 열어야 한다).
+- **헤더:** `cbindgen` 대신 수작업 헤더를 쓰고, `header_declares_exactly_the_exported_symbols` 테스트가
+  헤더 선언과 내보낸 `extern "C"` 함수 집합이 같은지 비교한다. 의존성을 늘리지 않으면서 어긋남만 막는 선택이며,
+  함수가 늘어 수작업이 부담되면 `cbindgen`을 재검토한다. 선언 하나를 지워 이 테스트가 실패하는 것을 확인했다.
+- **Swift 쪽 형태:** 불투명 구조체 `RhwpDocument *`는 Swift에서 `OpaquePointer`로 들어온다. 2단계의 `RhwpKit`은
+  이를 `final class`/`actor`로 감싸 `deinit`에서 `rhwp_document_free`를 부른다.
+
+`macos/scripts/build-xcframework.sh [--smoke]`가 정적 라이브러리를 `macos/build/RhwpNative.xcframework`로
+묶는다(Apple Silicon 슬라이스 하나, `MACOSX_DEPLOYMENT_TARGET=26.0`). 모듈은 `CRhwp`이며 `--smoke`는 이
+XCFramework를 Swift로 링크해 열기·쪽수·레이어 트리·범위 밖 오류·바이트 열기·널 처리를 실제로 실행한다
+(`macos/scripts/ffi_smoke.swift`). 스파이크도 이제 이 XCFramework를 SwiftPM `binaryTarget`으로 소비하며,
+0단계와 같은 샘플 쪽을 픽셀 단위로 동일하게 그린다.
+
+범위 밖(후속 단계): 암호 걸린 문서(`from_bytes_with_password`)·편집·저장 API, Intel/유니버설 슬라이스(10단계).
+
 ## 단계별 PR 계획
 
 | 단계 | 브랜치 | 내용 | 완료 기준 |
 | --- | --- | --- | --- |
 | 0 | `chore/macos-toolchain-spike` | 툴체인, FFI 스파이크, 렌더 방식 검증, 이 문서 | 샘플이 Swift로 그려지고 방식이 확정됨 (이 문서) |
-| 1 | `feat/native-ffi-handle` | 핸들 기반 C ABI(열기·쪽수·쪽 렌더·닫기), cbindgen 헤더, XCFramework 스크립트 | Rust 테스트와 FFI 왕복 테스트 통과 |
+| 1 | `feat/native-ffi-handle` | 핸들 기반 C ABI(열기·쪽수·쪽 렌더·닫기), C 헤더와 일치 테스트, XCFramework 스크립트 | Rust 테스트와 Swift FFI 왕복 스모크 통과 |
 | 2 | `feat/rhwpkit-package` | `RhwpKit`(Sendable 모델, actor 세션, 오류 타입), 레이어 트리 Codable 모델 | 샘플 열기·렌더 단위 테스트 통과 |
 | 3 | `feat/app-shell` | Xcode 프로젝트, `DocumentGroup`, HWP/HWPX 열기, 쪽 썸네일 사이드바, 읽기 전용 뷰어 | 문서가 열리고 스크롤됨 |
 | 4 | `feat/page-renderer` | 타일링 렌더러, 글꼴 공급, 미지원 op 보강 | 샘플 세트의 쪽별 일치율이 자동 측정됨 |
