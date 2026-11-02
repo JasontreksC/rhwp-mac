@@ -20,13 +20,6 @@
 extern "C" {
 #endif
 
-// ── 무상태 함수: 호출마다 파일을 다시 파싱한다 ──────────────────────────────
-
-// page: -1 이면 전체 쪽, 0 이상이면 그 쪽만.
-char *rhwp_export_text(const char *input_path, const char *output_dir, int32_t page);
-char *rhwp_export_markdown(const char *input_path, const char *output_dir, int32_t page);
-char *rhwp_read_text(const char *input_path, int32_t page);
-
 // ── 핸들 기반 문서 API: 한 번 열어 두고 반복 질의한다 ───────────────────────
 
 typedef struct RhwpDocument RhwpDocument;
