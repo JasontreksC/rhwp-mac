@@ -128,13 +128,65 @@ XCFramework를 Swift로 링크해 열기·쪽수·레이어 트리·범위 밖 �
 
 범위 밖(후속 단계): 암호 걸린 문서(`from_bytes_with_password`)·편집·저장 API, Intel/유니버설 슬라이스(10단계).
 
+## 2단계: RhwpKit Swift 패키지
+
+`macos/RhwpKit`(Swift 6.2, macOS 26, Swift 6 언어 모드)이 1단계 XCFramework(`binaryTarget` `CRhwp`)를 감싼다.
+테스트는 `macos/scripts/test-rhwpkit.sh`(XCFramework를 증분 빌드한 뒤 `swift test`)로 실행한다.
+
+**공개 API**
+
+| 타입 | 역할 |
+| --- | --- |
+| `RhwpDocumentSession` (actor) | `open(contentsOf:)`, `open(data:)`, `pageCount()`, `layerTree(page:)`, `layerTreeJSON(page:)` |
+| `PageLayerTree` / `LayerNode` / `GroupKind` | 한 쪽의 레이어 트리 Decodable 모델 |
+| `PaintOp` 및 `TextRunOp`, `RectangleOp`, `ImageOp` 등 | 그리기 명령. 모르는 op는 `.unsupported(type:)`로 보존 |
+| `RhwpError` | `openFailed`, `pageOutOfRange`, `documentUnavailable`, `native`, `malformedResponse` |
+
+**설계 결정**
+
+- **문서마다 전용 직렬 큐 위의 actor.** 모든 네이티브 호출이 한 스레드에서 일어나고 협력 스레드 풀을 막지 않는다.
+  파싱도 같은 큐에서 한다. `dispatchPrecondition(.onQueue)`로 실행자 연결이 빠지면 즉시 멈추게 했다.
+  Rust 쪽이 스레드를 옮겨도 결과가 같음을 1단계에서 보장했으므로 이 구조가 그 계약에 기대는 것은 아니다.
+- **핸들 수명은 Swift 참조 수명에 묶는다.** `NativeDocumentHandle`이 마지막 참조가 사라질 때 `rhwp_document_free`를 부른다.
+- **파일은 Swift에서 읽어 `open_bytes`로 넘긴다.** 샌드박스·파일 코디네이션과 맞고, 읽기 실패를 Swift 오류로 보고한다.
+- **구분이 필요한 오류만 전용 케이스로 만든다.** 범위 밖 쪽은 Swift에서 먼저 검사해 `pageOutOfRange`로 돌려주고,
+  엔진 메시지(사람이 읽는 문장)는 문자열로 분기하지 않고 `.native`로 전달한다.
+- **스키마가 바뀌면 크게 실패한다.** 주 버전·좌표계(`page-top-left-y-down`)·단위(`px`)가 다르면 잘못 그리는 대신
+  디코딩이 `malformedResponse`로 실패한다. 반대로 열거형의 모르는 값(`StrokeDash` 등)은 안전한 기본값으로 낮춘다.
+- **글자 위치 계약을 모델에 문서화했다.** `TextRunOp.positions[i]`는 run 원점에서 i번째 유니코드 스칼라의 시작 x이고
+  개수는 스칼라 수 + 1이다. 렌더러는 줄 나눔·자간을 다시 계산하지 않는다. `displayText`가 있으면 그것을 그린다.
+- **그라데이션 축 규칙은 `Gradient.linearAxis(in:)`에 한 번만 구현했다.** 0단계에서 방향을 잘못 가정했던 규칙이다.
+
+**검증**
+
+- 18건의 Swift Testing 단위 테스트가 통과한다. 기대값은 한컴 PDF(KTX 27쪽, 보건소 4쪽)와 A4 규격(793.70×1122.52px)처럼
+  엔진과 독립인 값으로 정했다. 모든 쪽에서 op 종류별 개수를 원본 JSON을 `JSONSerialization`으로 따로 센 값과 대조한다.
+- 일부러 결함을 넣어 테스트가 실패하는지 확인했다: leaf의 마지막 op 누락, `positions` 마지막 값 누락, 그라데이션 y 부호 반전,
+  좌표계 검사 제거. 모두 검출됐고 원본은 복원했다.
+- 임시 스윕(커밋하지 않음): 6MB 이하 샘플 문서 364개의 앞 4쪽씩 847쪽을 디코딩해 실패 0건이었다.
+  열기에 실패한 3건은 모두 암호 문서(`*password-123456*`)이며 `openFailed`로 돌아온다(암호 입력 API는 후속 단계).
+
+**샘플에서 관찰된 op 종류와 모델 상태**
+
+| 상태 | op |
+| --- | --- |
+| 모델링·실데이터 확인 | `pageBackground`, `textRun`, `line`, `rectangle`, `ellipse`(`hwp3-curve.hwp`), `path`(`KTX.hwp` 2쪽), `image` |
+| 보존만 함(`.unsupported`) — 4단계 렌더러 범위 | `textDecoration`, `tabLeader`, `charOverlap`, `equation`, `footnoteMarker`, `formObject`, `glyphOutline`, `rawSvg` |
+
+**알려진 사항**
+
+- 일부 문서를 열 때 엔진이 `LAYOUT_OVERFLOW: ...`를 stderr에 찍는다(진단 출력). API로는 끌 수 없으며 필요하면 Rust 쪽 변경이 필요하다.
+- 디코딩은 actor의 전용 큐에서 동기로 한다. 디버그 빌드에서 약 80쪽을 파싱·디코딩하는 데 0.5초라 지금은 문제 없지만,
+  큰 쪽(base64 그림)의 디코딩을 큐 밖으로 옮길지는 4단계에서 릴리스 빌드로 측정해 정한다.
+- 미검증: 릴리스 빌드 성능, Xcode 앱 프로젝트에서의 패키지 소비, 이미지 `crop`·`fillMode`의 의미(필드만 모델링).
+
 ## 단계별 PR 계획
 
 | 단계 | 브랜치 | 내용 | 완료 기준 |
 | --- | --- | --- | --- |
 | 0 | `chore/macos-toolchain-spike` | 툴체인, FFI 스파이크, 렌더 방식 검증, 이 문서 | 샘플이 Swift로 그려지고 방식이 확정됨 (이 문서) |
 | 1 | `feat/native-ffi-handle` | 핸들 기반 C ABI(열기·쪽수·쪽 렌더·닫기), C 헤더와 일치 테스트, XCFramework 스크립트 | Rust 테스트와 Swift FFI 왕복 스모크 통과 |
-| 2 | `feat/rhwpkit-package` | `RhwpKit`(Sendable 모델, actor 세션, 오류 타입), 레이어 트리 Codable 모델 | 샘플 열기·렌더 단위 테스트 통과 |
+| 2 | `feat/rhwpkit-package` | `RhwpKit`(Sendable 모델, actor 세션, 오류 타입), 레이어 트리 Decodable 모델 | 샘플 열기·디코딩 단위 테스트 통과 |
 | 3 | `feat/app-shell` | Xcode 프로젝트, `DocumentGroup`, HWP/HWPX 열기, 쪽 썸네일 사이드바, 읽기 전용 뷰어 | 문서가 열리고 스크롤됨 |
 | 4 | `feat/page-renderer` | 타일링 렌더러, 글꼴 공급, 미지원 op 보강 | 샘플 세트의 쪽별 일치율이 자동 측정됨 |
 | 5 | `feat/viewer-features` | 찾기, 이동, 개요, 책갈피, 하이퍼링크, 다크 모드 | 뷰어 기능 패리티 |
