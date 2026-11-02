@@ -2,7 +2,6 @@
 //!
 //! 픽스처가 표현하지 못하는 기존 run step 은 skip 한다.
 //! 새 DocumentCore mutation 으로 skip 을 메우지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::collections::BTreeSet;
 use std::fs;

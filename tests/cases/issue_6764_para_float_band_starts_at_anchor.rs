@@ -31,8 +31,6 @@
 //!
 //! 재현 원본은 samples/issue6764/에 정식 등록했다. 파일 부재는 실패다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::PathBuf;
 
 use rhwp::document_core::DocumentCore;

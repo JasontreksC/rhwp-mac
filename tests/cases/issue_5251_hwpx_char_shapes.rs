@@ -5,8 +5,6 @@
 //! PARA_TEXT 슬롯으로 세지 않는다. HWPX 재파싱이 FFFC 를 1유닛·pageNum/footer
 //! 를 8유닛으로 세면 경계가 (24,33,38,54) → (17,26,31,63) 으로 밀린다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use std::path::Path;
 

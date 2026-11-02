@@ -6,13 +6,12 @@
 //! 저장은 보존 — #5592 비대칭). #4495 봉인이 "직접 수정 → IR 합성" 을 약속해도
 //! 합성기가 캐시를 다시 우선해 약속이 깨졌다. 수정 후 계약: 알려진 의미 비트는
 //! IR 이 정본, 미지 비트만 raw 보존.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::{Path, PathBuf};
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::shape::{TextWrap, VertRelTo};
-use rhwp::wasm_api::HwpDocument;
 
 fn repo_path(rel: &str) -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join(rel)

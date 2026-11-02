@@ -5,9 +5,7 @@
 //! 원본·독립 PDF는 보존하고 아래 작은 기존 검사는 유지한다.
 //! 증적: mydocs/pr/assets/issue7445/neartop5941_green_batch_deferral_validation.json
 
-#![cfg(not(target_arch = "wasm32"))]
-
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 /// `#5921` 의 원 계약은 그대로 — 거의 빈 쪽에서는 완화가 걸려 1쪽이어야 한다.
 #[test]

@@ -41,7 +41,6 @@
 //!
 //! 잔여 3.5px 는 이 기전과 별개다(경계 걸침). 0 을 요구하면 다른 축의 결함까지
 //! 이 테스트가 지게 되므로 두 상태 사이의 값으로 계약한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 /// 금융위 보도자료. pi=5 의 1×1 RowBreak 표가 13쪽에 걸치고, 그 셀 안에 중첩 표를
 /// 가진 문단이 여럿 있다.
@@ -90,7 +89,7 @@ fn out_of_page_glyphs(svg: &str) -> (f64, Vec<(f64, String)>) {
 #[test]
 fn nested_table_snap_stays_inside_the_split_cell() {
     let bytes = std::fs::read(sample_path()).expect("표본 읽기");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("파싱");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("파싱");
     let page_count = doc.page_count();
     assert!(
         page_count >= 10,

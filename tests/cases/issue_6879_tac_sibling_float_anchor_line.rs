@@ -44,10 +44,8 @@
 //! 개체가 축을 정확히 8유닛씩 차지하므로 **앞선 인라인 개체 수 × 8** 로 잡는다. 이
 //! 폴백이 없으면 앵커 오프셋이 0 이 되어 수정 전체가 무효가 된다(실측: 좌표 불변).
 
-#![cfg(not(target_arch = "wasm32"))]
-
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6879/156767332-broadcast-revenue-attachment.hwp";
 /// 대상 쪽 (0-based). 인쇄 쪽번호 `- 7 -`.

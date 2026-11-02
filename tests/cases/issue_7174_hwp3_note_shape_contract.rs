@@ -40,8 +40,6 @@
 //! 유지했다. 미주 `placement` 가 HWPX 에서 `END_OF_DOCUMENT` 인데 우리 HWP5 attr
 //! 해독은 `EachColumn` 으로 읽는 축도 이 이슈의 범위가 아니다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::{Path, PathBuf};
 
 use rhwp::model::footnote::FootnoteShape;

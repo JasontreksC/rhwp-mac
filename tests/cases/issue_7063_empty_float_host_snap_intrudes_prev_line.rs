@@ -26,8 +26,6 @@
 //! 이 검사는 정본 없이도 성립하는 불변식을 함께 잠근다 — **자리차지 표의 윗변은
 //! 앞 문단 마지막 줄 상자 바닥보다 위일 수 없다.**
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

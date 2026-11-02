@@ -5,8 +5,8 @@
 //! follow the renderer's bin_data_id index-first lookup semantics rather than
 //! assuming `BinDataContent.id == bin_data_id`.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::bin_data::BinDataContent;
-use rhwp::wasm_api::HwpDocument;
 use serde::Deserialize;
 use std::path::Path;
 

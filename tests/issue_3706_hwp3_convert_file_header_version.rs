@@ -22,7 +22,6 @@
 //!
 //! 변환본 FileHeader 는 (1) 5.x 버전을 선언하고 (2) 압축 플래그가 실제 스트림
 //! 압축과 일치하며 (3) rhwp 재로드에서도 5.x 로 읽혀야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::parser::cfb_reader::CfbReader;
 

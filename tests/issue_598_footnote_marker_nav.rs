@@ -4,8 +4,8 @@
 
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::RenderNodeType;
-use rhwp::wasm_api::HwpDocument;
 
 fn json_number(json: &str, key: &str) -> f64 {
     let pattern = format!("\"{}\":", key);

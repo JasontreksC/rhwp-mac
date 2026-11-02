@@ -18,7 +18,6 @@
 //!
 //! - 새 문서가 실패하면 → 저장 손실이 새로 들어왔다. 고치거나, 근거를 적어 등재하라.
 //! - 등재된 문서가 통과하면 → 고쳐졌다. **목록에서 지워라** (래칫을 조인다).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::{Duration, Instant};
@@ -100,12 +99,12 @@ fn collect_recursive(dir: &std::path::Path, out: &mut Vec<std::path::PathBuf>) {
 /// 비교 강도는 CLI 와 같다 — 포맷을 넘으면 대상 포맷에 자리가 없는 항목을 걷어낸다.
 fn verify_roundtrip(data: &[u8]) -> Option<usize> {
     let source_format = rhwp::parser::detect_format(data);
-    let mut doc = rhwp::wasm_api::HwpDocument::from_bytes(data).ok()?;
+    let mut doc = rhwp::document_api::HwpDocument::from_bytes(data).ok()?;
     doc.convert_to_editable_native().ok()?;
     let snapshot = doc.prepare_hwp_export_snapshot();
     let expected = snapshot.document().clone();
     let bytes = snapshot.serialize().ok()?;
-    let reloaded = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).ok()?;
+    let reloaded = rhwp::document_api::HwpDocument::from_bytes(&bytes).ok()?;
 
     let diff = diff_documents(&expected, reloaded.document());
     let diff = match source_format {

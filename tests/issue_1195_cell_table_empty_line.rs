@@ -20,7 +20,7 @@ use std::path::Path;
 fn render_hcar_page1_svg() -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/hcar-001.hwp");
     let bytes = fs::read(&path).expect("read samples/hcar-001.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse hcar-001.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse hcar-001.hwp");
     doc.render_page_svg_native(0).expect("render page 1 svg")
 }
 

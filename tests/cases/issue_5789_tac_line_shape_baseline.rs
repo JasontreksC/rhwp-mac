@@ -10,7 +10,6 @@
 //! 저장 `baseline_distance` 로 폴백 — 중심 182.09px, 한글과 0.03px 차.
 //!
 //! 픽스처는 원본 HWPX 의 대형 BinData 를 1×1 스텁으로 바꾼 축소본(14KB).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

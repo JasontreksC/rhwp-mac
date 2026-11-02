@@ -3,9 +3,9 @@
 //! `복학원서.hwp` 첫 표의 대학명 입력 칸은 고정 높이 셀이다. 장문을 입력해도
 //! 편집 캐럿과 IME 조합 기준 좌표는 해당 셀 bbox 안에 남아야 한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
-use rhwp::wasm_api::HwpDocument;
 use serde_json::{json, Value};
 
 const SAMPLE: &str = "samples/복학원서.hwp";

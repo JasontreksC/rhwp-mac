@@ -7,17 +7,17 @@ fn render_svg(rel_path: &str, page_idx: u32) -> String {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let path = Path::new(repo_root).join(rel_path);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {rel_path}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel_path}: {e:?}"));
     doc.render_page_svg_native(page_idx)
         .unwrap_or_else(|e| panic!("render {rel_path} page {page_idx}: {e:?}"))
 }
 
-fn load_doc(rel_path: &str) -> rhwp::wasm_api::HwpDocument {
+fn load_doc(rel_path: &str) -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let path = Path::new(repo_root).join(rel_path);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {rel_path}: {e}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel_path}: {e:?}"))
 }
 

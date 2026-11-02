@@ -37,13 +37,12 @@
 //! ```
 //!
 //! 쪽수는 23/23 으로 전후·한글 모두 같고 넘침 지표도 침묵한다. 그래서 좌표를 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/3-09월_교육_통합_2022.hwpx";
 const PAGE_INDEX: u32 = 22; // 0-based — 23쪽

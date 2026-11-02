@@ -24,7 +24,6 @@
 //! 원본은 코퍼스 경로에 있다 — `hwpdocs_10k_share/prism_downloads/법제처/
 //! 1170000-200500003_D0150004-1-001_독일의 법령체계와 입법심사기준(최종본).hwp`.
 //! 이 시험은 문서를 열지 않고 face 이름으로 측정만 하므로 재현본을 저장소에 넣지 않았다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::renderer::layout::{EmbeddedTextMeasurer, TextMeasurer};
 use rhwp::renderer::TextStyle;

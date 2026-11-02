@@ -14,7 +14,6 @@
 //! BinData 를 1×1 스텁으로 바꾼 축소본(22KB). 결함 lineseg
 //! (lh=21235 th=21235 bl=18050) 와 TAC 그림(curSz h=15425HU=205.7px)을
 //! 그대로 보존한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

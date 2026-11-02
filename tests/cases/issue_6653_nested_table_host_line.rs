@@ -20,14 +20,13 @@
 //! 이 계약은 표가 조각 위쪽(줄 상자 자리)에 오는 것을 고정한다. 한/글 52.1 과 남는
 //! 10.6px 은 셀 `valign=Center` 몫으로 보이며 아직 확정하지 못했다 — 이 시험은 그 값을
 //! 박지 않고, 표가 161px 아래로 내려가지 않는 것만 단언한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
 fn page_svg(rel: &str, page: u32) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {rel}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel}: {e:?}"));
     doc.render_page_svg(page)
         .unwrap_or_else(|e| panic!("render {rel} p{}: {e:?}", page + 1))

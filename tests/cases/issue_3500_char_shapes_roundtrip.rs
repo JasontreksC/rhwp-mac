@@ -5,8 +5,6 @@
 //! PARA_CHAR_SHAPE start_pos 는 IR 비교 대상이다. 직렬화가 run 을 하나으로
 //! 접으면 재파싱이 `[(0,0)]` 만 남긴다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::style::{CharShape, UnderlineType};
 use rhwp::parse_document;

@@ -1,5 +1,4 @@
 //! Negative raw HWP offsets must not enter positive-offset paginator branches.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::control::Control;
 use rhwp::model::page::{ColumnDef, PageDef};

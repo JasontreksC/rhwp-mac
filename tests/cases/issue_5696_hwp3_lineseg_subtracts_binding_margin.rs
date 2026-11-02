@@ -25,7 +25,6 @@
 //! `hwp3-sample16.hwp` 의 본문 문단 최다 폭은 수정 전후 모두 `46024` 로 같다. 그 문서는
 //! 한컴 변환본(`51024`)과 여전히 다른데, 그 불일치는 제본 축이 **아니라** 어울림 구역·
 //! 들여쓰기 축이라 이 이슈와 분리된다(본문의 `hwp3-sample16` 52.8%).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::collections::BTreeMap;
 use std::path::Path;

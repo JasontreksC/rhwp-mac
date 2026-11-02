@@ -26,11 +26,11 @@
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::{Control, Field, Parameter};
 use rhwp::model::document::Document;
 use rhwp::parser::hwpx::parse_hwpx;
 use rhwp::serializer::hwpx::serialize_hwpx;
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/누름틀-2024.hwpx";
 

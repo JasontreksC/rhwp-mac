@@ -19,10 +19,10 @@ use std::path::Path;
 
 const SAMPLE: &str = "samples/issue5593_cell_center_front_object.hwpx";
 
-fn load_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_doc() -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", SAMPLE, e))
 }
 

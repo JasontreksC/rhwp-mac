@@ -8,7 +8,6 @@
 //! OWPML fieldBegin 의 `dirty` 가 이 표식의 대응물이다 (한컴 실물: 초기 상태
 //! `samples/hwpx/form-01.hwpx` 는 dirty="0", 입력된 `samples/누름틀-2024.hwpx` 는
 //! dirty="1").
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::{Read, Write};
 use std::path::Path;
@@ -25,11 +24,11 @@ fn sample_bytes() -> Vec<u8> {
     std::fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"))
 }
 
-fn load(bytes: &[u8]) -> rhwp::wasm_api::HwpDocument {
-    rhwp::wasm_api::HwpDocument::from_bytes(bytes).expect("parse")
+fn load(bytes: &[u8]) -> rhwp::document_api::HwpDocument {
+    rhwp::document_api::HwpDocument::from_bytes(bytes).expect("parse")
 }
 
-fn field_value(doc: &rhwp::wasm_api::HwpDocument, name: &str) -> String {
+fn field_value(doc: &rhwp::document_api::HwpDocument, name: &str) -> String {
     let json = doc.get_field_list();
     let v: serde_json::Value = serde_json::from_str(&json).expect("field list JSON");
     let fields = v["fields"]

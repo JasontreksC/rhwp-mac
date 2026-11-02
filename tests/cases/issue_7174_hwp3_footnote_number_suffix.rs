@@ -42,8 +42,6 @@
 //!
 //! 구분선 여백(PR #7181)·구분선 길이(정본 `-1` 대 고정값)·미주 모양이 통째로 0 인 축.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::control::{AutoNumberType, Control};
 use rhwp::model::paragraph::Paragraph;
 use std::path::Path;

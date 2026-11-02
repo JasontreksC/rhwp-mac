@@ -38,11 +38,8 @@ impl TypesetEngine {
         endnote_deferral: EndnoteDeferral<'_>,
     ) -> PaginationResult {
         // [#2424 프로파일] paginate_pass 와 같은 env var 로 하위 단계 게이트.
-        #[cfg(not(target_arch = "wasm32"))]
         let issue2424_ts_enabled =
             std::env::var("RHWP_2424_PROFILE").is_ok_and(|value| !value.is_empty() && value != "0");
-        #[cfg(target_arch = "wasm32")]
-        let issue2424_ts_enabled = false;
         let issue2424_ts_started = issue2424_ts_enabled.then(std::time::Instant::now);
         let mut issue2424_prof = Issue2424TypesetProfile::default();
 

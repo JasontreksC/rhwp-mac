@@ -2,7 +2,6 @@
 //! 독립 한컴 PDF 14쪽과 Native/fresh WASM 비교에서 확인한 내용 관계를 검사한다.
 //! 절대 화면 좌표와 허용 픽셀 간격을 기대값으로 고정하지 않는다.
 //! 정확한 간격·그림·괘선 차이는 별도의 Visual Sweep에서 판독한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

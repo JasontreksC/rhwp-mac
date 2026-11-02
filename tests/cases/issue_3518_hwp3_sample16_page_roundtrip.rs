@@ -10,7 +10,7 @@
 use std::fs;
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const SAMPLE: &str = "samples/hwp3-sample16.hwp";
 

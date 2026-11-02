@@ -11,7 +11,6 @@
 //! 사다리 전제(쪽 스케일 리셋·선형-정확)는 HWPX 저장 형상 전용이라, native
 //! HWP5 는 **문단 델타 등식**(다음 문단 저장 vpos 델타 == lh + ls) 증거만으로
 //! 계상한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

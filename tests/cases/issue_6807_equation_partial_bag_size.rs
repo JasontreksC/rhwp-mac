@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [#6807] 수식 속성 봉지에 `width`/`height` 가 없어도, `script`·`fontSize` 가 바뀌지 않았으면
 //! 크기를 다시 계산하지 않아야 한다.
 //!

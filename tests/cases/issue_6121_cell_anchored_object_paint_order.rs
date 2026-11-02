@@ -11,7 +11,6 @@
 //! 수정: `layout_cell_shape` 가 비-TAC 개체에 layer(text_wrap·z_order)를
 //! 마킹하고, 페이지 조립 후처리(`lift_cell_anchored_objects_above_text`)가
 //! TableCell children 에서 그 개체들만 z_order 안정 정렬로 끝으로 옮긴다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

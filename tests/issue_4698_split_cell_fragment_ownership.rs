@@ -27,10 +27,10 @@ const CONTINUATION_LABEL_TOP_BAND: f64 = 200.0;
 const FIRST_FRAGMENT_PAGE: u32 = 64;
 const CONTINUATION_FRAGMENT_PAGE: u32 = 65;
 
-fn load_doc(rel: &str) -> rhwp::wasm_api::HwpDocument {
+fn load_doc(rel: &str) -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", rel, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse")
 }
 
 /// `<text ... translate(x,y) ...>내용</text>` 을 (x, y, 내용) 으로 훑는다.

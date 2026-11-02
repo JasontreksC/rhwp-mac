@@ -11,8 +11,6 @@
 //! `DocumentCore::export_hwpx_native` 저장 경로로 왕복한다.
 //! pic offset(#4668)·쪽수(#3737)·char_shapes 는 단언하지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 

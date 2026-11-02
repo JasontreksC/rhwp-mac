@@ -16,8 +16,6 @@
 //! 가운데 정렬은 좌우 여백이 같아 x 가 그대로이고 y 만 위 여백만큼 내려간다 —
 //! 상자 폭으로 가운데를 잡지 않고 잉크 원점에만 여백을 더하면 x 가 11.36 틀어진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
@@ -71,7 +69,7 @@ fn find_image(node: &serde_json::Value, para_index: u64, out: &mut Vec<(f64, f64
 fn tac_picture_ink_sits_inside_its_outer_margin_box() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
     for case in CASES {
         let json = document

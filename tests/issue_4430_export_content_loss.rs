@@ -4,12 +4,12 @@
 //! HWP→HWPX→HWP, HWPX→HWP→HWPX 경계를 모두 지난다. 첫 저장에서만 정확히 한
 //! 자원 손실이 보고되고, live IR은 바뀌지 않으며, placeholder를 다시 저장하는 두 번째
 //! 경계는 이전 보고서를 되풀이하지 않아야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::cmp::Reverse;
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
+use rhwp::document_api::{DocumentExport, HwpDocument};
 use rhwp::document_core::DocumentCore;
 use rhwp::model::bin_data::{BinDataBytes, BinDataResolver};
 use rhwp::model::control::Control;
@@ -17,7 +17,6 @@ use rhwp::model::paragraph::CharShapeRef;
 use rhwp::serializer::{
     ContentLossCode, ContentLossReason, ContentLossReport, ContentLossSubject, SerializedFormat,
 };
-use rhwp::wasm_api::{DocumentExport, HwpDocument};
 
 const NESTED_HWP: &str = "samples/pic-in-table-01.hwp";
 const MULTIPLEXED_HWPX: &str = "samples/hwpx_sample2.hwpx";

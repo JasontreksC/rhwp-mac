@@ -9,7 +9,6 @@
 //! 추가 + boxed_pua_number 범위를 F02B0(0)까지 확장 + 텍스트 표면 ⓪ 매핑.
 //!
 //! 결함 상태에서는 SVG 에 raw PUA 3자가 남아 어서션이 실패한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

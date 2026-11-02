@@ -5,11 +5,9 @@
 //! Image가 페이지 전체 bbox로 올라온다. 그 Image를 본문 인라인 hit로 등록하면
 //! 표 안 클릭이 전부 paragraph 0으로 떨어진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use serde_json::Value;
 
 const SAMPLE: &str = "samples/2025 행정업무운영 편람(최종).hwp";

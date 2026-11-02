@@ -12,8 +12,8 @@
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType, TableCellNode};
-use rhwp::wasm_api::HwpDocument;
 
 fn load_tree() -> rhwp::renderer::render_tree::PageRenderTree {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/21_언어_기출_편집가능본.hwp");

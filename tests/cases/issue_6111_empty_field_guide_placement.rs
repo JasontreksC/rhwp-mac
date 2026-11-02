@@ -13,7 +13,6 @@
 //!
 //! 인쇄 경로는 #3375 가 이미 `editor_only` 로 막았다 — 이 테스트는 편집 표시의
 //! 좌표 계약을 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

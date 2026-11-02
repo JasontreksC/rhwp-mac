@@ -14,7 +14,6 @@
 //!
 //! 결함 상태에서는 중첩 표 상단 555px·p2 상단이 '적용'(2)의 꼬리)로 두
 //! 어서션이 실패한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

@@ -26,8 +26,6 @@
 //! 수정 뒤 **+1.0px** 로 같은 오차 범위에 든다.
 //! 20쪽 Center 제어군은 현재 전쪽 시각 비교가 90%에 못 미쳐 #7445로 이관했다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

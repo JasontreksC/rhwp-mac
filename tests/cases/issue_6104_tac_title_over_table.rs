@@ -5,7 +5,6 @@
 //! 밴드 소비를 건너뛰어, 표 데이터 행을 덮었다(36483048 4쪽).
 //!
 //! 이미 그린 선행 밴드만 피하므로 앵커 예약 이중 계상(#4090)은 없다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

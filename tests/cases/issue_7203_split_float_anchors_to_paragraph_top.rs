@@ -38,8 +38,6 @@
 //! 비분할 경로(`fragment_outer_top_px = 0` 으로 바깥여백이 빠지는 갈래)와 쪽나눔(typeset)
 //! 쪽 원점은 범위 밖이다 — `#7203` 에 남아 있다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

@@ -13,10 +13,10 @@ pub use rhwp_ooxml_chart as ooxml_chart;
 pub mod paint;
 pub mod parser;
 pub use rhwp_password_crypto as password_crypto;
+pub mod document_api;
 pub mod renderer;
 pub mod schema_registry;
 pub mod serializer;
-pub mod wasm_api;
 pub mod wmf;
 
 pub use document_core::DocumentCore;

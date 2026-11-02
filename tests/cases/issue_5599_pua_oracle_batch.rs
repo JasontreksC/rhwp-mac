@@ -21,7 +21,7 @@ const SAMPLE: &str = "samples/issue5599_oracle/3191107_leave_request_form.hwpx";
 fn issue_5599_oracle_confirmed_pua_is_substituted() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
     let svg = doc
         .render_page_svg_native(0)

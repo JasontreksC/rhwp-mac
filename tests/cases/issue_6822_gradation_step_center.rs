@@ -26,11 +26,10 @@
 //! ⚠ 통제군이 이 수정의 핵심 안전장치다. `stepCenter` 를 무시하고 균등 분포로 두는 현행
 //! 동작이 `stepCenter == 50` 문서에서는 **맞다**. 전이 위치를 바꾸는 어떤 판이든 여기를
 //! 깨뜨리면 안 된다.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 use rhwp::renderer::{expand_gradient_steps, GradientFillInfo};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6551/113424_evaluation_guideline.hwpx";
 

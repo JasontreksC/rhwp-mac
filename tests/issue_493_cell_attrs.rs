@@ -8,7 +8,7 @@ use rhwp::model::control::Control;
 use rhwp::model::document::Document;
 use rhwp::parser::hwpx::parse_hwpx;
 use rhwp::serializer::hwpx::serialize_hwpx;
-use rhwp::{parse_document, wasm_api::HwpDocument};
+use rhwp::{document_api::HwpDocument, parse_document};
 use serde_json::Value;
 
 #[derive(Clone, Copy)]

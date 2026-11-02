@@ -12,11 +12,11 @@ const SAMPLE: &str = "samples/rowbreak-problem-pages.hwpx";
 const HWP_SAMPLE: &str = "samples/rowbreak-problem-pages.hwp";
 const PAGE_INDEX: u32 = 1;
 
-fn load_doc(sample: &str) -> rhwp::wasm_api::HwpDocument {
+fn load_doc(sample: &str) -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let sample_path = Path::new(repo_root).join(sample);
     let bytes = fs::read(&sample_path).unwrap_or_else(|e| panic!("read {sample}: {e}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {sample}: {e:?}"))
 }
 
@@ -104,7 +104,7 @@ fn rowbreak_page11_partial_table_stays_inside_body() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let sample_path = Path::new(repo_root).join(SAMPLE);
     let bytes = fs::read(&sample_path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {:?}", SAMPLE, e));
     let tree = doc
         .build_page_render_tree(10)
@@ -126,7 +126,7 @@ fn rowbreak_page13_following_reference_strip_stays_below_table() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let sample_path = Path::new(repo_root).join(SAMPLE);
     let bytes = fs::read(&sample_path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {:?}", SAMPLE, e));
     let tree = doc
         .build_page_render_tree(12)
@@ -151,7 +151,7 @@ fn rowbreak_page13_textbox_shapes_cover_their_text() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let sample_path = Path::new(repo_root).join(SAMPLE);
     let bytes = fs::read(&sample_path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {:?}", SAMPLE, e));
     let tree = doc
         .build_page_render_tree(12)
@@ -219,7 +219,7 @@ fn rowbreak_page17_split_table_covers_visible_textbox_shape() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let sample_path = Path::new(repo_root).join(SAMPLE);
     let bytes = fs::read(&sample_path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {:?}", SAMPLE, e));
     let tree = doc
         .build_page_render_tree(16)
@@ -257,7 +257,7 @@ fn rowbreak_page18_does_not_emit_tiny_empty_table_continuation() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let sample_path = Path::new(repo_root).join(SAMPLE);
     let bytes = fs::read(&sample_path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {:?}", SAMPLE, e));
     let tree = doc
         .build_page_render_tree(17)
@@ -435,7 +435,7 @@ fn rowbreak_page2_chart_starts_below_title_line() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let sample_path = Path::new(repo_root).join(SAMPLE);
     let bytes = fs::read(&sample_path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {:?}", SAMPLE, e));
     let tree = doc
         .build_page_render_tree(PAGE_INDEX)

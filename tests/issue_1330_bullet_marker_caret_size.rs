@@ -10,7 +10,7 @@ fn parse_json(json: String, label: &str) -> Value {
     serde_json::from_str(&json).unwrap_or_else(|e| panic!("parse {label}: {e}"))
 }
 
-fn text_layout(doc: &rhwp::wasm_api::HwpDocument) -> Value {
+fn text_layout(doc: &rhwp::document_api::HwpDocument) -> Value {
     parse_json(
         doc.get_page_text_layout_native(0)
             .unwrap_or_else(|e| panic!("text layout: {e:?}")),
@@ -18,7 +18,11 @@ fn text_layout(doc: &rhwp::wasm_api::HwpDocument) -> Value {
     )
 }
 
-fn cursor_rect(doc: &rhwp::wasm_api::HwpDocument, para_idx: usize, char_offset: usize) -> Value {
+fn cursor_rect(
+    doc: &rhwp::document_api::HwpDocument,
+    para_idx: usize,
+    char_offset: usize,
+) -> Value {
     parse_json(
         doc.get_cursor_rect_native(0, para_idx, char_offset)
             .unwrap_or_else(|e| panic!("cursor para={para_idx} offset={char_offset}: {e:?}")),
@@ -95,7 +99,7 @@ fn assert_close(actual: f64, expected: f64, label: &str) {
 
 #[test]
 fn split_empty_bullet_line_uses_active_char_shape_before_and_after_typing() {
-    let mut doc = rhwp::wasm_api::HwpDocument::create_empty();
+    let mut doc = rhwp::document_api::HwpDocument::create_empty();
     doc.create_blank_document_native()
         .unwrap_or_else(|e| panic!("create blank document: {e:?}"));
     let bullet_id = doc.ensure_default_bullet("□");

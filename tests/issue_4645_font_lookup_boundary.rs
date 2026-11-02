@@ -40,7 +40,6 @@ fn temporary_font_root() -> PathBuf {
     ))
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn public_svg_embedding_rejects_nested_document_font_candidate_but_embeds_direct_child() {
     let root = temporary_font_root();

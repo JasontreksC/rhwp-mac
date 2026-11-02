@@ -5,11 +5,11 @@
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::Paragraph;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 use serde::Deserialize;
 
 const HWP_SAMPLE: &str = "samples/issue1949_giant_cell_nested_tables_perf.hwp";
@@ -214,7 +214,7 @@ fn approx_eq(actual: f64, expected: f64) -> bool {
 /// [#7418] 종전 HWPX 61 은 한/글 2020 이 한양신명조를 함초롬바탕으로 대체한 환경의 출력에서
 /// 정한 값이었다. 한양신명조가 있는 환경에서 한/글 2024·2020 이 직접 나누면 두 형식 모두
 /// 55 번째에서 `[0, 44, 84, 122, 128]` 로 전환한다. rhwp 는 56 번째에 `[.., 129]` 로
-/// 전환해 넷째 줄에 한 글자를 더 담는다(남은 차이, `src/wasm_api/tests.rs` 와 같은 근거).
+/// 전환해 넷째 줄에 한 글자를 더 담는다(남은 차이, `src/document_api/tests.rs` 와 같은 근거).
 fn flow_boundary_insert_count(label: &str) -> usize {
     match label {
         "hwp" => 56,

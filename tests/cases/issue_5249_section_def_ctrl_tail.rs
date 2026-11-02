@@ -8,7 +8,6 @@
 //!
 //! HWPX 파서는 FileHeader 에 5.1.0.0 을 적으므로, HWPX 출처 저장본은 **버전이 47을
 //! 약속하고 내용은 38을 내보내는** 상태였다. 이 계약은 그 둘을 묶는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

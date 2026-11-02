@@ -11,7 +11,6 @@
 //! 장치 좌표로 옮겨 정규화한다(`DeviceContext::blit_dest_rect`). 그 결과 그림은 창 전체
 //! `(0, 0, 1152, 648)` 을 뒤집기 없이 채운다. 한/글 2022 PDF 1쪽 잉크 bbox (322, 178)–(484, 281)
 //! 과 rhwp SVG 래스터가 같은 자리다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

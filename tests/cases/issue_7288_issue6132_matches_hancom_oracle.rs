@@ -29,8 +29,6 @@
 //! 종전에는 5·6·7쪽이 각각 631 / 652 / 467 로 어긋났고(표를 행 안에서 잘라 더 채움),
 //! 값 1 만 적용한 중간 상태에서는 8쪽이 빈 쪽이 되어 11쪽이었다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 
 const SAMPLE: &str = "samples/issue6132/156482639_startup_ir_contest.hwp";

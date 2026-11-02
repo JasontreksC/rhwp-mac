@@ -54,8 +54,6 @@
 //! 결과(`layout-anomaly`): 넘침 6 → **0**, 용지밖 2 → **0**, 글자겹침 1 → **0**,
 //! 쪽수 12 유지(한/글 2024 = 12쪽).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::{Path, PathBuf};
 
 use rhwp::document_core::DocumentCore;

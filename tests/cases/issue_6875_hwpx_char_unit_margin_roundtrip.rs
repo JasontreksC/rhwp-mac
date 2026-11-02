@@ -54,11 +54,10 @@
 //!
 //! `#6875` 가 등재한 16경로 중 이 수정이 닿는 것은 홀수 여백이 있는 문서다. 나머지
 //! (예: `07374`·`07821`·`07281`·`01821`)는 `CHAR` 항목이 0개라 **다른 갈래**이고 미해결이다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 /// 홀수 여백·간격을 실제로 가진 저장소 실물.
 const SAMPLE: &str = "samples/issue5714/1490000-200800034_vietnam_labor_report.hwp";

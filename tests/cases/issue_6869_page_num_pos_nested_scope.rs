@@ -1,6 +1,5 @@
 //! #6869/#6871: 중첩 문단의 쪽번호 방출 상태와 접힌 슬롯의 축을 격리한다.
 //! 합성 IR 기반 serializer 계약 검사이며 한컴 유효성 검증용 샘플이 아니다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 

@@ -48,7 +48,7 @@ fn issue_2226_footer_table_rows_match_declared_and_address_visible() {
         Path::new(repo_root).join("samples/basic/issue1994_behindtext_table_20200830.hwp");
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse issue1994_behindtext_table_20200830.hwp");
     let tree = doc.build_page_render_tree(1).expect("render page 2");
 

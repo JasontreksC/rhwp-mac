@@ -1,10 +1,10 @@
 //! Issue #1459: 같은 문단의 TAC 그림과 자리차지 그림 혼합 배치.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::shape::TextWrap;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 use serde_json::Value;
 
 #[derive(Debug, Clone, Copy)]

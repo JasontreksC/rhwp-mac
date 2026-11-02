@@ -19,8 +19,6 @@
 //!
 //! 수정 전 캡션 블록 끝(551.8)이 줄 바닥(516.8)을 35px 넘겨 표가 24.6px 내려갔다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
@@ -81,7 +79,7 @@ fn walk(node: &serde_json::Value, found: &mut Found) {
 fn bottom_caption_of_tac_picture_starts_right_below_the_drawn_picture() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
     let json = document
         .get_page_render_tree(4)

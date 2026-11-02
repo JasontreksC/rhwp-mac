@@ -417,12 +417,8 @@ impl DocumentCore {
         page_num: u32,
         options_json: &str,
     ) -> Result<String, HwpError> {
-        let native_unavailable_reason =
-            if cfg!(all(not(target_arch = "wasm32"), feature = "native-skia")) {
-                "nativeRendererSnapshotRequired"
-            } else {
-                "nativeSkiaFeatureUnavailable"
-            };
+        // 네이티브 렌더러(Skia) 관측 경로는 이 포크에 없다.
+        let native_unavailable_reason = "nativeSkiaFeatureUnavailable";
         self.get_font_decision_trace_with_native_observer(
             page_num,
             options_json,
@@ -445,12 +441,8 @@ impl DocumentCore {
             return Err(HwpError::PageOutOfRange(page_num));
         }
         let requested_limits = options(options_json)?;
-        let native_unavailable_reason =
-            if cfg!(all(not(target_arch = "wasm32"), feature = "native-skia")) {
-                "nativeRendererSnapshotRequired"
-            } else {
-                "nativeSkiaFeatureUnavailable"
-            };
+        // 네이티브 렌더러(Skia) 관측 경로는 이 포크에 없다.
+        let native_unavailable_reason = "nativeSkiaFeatureUnavailable";
         let tree = self.build_page_tree(page_num)?;
         let trace_raw = self.get_font_decision_trace_from_tree(
             page_num,

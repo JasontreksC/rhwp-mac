@@ -12,7 +12,6 @@
 //!
 //! 픽스처는 원본 표지 1쪽을 extract-pages 로 떼고 대형 BinData 를 1×1 스텁으로
 //! 바꾼 marker-HWPX(67KB) — 남색 배경과 flow 그림 1장의 결함 유발 조합을 보존한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

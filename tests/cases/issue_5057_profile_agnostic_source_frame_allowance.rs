@@ -17,8 +17,6 @@
 //!
 //! ⚠ 예산은 두 프로파일이 **동일**하다. 갈리는 것은 마지막 행의 초과 수용뿐이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

@@ -34,8 +34,6 @@
 //! 시작**하므로, 앞 값에 쓰는 `> 5000` 의 거울로 새 값에 `<= 5000` 을 요구한다. 그 조건이
 //! 없으면 이 문서가 413 -> 414쪽이 되어 정본(415쪽) 오프셋 정렬이 깨진다(`#7226` 핀).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

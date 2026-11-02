@@ -8,7 +8,6 @@
 //!
 //! 조판(typeset)은 같은 계약을 `extend_square_band_to_source_bottom` 으로 이미
 //! 갖고 있다 — 페인트도 같은 저장 좌표로 커서를 끌어올린다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

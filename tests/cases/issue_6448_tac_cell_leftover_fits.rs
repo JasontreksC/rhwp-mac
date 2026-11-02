@@ -5,7 +5,6 @@
 //! `treatAsChar=1`, `pageBreak="CELL"` 표(선언 높이 68000HU)가 한 줄
 //! `LINE_SEG`(1000HU)만으로 저장되어 있다. Hancom 2020 기준 PDF는 HEAD/표/TAIL을
 //! 각각 1/2/3쪽에 둔다. 표와 TAIL을 같은 쪽에 두면 표 물리 하단을 누락한 회귀다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;

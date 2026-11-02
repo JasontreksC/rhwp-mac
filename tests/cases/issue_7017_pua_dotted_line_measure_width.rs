@@ -31,7 +31,6 @@
 //!
 //! 같은 수정이 `#677` 복학원서의 한/글 정본 정합도 함께 올린다 —
 //! `tests/svg_snapshot.rs` 의 `issue_677_bokhakwonseo_page1` 주석 참조.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

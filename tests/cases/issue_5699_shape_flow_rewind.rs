@@ -11,13 +11,12 @@
 //! 계약: 동봉 재현 문서(서울시 가로수 조례 별표 3 — TopAndBottom 그림 서식)에서
 //! **서로 다른 문단의 본문 줄이 같은 y 대역(90% 이상)에 겹쳐 그려지지 않는다**.
 //! 수정 전 실측: p3 pi2~pi3 줄이 y581 동일 대역 완전 겹침(r=1.00).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue5699/16758113_pruning_forms.hwp";
 

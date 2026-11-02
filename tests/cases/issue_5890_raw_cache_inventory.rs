@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [#5890] raw 캐시 인벤토리 문서와 소스의 일치.
 //!
 //! `mydocs/eng/tech/raw_cache_inventory.md` 는 #5890 완료 정의의 절반 —

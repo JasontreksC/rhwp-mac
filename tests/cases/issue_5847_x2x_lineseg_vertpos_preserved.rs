@@ -13,7 +13,6 @@
 //!
 //! 픽스처는 원본 HWPX(156682086, 02319) 구역0 문단 24..36 절단 + BinData
 //! 스텁(94KB) — 캐시 없는 문단 2개가 구역 재계산을 발화시키는 최소 재현.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 use std::path::Path;

@@ -1,5 +1,4 @@
 //! Local security boundary contracts, independent of layout/golden baselines.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::control::Control;
 use rhwp::model::image::{ImageAttr, Picture};

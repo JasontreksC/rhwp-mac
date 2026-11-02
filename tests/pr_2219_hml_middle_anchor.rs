@@ -30,7 +30,7 @@ fn find_table(node: &RenderNode) -> Option<BoundingBox> {
 #[test]
 fn formatting_table_middle_anchor_preserves_vertical_text_flow() {
     let document =
-        rhwp::wasm_api::HwpDocument::from_bytes(SAMPLE).expect("parse formatting_table.hml");
+        rhwp::document_api::HwpDocument::from_bytes(SAMPLE).expect("parse formatting_table.hml");
     let tree = document
         .build_page_render_tree(0)
         .expect("render formatting_table.hml page 1");

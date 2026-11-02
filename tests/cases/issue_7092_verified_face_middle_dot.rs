@@ -30,7 +30,6 @@
 //! `휴먼명조` 는 정본이 전각인데도 **아직 좁힌다** — 메트릭 표의 Latin-1 구간이 `0`/`em`
 //! 두 값뿐이라(`latin1_table_is_uninformative`) 표를 근거로 쓸 수 없기 때문이다. 표를
 //! 고치는 다른 갈래이므로, 여기서는 그 face 가 움직이지 않는 것까지 함께 잠근다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

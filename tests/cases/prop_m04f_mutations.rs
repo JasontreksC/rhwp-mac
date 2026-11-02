@@ -2,7 +2,6 @@
 //!
 //! 시퀀스는 fill_fields · replace_text · set_cell · set_checkbox 만 이어 붙인다.
 //! DocumentCore 편집 함수를 새로 만들지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::collections::BTreeSet;
 use std::fs;

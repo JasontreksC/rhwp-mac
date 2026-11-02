@@ -10,13 +10,12 @@
 //! 수렴이 깨지면 역연산화는 스냅샷(전체 복원) 대체 자격을 잃는다 — 고아 BorderFill,
 //! dirty 플래그 잔존, 이웃 id 미복원 중 무엇이 원인인지 first_diff 로 좁힐 수 있게
 //! 스타일 테이블 길이도 함께 단정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::queries::table_extract::extract_tables;
 use rhwp::model::control::Control;
-use rhwp::wasm_api::HwpDocument;
 
 /// 표가 있는 .hwp 표본 후보 — 순서대로 훑어 첫 본문 최상위 표(4셀 이상)를 쓴다.
 const CANDIDATES: &[&str] = &[

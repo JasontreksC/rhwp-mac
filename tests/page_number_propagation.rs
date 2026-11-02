@@ -38,7 +38,7 @@ fn gugeo_업무계획_post_new_number_monotonic() {
         return;
     };
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse 2022년 국립국어원 업무계획.hwp");
 
     let dump = doc.dump_page_items(None);
@@ -86,7 +86,7 @@ fn gugeo_업무계획_max_page_number_close_to_count() {
         eprintln!("skip: sample not available at {}", hwp_path.display());
         return;
     };
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
 
     let total_pages = doc.page_count();
     let dump = doc.dump_page_items(None);

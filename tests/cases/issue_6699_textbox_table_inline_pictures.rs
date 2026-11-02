@@ -1,5 +1,4 @@
 //! Textbox table pictures must use the same inline flow as their adjacent text.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

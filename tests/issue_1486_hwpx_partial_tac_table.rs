@@ -124,7 +124,7 @@ fn collect_text_run_bboxes(node: &RenderNode, needle: &str, out: &mut Vec<Boundi
 fn issue_1486_partial_table_tac_nested_table_stays_inside_page_body() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
 
     let tree = doc
@@ -179,7 +179,7 @@ fn issue_1486_partial_table_tac_nested_table_stays_inside_page_body() {
 fn issue_1486_terminal_rowbreak_sliver_does_not_push_pdf_page22_content() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
 
     let page22 = doc
@@ -203,7 +203,7 @@ fn issue_1486_terminal_rowbreak_sliver_does_not_push_pdf_page22_content() {
 fn issue_1486_rowspan_block_tail_stays_on_pdf_page14() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
 
     let page13 = doc
@@ -235,7 +235,7 @@ fn issue_1486_rowspan_block_tail_stays_on_pdf_page14() {
 fn issue_1486_page19_nested_square_picture_is_not_page_clipped() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
 
     let page19 = doc
@@ -262,7 +262,7 @@ fn issue_1486_page19_nested_square_picture_is_not_page_clipped() {
 fn issue_1486_page13_page_number_keeps_footer_gap() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
 
     let page13 = doc
@@ -299,7 +299,7 @@ fn issue_1486_page13_page_number_keeps_footer_gap() {
 fn issue_1486_page29_tac_logo_aligns_with_text_line() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
 
     let page29 = doc

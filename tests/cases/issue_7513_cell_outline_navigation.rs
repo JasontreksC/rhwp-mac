@@ -2,10 +2,9 @@
 //!
 //! 화면은 본문 개요와 셀 개요를 `1.`·`2.` 로 그린다. 목록도 두 항목이어야 하고, 셀
 //! 항목에는 그 문단으로 이동할 셀 좌표가 붙는다. 본문 항목의 모양은 그대로다.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::DocumentCore;
-use rhwp::wasm_api::HwpDocument;
 use serde_json::{json, Value};
 
 const OUTLINE_LEVEL_1: &str = r#"{"headType":"Outline","paraLevel":0}"#;

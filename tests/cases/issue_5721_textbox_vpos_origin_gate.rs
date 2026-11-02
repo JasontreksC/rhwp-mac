@@ -10,7 +10,6 @@
 //!
 //! 수정: 스트림 첫 유효 vpos 가 origin 이상일 때만(=전체가 page 좌표일 때만)
 //! origin 을 유지한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

@@ -11,7 +11,6 @@
 //! `forces_halfwidth_cjk_quote` 는 측정 결정을 그대로 되묻으므로, 이 시험은 두 경로가
 //! 갈리지 않는다는 계약을 고정한다. SVG 경로는 `textLength` 로 글리프를 advance 에
 //! 맞춰 눌러 이 발산을 가리므로 SVG 증적만으로는 검출되지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::renderer::layout::forces_halfwidth_cjk_quote;
 

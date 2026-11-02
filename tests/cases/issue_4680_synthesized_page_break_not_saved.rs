@@ -31,8 +31,6 @@
 //!
 //! 남은 차이는 이 축이 아니다 — HWP3 38건 전수 재스윕에서 회귀는 없었다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::document::{Document, Section};
 use rhwp::model::paragraph::{ColumnBreakType, Paragraph};
 use rhwp::parser::cfb_reader::CfbReader;

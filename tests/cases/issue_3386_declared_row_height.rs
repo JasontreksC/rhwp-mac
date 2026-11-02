@@ -21,8 +21,6 @@
 //! (`issue_2439` 핀 실측). 분할되지 않은 표에는 그 성장 경로가 없고 실제로도 넘치지
 //! 않는다 — 이 문서의 글자 baseline 은 행 바닥보다 9px 위다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

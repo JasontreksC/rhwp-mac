@@ -37,8 +37,6 @@
 //! 아니라 이 문단의 줄 간격만 잠근다. 전수 감소분은 `body_overflow_baseline` 래칫이
 //! 따로 잠근다(이 문서 `23 → 0`).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 use std::path::Path;

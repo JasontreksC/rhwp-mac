@@ -36,8 +36,6 @@
 //! 둔 줄별 `textpos` 로 잠근다. 두 검사는 함께 읽는다 — 상자가 맞아야 그 기대값이
 //! 성립하고, 상자만 맞아서는 줄이 맞지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 

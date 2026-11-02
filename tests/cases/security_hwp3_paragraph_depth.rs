@@ -1,7 +1,6 @@
 //! HWP3 paragraph-list recursion is bounded before entering the large parser frame.
 //! Synthetic binary records follow the HWP3 paragraph/control layout; these are
 //! parser resource-boundary tests, not visual baselines.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::parser::hwp3::parse_hwp3;
 

@@ -38,7 +38,6 @@
 //! ```bash
 //! python tools/oracle_page_count/regenerate.py --rhwp target/release-test/rhwp.exe
 //! ```
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};

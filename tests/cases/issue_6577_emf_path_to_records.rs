@@ -22,8 +22,6 @@
 //! 것은 아니다**(#6577 은 그 배선이 본체). 배선을 켜기 전에 색·클리핑·텍스트가 더
 //! 필요하다 — 지금 켜면 도형이 단색 굵은 획으로 뭉친다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::emf::parser::records::Record;
 
 /// `BeginPath → MoveTo(10,10) → PolylineTo16{(20,10)} → PolyBezierTo16{…} → EndPath`

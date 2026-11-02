@@ -12,8 +12,6 @@
 //!
 //! 절대 좌표 대신 같은 쪽 노드 사이의 관계(본문 윗변·앞 표 아랫변·뒤 그림)를 잰다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::table::Table;

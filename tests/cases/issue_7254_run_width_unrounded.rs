@@ -41,8 +41,6 @@
 //! metric 표 값 자체가 실물과 다른 축(`#6389`), 특정 글자의 전진폭 결정(`#7092`·`#7080`),
 //! 그리고 반증된 `#7192` 의 글꼴 별칭은 이 시험이 다루지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::{Path, PathBuf};
 
 use rhwp::document_core::DocumentCore;

@@ -6,7 +6,6 @@
 //! 표 bbox 와 자기일관인지 검증한다 — #4514 가 수정돼 겹침 자체가 사라져도 양쪽이
 //! 함께 0 이 되므로 픽스처 갱신 없이 성립한다. 검출 로직 자체의 동작(임계·정렬·수집
 //! 도메인)은 `src/renderer/layout/tests.rs` 의 단위 테스트가 가드한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::DocumentCore;
 

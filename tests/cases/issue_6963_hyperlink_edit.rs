@@ -1,5 +1,4 @@
 //! #6963 웹 링크의 주소·범위·표시 문자열·저장 왕복 계약.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::hyperlink::HyperlinkTarget;
 use rhwp::document_core::queries::field_query::{FieldInfo, NestedEntry};

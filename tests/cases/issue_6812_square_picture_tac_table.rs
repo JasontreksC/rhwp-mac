@@ -1,8 +1,6 @@
 //! #6812: 어울림 그림의 물리 영역에서 TAC 표의 줄 위치를 계산해야 한다.
 //! 파일의 저장 vpos를 답으로 쓰지 않고, 공개 API가 만든 두 사각형을 비교한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::image::Picture;

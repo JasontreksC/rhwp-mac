@@ -4,7 +4,7 @@
 //! 적용하여 적용 (high_threshold 0.85→0.95, aux_trigger 제거). sample16-hwp5 페이지 수
 //! 64 유지 (over-split 회피) + alignment 24/64 → 60/64.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 fn assert_sample16_hwp5_page_count_64(path: &str, label: &str) {
     let bytes = std::fs::read(path).expect("read");

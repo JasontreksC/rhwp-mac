@@ -54,7 +54,6 @@
 //!
 //! HWP3 **원본**(`hwp3-sample10.hwp`) 경로는 이 변경이 닿지 않는다(글꼴 해소가 다른
 //! 경로다). 그 문서는 애초에 가로 초과가 0 이라 이 결함이 드러나지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

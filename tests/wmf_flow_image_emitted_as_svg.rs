@@ -15,7 +15,6 @@
 //! 질의에 실리기까지의 사슬은 실물 fixture 로만 확인된다.
 //!
 //! fixture: 관세청 "2024년 5월 월간 수출입 현황(확정치)" — 1쪽 하단 표 안에 WMF 차트 2장.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::DocumentCore;
 

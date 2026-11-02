@@ -2,7 +2,6 @@
 //!
 //! 빈 치환·occurrence None/0·keepStyle·필드 순번·조건 거짓은
 //! 기존 run step 의 경계이지 새 편집 API 가 아니다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::collections::BTreeSet;
 use std::fs;

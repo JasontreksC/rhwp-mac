@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [#7005] 표 칸 안 도형도 레이아웃에 `cellPath` 를 실어야 한다.
 //!
 //! studio 는 `cellPath` 유무로 by-path API 와 본문 API 를 가른다. 칸 안 도형에 이 값이 없으면

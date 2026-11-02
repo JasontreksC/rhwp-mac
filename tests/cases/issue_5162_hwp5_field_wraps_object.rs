@@ -19,7 +19,6 @@
 //!
 //! 재현 표본은 `samples/issue5162_field_wraps_table.hwpx` — 표 하나를 `CLICK_HERE`
 //! 누름틀로 감싼 최소 문서다. 재현 절차는 `tools/issue5162_field_wraps_table.py`.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

@@ -28,7 +28,6 @@
 //! ⚠ 같은 양을 `stored_vpos_rewind_overflow_break` 까지 넓히면 안 된다 — 코퍼스
 //! 10,000건 실측에서 `1480000-201600147` 의 **글자 겹침이 33 → 37** 로 는다.
 //! 좁은 판은 코퍼스 전체에서 **이 문서 1건만** 바꾼다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

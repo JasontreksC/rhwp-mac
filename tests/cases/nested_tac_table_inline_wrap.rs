@@ -13,8 +13,6 @@
 //! 메인터너 보정: 저장 UTF-16 줄 소속을 폭·가로 정렬·vpos·여백에서 함께
 //! 소비한다. 둘째 표의 전체 프레임과 내용이 첫 표 아래 부모 셀 안에 남는지 검사한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 

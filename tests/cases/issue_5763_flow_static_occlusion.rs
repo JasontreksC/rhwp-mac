@@ -4,7 +4,6 @@
 //! 내리고 나머지 본문은 그 **위에** 그린다. 그림을 담은 표 칸의 흰 배경 사각형은 위 평면에
 //! 남으므로, 그대로 분리하면 채우기가 그림을 덮어 studio 에서 그림이 빈 흰 상자로 보였다.
 //! `FlowStaticOcclusion` 은 paint 순서대로 훑어 그런 쪽을 짚어낸다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::paint::{FlowStaticOcclusion, PaintOp, PaintReplayPlane};
 use rhwp::renderer::render_tree::{BoundingBox, ImageNode, RectangleNode};

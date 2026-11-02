@@ -1,9 +1,9 @@
 //! #6864: 저장된 머리말의 양쪽 정렬을 나눔 정렬처럼 늘리지 않는다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::style::Alignment;
 use rhwp::parse_document;
-use rhwp::wasm_api::HwpDocument;
 use serde_json::Value;
 
 fn sample() -> Vec<u8> {

@@ -8,7 +8,6 @@
 //!
 //! 검출은 한컴 대조 없이 자기 정합으로 한다: 서식 적용 직후 vpos가 텍스트 편집
 //! 왕복 뒤와 같아야 한다. 수정 전에는 왕복이 위치를 바꾸므로 실패한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

@@ -7,14 +7,13 @@
 //! = pad 1.9 + 가운데 정렬 (60.5 − (7.57 + 37.8)) / 2 + 7.57. 종전 rhwp 는 위 여백을 내용 높이에도
 //! 첫 문단 y 에도 넣지 않아 13.2(3.7px 위)였다. `samples/exam_kor.hwp` 14쪽의 같은 구조(그림이
 //! 글줄 안에 인라인으로 놓이는 경로)도 같은 규칙을 탄다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
 fn page_svg(rel: &str, page: u32) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {rel}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel}: {e:?}"));
     doc.render_page_svg(page)
         .unwrap_or_else(|e| panic!("render {rel} p{}: {e:?}", page + 1))

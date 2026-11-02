@@ -3,15 +3,14 @@
 //! 렌더러는 저장 줄의 `TAG_INDENTATION`(bit 20)이 꺼져 있으면 그 줄에 문단
 //! `indent` 를 얹지 않는다(#6190). 편집 재조판이 이 비트를 비운 채 줄을 발행하면
 //! 문단 모양에 저장된 들여쓰기·내어쓰기가 화면에서 사라진다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::{LineSeg, ParaMeta};
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const TEXT: &str = "1) 가나다라마바사아자차카타파하 가나다라마바사아자차카타파하 \
 가나다라마바사아자차카타파하 가나다라마바사아자차카타파하 가나다라마바사아자차카타파하";

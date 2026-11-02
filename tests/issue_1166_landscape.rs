@@ -10,13 +10,13 @@
 use std::fs;
 use std::path::Path;
 
-fn load(rel: &str) -> rhwp::wasm_api::HwpDocument {
+fn load(rel: &str) -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", rel, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse")
 }
 
-fn page_def_landscape(doc: &rhwp::wasm_api::HwpDocument) -> bool {
+fn page_def_landscape(doc: &rhwp::document_api::HwpDocument) -> bool {
     let json = doc.get_page_def_native(0).expect("page def");
     let key = "\"landscape\":";
     let s = json.find(key).expect("landscape key") + key.len();
@@ -88,7 +88,7 @@ fn landscape_hwpx_roundtrip_preserves_narrowly() {
         "가로 HWPX 저장 시 pagePr landscape 가 NARROWLY 여야 함 (실제 {ls})"
     );
     // 재파싱 round-trip: 저장본을 다시 로드 → landscape=true
-    let reloaded = rhwp::wasm_api::HwpDocument::from_bytes(&saved).expect("reparse");
+    let reloaded = rhwp::document_api::HwpDocument::from_bytes(&saved).expect("reparse");
     assert!(
         page_def_landscape(&reloaded),
         "저장본 재로드 시 landscape=true 유지"
@@ -110,7 +110,7 @@ fn landscape_hwpx_to_hwp5_save_preserves_landscape() {
     // 작업지시자 보고: HWPX→HWP 저장이 가로/세로를 반영하지 않음.
     let mut doc = load("samples/hwpx/landscape-001.hwpx");
     let hwp5 = doc.export_hwp_with_adapter().expect("save hwp5");
-    let reloaded = rhwp::wasm_api::HwpDocument::from_bytes(&hwp5).expect("reparse hwp5");
+    let reloaded = rhwp::document_api::HwpDocument::from_bytes(&hwp5).expect("reparse hwp5");
     assert!(
         page_def_landscape(&reloaded),
         "HWPX→HWP5 저장 후 재파싱 시 landscape=true 유지되어야 함"

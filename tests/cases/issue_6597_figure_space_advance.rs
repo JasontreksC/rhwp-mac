@@ -18,8 +18,6 @@
 //! ⚠ 이 시험은 절대 폭이 아니라 **일반 공백과의 비**를 잠근다. 폰트 메트릭이 바뀌어도
 //! "고정폭 빈칸 = 공백의 절반"이라는 계약은 그대로여야 한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::document::{Document, Section};
 use rhwp::model::page::PageDef;

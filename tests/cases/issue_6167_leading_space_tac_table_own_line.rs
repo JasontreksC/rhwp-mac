@@ -21,7 +21,6 @@
 //!
 //! 통제군 `samples/복학원서.hwp` pi=16 은 `ctrl_pos=99` ≠ `ls[1].text_start=198` —
 //! 표가 `ls[0]` **안**에 있어 종전 leading 축(#1195)이 그대로 유효하다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

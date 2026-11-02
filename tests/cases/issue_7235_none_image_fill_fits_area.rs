@@ -14,7 +14,6 @@
 //!
 //! 한/글 상자는 영역에 딱 맞춘 크기보다 0.4~3% 크다 — 그 차이의 규칙은 확정하지 못해
 //! 이 시험은 크기 5%, 중심 3px 허용으로 "맞춤 + 가운데" 만 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
@@ -23,7 +22,7 @@ const FIXTURE: &str = "samples/issue7235/156086935_none_image_fill.hwp";
 fn page_svg(page: u32) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(FIXTURE);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {FIXTURE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {FIXTURE}: {e:?}"));
     doc.render_page_svg(page)
         .unwrap_or_else(|e| panic!("render {FIXTURE} p{}: {e:?}", page + 1))

@@ -1,11 +1,8 @@
 use rhwp::document_core::DocumentCore;
 
+// 네이티브 렌더러(Skia) 관측 경로는 이 포크에 없으므로 이유는 항상 이 값이다.
 fn standalone_native_reason() -> &'static str {
-    if cfg!(all(not(target_arch = "wasm32"), feature = "native-skia")) {
-        "nativeRendererSnapshotRequired"
-    } else {
-        "nativeSkiaFeatureUnavailable"
-    }
+    "nativeSkiaFeatureUnavailable"
 }
 
 fn stage4_e2e_manifest() -> serde_json::Value {
@@ -365,62 +362,6 @@ fn issue4967_combined_evidence_reports_actual_cache_key_rejection() {
             line["storedRow"]["disposition"] == "rejected"
                 && line["storedRow"]["reason"] == "cacheKeyRejectedOrStale"
         }));
-}
-
-#[cfg(all(not(target_arch = "wasm32"), feature = "native-skia"))]
-#[test]
-fn standalone_native_trace_requires_a_prepared_renderer_snapshot() {
-    let core = DocumentCore::from_bytes(include_bytes!("../../samples/task-001.hwp"))
-        .expect("public fixture parses");
-    let trace: serde_json::Value = serde_json::from_str(
-        &core
-            .get_font_decision_trace_native(0, r#"{"maxCharacters":8}"#)
-            .expect("standalone trace"),
-    )
-    .expect("standalone trace JSON");
-    assert_eq!(trace["backendSummary"]["native"]["status"], "unsupported");
-    assert_eq!(
-        trace["backendSummary"]["native"]["reasons"],
-        serde_json::json!(["nativeRendererSnapshotRequired"])
-    );
-    assert!(trace["records"].as_array().unwrap().iter().all(|record| {
-        record["paint"]["native"]["failures"][0] == "nativeRendererSnapshotRequired"
-    }));
-}
-
-#[cfg(all(not(target_arch = "wasm32"), feature = "native-skia"))]
-#[test]
-fn prepared_native_renderer_snapshot_preserves_custom_font_inventory() {
-    use rhwp::renderer::skia::SkiaLayerRenderer;
-
-    let core = DocumentCore::from_bytes(include_bytes!("../../samples/task-001.hwp"))
-        .expect("public fixture parses");
-    let custom_fonts = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("ttfs/opensource");
-    let renderer = SkiaLayerRenderer::new().with_font_paths(&[custom_fonts]);
-    let trace: serde_json::Value = serde_json::from_str(
-        &renderer
-            .get_font_decision_trace(&core, 0, r#"{"maxCharacters":64}"#)
-            .expect("renderer-bound trace"),
-    )
-    .expect("renderer-bound trace JSON");
-    assert_eq!(trace["backendSummary"]["native"]["status"], "complete");
-    let custom_records: Vec<&serde_json::Value> = trace["records"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .filter(|record| record["paint"]["native"]["source"] == "custom")
-        .collect();
-    assert!(
-        !custom_records.is_empty(),
-        "the prepared custom font inventory must be observable"
-    );
-    assert!(custom_records.iter().all(|record| {
-        record["paint"]["native"]["capabilities"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .any(|capability| capability == "nativeGlyphCoverageObserved")
-    }));
 }
 
 #[test]

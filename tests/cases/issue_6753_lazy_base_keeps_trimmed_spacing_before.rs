@@ -38,7 +38,6 @@
 //! `tests/issue_1733.rs` 의 `242`(한컴 2020 PDF 오라클)는 이 축에서 **먼저 시도한
 //! "조각 시작 줄 `vpos == 0` 을 쪽 기준으로 못박기" 를 기각시킨 핀**이다(242 → 243).
 //! 기준을 단정하지 않고 역산식만 고치면 242 가 유지된다.
-#![cfg(not(target_arch = "wasm32"))]
 
 #[path = "../../src/renderer/height_cursor_lazy_base.rs"]
 mod lazy_base_rounding;
@@ -69,8 +68,8 @@ fn trimmed_lazy_base_rounding_precedes_fallback_selection() {
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6718/27469-child-allowance-retroactive-support.hwp";
 /// 0-based — 조각으로 시작하는 5쪽.

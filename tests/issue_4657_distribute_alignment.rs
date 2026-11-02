@@ -5,7 +5,6 @@
 //! N 으로 나누면 마지막 글자가 줄마다 slack/N 만큼 안쪽으로 밀려 콜론 x 가
 //! 문단마다 어긋난다(결함 시 최대 Δ≈28px). 판정은 문단 간 상대 비교라 폰트
 //! 메트릭 환경에 강건하다(절대좌표 단언 금지 — #3458 의 교훈).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
@@ -13,7 +12,7 @@ use std::path::Path;
 fn render_svg(rel: &str) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", rel, e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {e:?}", rel));
     doc.render_page_svg_native(0)
         .unwrap_or_else(|e| panic!("render {}: {e:?}", rel))

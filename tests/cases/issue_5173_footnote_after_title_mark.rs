@@ -10,7 +10,6 @@
 //!
 //! 계약: titleMark + 본문 + 각주가 든 문단을 HWPX 로 저장하면 `<hp:titleMark>` 가
 //! `<hp:footNote>` 보다 **앞**에 나와야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 

@@ -11,7 +11,6 @@
 //! 실제로 키운 표(#5714 축)는 성장분 조건이 걸러 불변.
 //!
 //! 픽스처는 원본 1~3쪽 추출 + 대형 BinData 1×1 스텁(65KB, marker-HWPX).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

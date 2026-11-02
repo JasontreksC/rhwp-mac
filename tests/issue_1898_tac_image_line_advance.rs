@@ -19,8 +19,8 @@ const SAMPLE: &str =
 fn page_tree(page: u32) -> rhwp::renderer::render_tree::PageRenderTree {
     let p = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&p).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let doc =
-        rhwp::wasm_api::HwpDocument::from_bytes(&bytes).unwrap_or_else(|e| panic!("parse: {e:?}"));
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
+        .unwrap_or_else(|e| panic!("parse: {e:?}"));
     doc.build_page_render_tree(page)
         .unwrap_or_else(|e| panic!("render p{}: {e}", page + 1))
 }

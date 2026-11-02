@@ -8,7 +8,6 @@
 //! 그 vpos 로 끌어올린 다음 `layout_composed_paragraph` 가 앞 간격을 한 번 더
 //! 더해 +10pt 가 부푼다. 상자 높이는 고정이라 초과분이 마지막 줄
 //! `총계와 일치하지 않을 수도 있음` 을 하단 괘선에 가로로 자른다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

@@ -7,11 +7,10 @@
 //!
 //! 과적 보호(#2136, 148753276 pi46 used 942>933.6)는 잔여 < 필요일 때만
 //! 리셋을 유지한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const SAMPLE: &str = "samples/task2136/neartop_reset_sb2500.hwpx";
 

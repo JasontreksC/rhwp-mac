@@ -19,10 +19,10 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
 
-fn load(path: &str) -> rhwp::wasm_api::HwpDocument {
+fn load(path: &str) -> rhwp::document_api::HwpDocument {
     let p = Path::new(env!("CARGO_MANIFEST_DIR")).join(path);
     let bytes = fs::read(&p).unwrap_or_else(|e| panic!("read {path}: {e}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {path}: {e:?}"))
 }
 
@@ -72,7 +72,7 @@ fn takeplace_host_before_pagination_self_consistent() {
     let hwpx_dump = hwpx.dump_page_items(None);
 
     let hwp_bytes = hwpx.export_hwp_with_adapter().expect("convert");
-    let conv = rhwp::wasm_api::HwpDocument::from_bytes(&hwp_bytes).expect("reparse");
+    let conv = rhwp::document_api::HwpDocument::from_bytes(&hwp_bytes).expect("reparse");
     let conv_dump = conv.dump_page_items(None);
 
     let a = pi_page_map(&hwpx_dump);
@@ -108,7 +108,7 @@ fn oracle_3075729_heading_on_page13_both_paths() {
     );
 
     let hwp_bytes = hwpx.export_hwp_with_adapter().expect("convert");
-    let conv = rhwp::wasm_api::HwpDocument::from_bytes(&hwp_bytes).expect("reparse");
+    let conv = rhwp::document_api::HwpDocument::from_bytes(&hwp_bytes).expect("reparse");
     let conv_map = pi_page_map(&conv.dump_page_items(None));
     assert_eq!(
         conv_map.get(&(1, 121)).copied(),

@@ -3,7 +3,6 @@
 //! 이전 진단은 HeightMeasurer fallback 벡터 합(`sb+Σlh+Σls+sa`)을 말해, ClickHere
 //! 차감·표 vpos clamp 가 들어간 `total_height` 와도, TypesetEngine format_paragraph
 //! 와도 어긋났다. dump-pages 는 pagination 이 쓰는 format_paragraph 만 읽는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;

@@ -20,13 +20,12 @@
 //!
 //! 쪽수는 15/15 로 한/글과 같고 글자도 전부 트리에 남으므로, 쪽수·텍스트·넘침 지표가
 //! 전부 침묵한다. 그래서 좌표를 직접 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6524/30098_float_host_split_lineseg.hwp";
 const PAGE_INDEX: u32 = 2; // 0-based — `추진배경 및 경과` 가 있는 3쪽

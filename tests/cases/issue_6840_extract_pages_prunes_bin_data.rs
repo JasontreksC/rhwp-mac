@@ -22,7 +22,6 @@
 //! ⚠ 내장 글꼴은 순번이 아니라 **storage id** 로 참조한다
 //! (`load_bounded_embedded_font_bytes` 가 `content.id == font_id` 로 찾는다). 그 축을
 //! 빠뜨리면 발췌본에서 글꼴이 통째로 사라지므로 음성 통제군으로 함께 잠근다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};

@@ -5,10 +5,9 @@
 //! 페이지와 구역 첫 페이지의 Odd/Even 대표 투영 모두 첫 질의만 빌드하고, 같은 문서
 //! 상태의 후속 hit-test·선택 질의는 캐시를 재사용해야 한다. HF 편집 뒤에는 캐시가
 //! 무효화되어 새 geometry를 정확히 한 번 다시 빌드해야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::diagnostics::perf_counters;
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 fn multi_page_document() -> HwpDocument {
     let mut doc = HwpDocument::create_empty();

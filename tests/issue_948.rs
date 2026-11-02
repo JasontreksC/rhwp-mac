@@ -4,7 +4,7 @@
 //! HWP/Hancom PUA display-text rules. The JSON contract keeps source `text`
 //! while exposing additive `displayText` / `displayPositions` for drawing.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use serde_json::{Map, Value};
 use std::fs;
 use std::path::Path;

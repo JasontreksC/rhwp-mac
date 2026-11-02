@@ -1,6 +1,5 @@
 //! #7032: a saved empty cell paragraph owns a line even without LINE_SEG.
 //! The HWPX fixture and the maintainer's Hancom judgment are independent controls.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::{control::Control, table::Cell};
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

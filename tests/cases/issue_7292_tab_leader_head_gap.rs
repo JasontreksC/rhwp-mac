@@ -27,8 +27,6 @@
 //! 뒤 여백은 잠그지 않는다 — 점은 탭 정지점에서 끝나고 쪽번호가 오른쪽 정렬되므로
 //! 그 사이 간격은 번호 폭에 따라 달라진다(정본 실측 5.76pt ↔ 9.2pt).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 /// 정본 `pdf/KTX-2022.pdf` 2쪽의 첫 점끌기 시작 x (96dpi px).
 const ORACLE_FIRST_LEADER_X_PX: f64 = 219.07;
 
@@ -57,7 +55,7 @@ fn first_leader_start_x(svg: &str) -> f64 {
 fn toc_leader_starts_one_quarter_em_after_the_text() {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/KTX.hwp");
     let bytes = std::fs::read(&path).expect("KTX.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("문서 로드");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("문서 로드");
     let svg = doc.render_page_svg_native(1).expect("목차 쪽 SVG");
 
     let x = first_leader_start_x(&svg);

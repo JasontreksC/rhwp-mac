@@ -28,7 +28,7 @@ fn giant_cell_paginate_scan_budget_holds() {
     let bytes = fs::read(&path).expect("read sample");
 
     perf_counters::reset();
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     assert_eq!(doc.page_count(), 115, "issue1949 기준 쪽수 핀");
 
     let scanned = perf_counters::mixed_nested_units_scanned();

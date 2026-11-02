@@ -14,8 +14,6 @@
 //! `156532689` 문단 179 의 `textpos` 가 `0/68/128` 로, 한컴이 같은 문서를 저장한 값과
 //! 정확히 같아진다(수정 전 `0/132/192`).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::io::Read;
 
 use rhwp::model::control::{Control, PageNumberPos};

@@ -35,13 +35,12 @@
 //!
 //! 같은 수정이 같은 계열 문서의 다른 쪽들을 한글과 맞춘다 — `3-09월_교육_통합_2023` 20쪽,
 //! `3-10월_교육_통합_2022` 11·13·16쪽(16쪽 최대 편차 741.7 → 26.5pt).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/3-09월_교육_통합_2023.hwp";
 const PAGE_INDEX: u32 = 12; // 0-based — 13쪽

@@ -70,20 +70,6 @@ fn assert_display(core: &DocumentCore, raw: &str, expected: &str) {
             core.get_page_layer_tree_native(0).unwrap(),
             reference.get_page_layer_tree_native(0).unwrap()
         );
-        #[cfg(feature = "native-skia")]
-        {
-            use rhwp::renderer::layer_renderer::LayerRasterRenderer;
-            use rhwp::renderer::skia::SkiaLayerRenderer;
-            let renderer = SkiaLayerRenderer::new();
-            assert_eq!(
-                renderer
-                    .render_png(&core.build_page_layer_tree(0).unwrap())
-                    .unwrap(),
-                renderer
-                    .render_png(&reference.build_page_layer_tree(0).unwrap())
-                    .unwrap()
-            );
-        }
     }
 }
 

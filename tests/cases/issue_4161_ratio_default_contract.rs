@@ -41,7 +41,6 @@
 //! `CharShape::default()` 로 채워지고 기본값 자체는 `src/model/style.rs` 의 잠금 유닛
 //! 테스트가 고정하며, 기본값 레코드의 방출은 아래 ①·② 가 HWP3 인덱스 0 placeholder
 //! (`src/parser/hwp3/mod.rs:3763` — 모든 HWP3 문서에 1개) 경유로 관통한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 use std::path::{Path, PathBuf};

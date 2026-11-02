@@ -37,8 +37,6 @@
 //! 21.8px 여유 위에서 흔든다(`issue_3820_p18_p19` 계약). 메트릭을 제 값으로 주면 좁힘이
 //! 애초에 발동하지 않는다(390 < 1024).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

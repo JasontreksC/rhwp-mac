@@ -49,8 +49,6 @@
 //! 을 네이티브 경로로 옮긴 것이다. 문단 줄 정보는 rhwp 가 **합성**한 것이지 한/글 저장본이
 //! 아니므로, 저장 LineSeg 재사용 경로의 계약은 여기서 검사하지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

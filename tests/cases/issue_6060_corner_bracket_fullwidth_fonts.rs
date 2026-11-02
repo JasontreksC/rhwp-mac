@@ -13,7 +13,6 @@
 //!
 //! 결함 상태에서는 제목 「 전진 20.0px(15pt)·본문 「 10.5px(7.9pt)로 두 밴드가
 //! 실패한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

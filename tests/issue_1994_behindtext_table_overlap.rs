@@ -23,7 +23,7 @@ fn issue_1994_behindtext_paper_table_not_overlapped() {
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse issue1994_behindtext_table_20200830.hwp");
 
     // 한글 2022 = 4페이지. 수정 전 rhwp = 5페이지(pi=34 흐름 분할로 페이지 팽창).

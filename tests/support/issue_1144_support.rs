@@ -1,4 +1,4 @@
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use serde_json::Value;
 
 pub fn document_with_filename_footer() -> HwpDocument {

@@ -19,8 +19,6 @@
 //!
 //! 수정 뒤 표 상단 1000.2, 첫 행 글자 1014.4(한/글 1014.3), `status: CLEAN`.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::document::{Document, Section};

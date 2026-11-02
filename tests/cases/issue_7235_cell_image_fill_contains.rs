@@ -36,8 +36,6 @@
 //! 이 검사는 **그려지는 사각형**을 본다. render tree 의 bbox 는 수정 전에도 칸 상자였고
 //! (결함은 paint 단계에 있다) 그래서 트리 단언으로는 이 결함이 잡히지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 
 const SAMPLE: &str = "samples/issue7235/156467175_press_release_header_logo_p1.hwp";

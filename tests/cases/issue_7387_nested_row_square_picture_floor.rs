@@ -21,8 +21,6 @@
 //!
 //! 이 쪽의 Visual Sweep(2px 관용 실루엣)은 94.69% → 97.29% 다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::Paragraph;
 use rhwp::model::table::Table;

@@ -16,14 +16,13 @@
 //! 283HWPUNIT), `#6643` 의 몫이라 계약에서 뺐다. 자리차지 표가 자기 `outMargin.left`
 //! 만큼 안으로 들어가면서 그 몫이 채워져, 이제 기대값을 **한/글 실측 그대로** 쓴다
 //! (남은 차이는 다섯 장 모두 0.16px).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
 fn page_svg(rel: &str, page: u32) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {rel}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel}: {e:?}"));
     doc.render_page_svg(page)
         .unwrap_or_else(|e| panic!("render {rel} p{}: {e:?}", page + 1))

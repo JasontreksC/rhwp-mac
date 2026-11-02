@@ -25,13 +25,12 @@
 //! 코퍼스 `.hwp` 6,582건 전수에서 서로게이트를 담은 문서 453건 중 **짝 없는 반쪽은 이 두
 //! 문서(5글자)뿐**이다. 나머지 451건은 쌍이라 종전 경로가 이미 옳았다 — 음성 대조로
 //! `samples/issue5793` 를 함께 잰다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::{Path, PathBuf};
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::Paragraph;
-use rhwp::wasm_api::HwpDocument;
 
 /// 한글이 반쪽 서로게이트 자리에 적는 글자.
 const SQUARE: char = '\u{25A1}';

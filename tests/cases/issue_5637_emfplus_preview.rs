@@ -12,7 +12,6 @@
 //! 계약: `samples/issue5637/2817919_emfplus_ole_preview.hwpx`(관세청, HWPX 코퍼스
 //! 실물)의 BinData OLE 미리보기가 EMR_STRETCHDIBITS 를 포함해 파싱되고, standalone
 //! SVG 로 `<image>` 가 방출되어야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 use std::path::Path;

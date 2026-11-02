@@ -12,7 +12,6 @@
 //! 187.0. 10k COM-free 쪽수 A/B: 개선 1건(20731565 2→1=한글), 회귀 0.
 //!
 //! 픽스처는 원본 HWPX(12KB) 절단본 — 1쪽 별표 전체.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

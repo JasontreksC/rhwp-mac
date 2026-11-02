@@ -17,14 +17,14 @@ use rhwp::model::control::Control;
 const HWPX_SAMPLE: &str = "samples/task1749/saved_bounds_cumulative_page_break.hwpx";
 const HWP_SAMPLE: &str = "samples/task1749/saved_bounds_cumulative_page_break.hwp";
 
-fn load_sample(sample: &str) -> rhwp::wasm_api::HwpDocument {
+fn load_sample(sample: &str) -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(sample);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", sample, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", sample, e))
 }
 
-fn load_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_doc() -> rhwp::document_api::HwpDocument {
     load_sample(HWPX_SAMPLE)
 }
 

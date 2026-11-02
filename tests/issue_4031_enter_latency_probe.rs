@@ -12,7 +12,7 @@ use std::fs;
 use std::path::Path;
 use std::time::{Duration, Instant};
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use serde_json::Value;
 
 const FIXTURES: [(&str, &str); 2] = [

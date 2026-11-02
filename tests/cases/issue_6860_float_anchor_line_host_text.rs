@@ -52,10 +52,8 @@
 //! `#5584`(00072) 는 호스트가 **한 줄**이라 앵커 줄 == 첫 줄이고, 수정 전후로 계약이
 //! 같아야 한다. 그 fixture 를 함께 건다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6860/3067979-road-lighting-photometric-appendix.hwpx";
 /// `#5584` 호스트 한 줄 통제군 — 앵커 줄 == 첫 줄이라 계약이 그대로여야 한다.

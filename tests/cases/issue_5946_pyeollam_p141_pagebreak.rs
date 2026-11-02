@@ -4,8 +4,6 @@
 //! 중첩 예시 서식(접수번호)이 다음 쪽 '4. 항목란' 위로 포개진다. 쪽 분할이
 //! 행 높이 override 로만 이어질 때 조각 셀을 clip 해 다음 행을 침범하지 않게 한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 

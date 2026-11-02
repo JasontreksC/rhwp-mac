@@ -12,7 +12,6 @@
 //! 보도일시 칸 축(156513948·156560092, ratio=100%)은 별개 축으로 잔존.
 //!
 //! 픽스처는 원본 HWPX 구역0 문단 3..5(제목 상자 표) 절단 + BinData 스텁(69KB).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

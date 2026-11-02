@@ -3,7 +3,6 @@
 //! 합성 XML 과 공개 API(`rhwp::ooxml_chart::{data, patch}`)만 쓴다. 크레이트 안
 //! `#[cfg(test)]` 에 테스트를 늘리는 것은 CI 단위 테스트 상한(`unit-test-tier-policy.json`)이
 //! 막으므로 계약은 여기에 둔다. 코퍼스 실측은 `tests/issue_4100_chart_data_edit.rs` Stage 9.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::ooxml_chart::data::{scan_chart_values, ChartPoint, ChartSeries, PlotKind, SeriesAxis};
 use std::ops::Range;

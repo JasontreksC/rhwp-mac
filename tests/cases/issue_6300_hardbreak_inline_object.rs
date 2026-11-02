@@ -3,7 +3,6 @@
 //! 156464313 보도자료: 저장 LINE_SEG text_start `[0, 45, 83, 119, 152]` 인데
 //! rhwp 가 `[0, 45, 83, 83, 152]` 로 119 를 잃고 다음 줄에 두 줄이 몰려 우단을
 //! 넘겼다. `\n` 앞 텍스트를 이전 줄에 합치지 않아야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::{CharShapeRef, LineSeg, Paragraph};

@@ -12,11 +12,10 @@
 //! 현재 보정에서는 앞의 큰 표가 2쪽으로 이월된 뒤 호스트 줄간격 안에서 시작하는
 //! 1×1 표를 겹침으로 오판해 3쪽으로 다시 이월하던 문제를 확인했다. 정상 한컴
 //! 2020 PDF는 두 표·후속 용지규격 문장이 모두 2쪽에 있고 물리 상자가 겹치지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use serde_json::Value;
 
 const SAMPLE: &str = "samples/issue6032/2912695_civil_petition_form.hwp";

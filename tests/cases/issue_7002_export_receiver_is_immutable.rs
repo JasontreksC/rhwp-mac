@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [#7002 후속] HWP 저장 경로가 문서를 바꾸지 않는다 — 수신자로 강제한다.
 //!
 //! 저장 어댑터는 `prepare_hwp_export_snapshot`(`&self`)이 뜬 **사본**에 적용되고 live

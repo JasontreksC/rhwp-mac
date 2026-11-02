@@ -14,12 +14,12 @@
 use std::fs;
 use std::path::Path;
 
-fn load_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_doc() -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(
         "samples/hwpx/opengov/36389312_결재문서본문_특정소방대상물 화재발생 알림(화재번호 2026-177).hwpx",
     );
     let bytes = fs::read(&path).expect("샘플 읽기 실패");
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("파싱 실패")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("파싱 실패")
 }
 
 /// 컨트롤 레이아웃 JSON 에서 개별 컨트롤 오브젝트 문자열을 분리한다.
@@ -199,7 +199,7 @@ fn assign_then_hwpx_roundtrip_preserves_image() {
         .expect("그림 지정 실패");
 
     let bytes = doc.export_hwpx_native().expect("HWPX 직렬화 실패");
-    let reloaded = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("재파싱 실패");
+    let reloaded = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("재파싱 실패");
 
     let json = reloaded
         .get_page_control_layout(0)
@@ -227,7 +227,7 @@ fn assign_then_hwp_roundtrip_preserves_image() {
         .expect("그림 지정 실패");
 
     let bytes = doc.export_hwp_with_adapter().expect("HWP 직렬화 실패");
-    let reloaded = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("재파싱 실패");
+    let reloaded = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("재파싱 실패");
 
     let json = reloaded
         .get_page_control_layout(0)

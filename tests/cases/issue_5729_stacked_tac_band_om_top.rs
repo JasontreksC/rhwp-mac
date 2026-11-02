@@ -11,7 +11,6 @@
 //! 10k COM-free 쪽수 A/B 회귀 0.
 //!
 //! 픽스처는 원본 HWPX 구역0 문단 0..8(머리 표 4개) 절단 + 스텁(62KB).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

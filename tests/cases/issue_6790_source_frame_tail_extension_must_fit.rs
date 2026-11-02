@@ -47,8 +47,6 @@
 //! ⚠ **남는 축** — 잔여 26자와 2쪽 중첩 표 안 글자겹침 2건은 **중첩 표 이어지는
 //! 조각**의 별개 축이다. 이 시험은 쪽수와 넘침·용지밖만 계약한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

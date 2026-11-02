@@ -3,7 +3,6 @@
 //! 빈 문서에서 생성한 fixture이며 사용자 양식의 내용은 포함하지 않는다.
 //! Top 배치에서 확인한 점유 영역으로 Center/Bottom의 이동량을 정한다.
 //! HWP5 계보와 순수 HWPX, 유효한 저장 앵커와 0으로 초기화된 앵커를 구분한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

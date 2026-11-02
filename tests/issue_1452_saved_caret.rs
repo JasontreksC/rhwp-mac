@@ -45,7 +45,7 @@ fn transparency_sample_restores_saved_caret_after_second_inline_picture() {
     assert_eq!(props.caret_char_pos, 32);
 
     let mut doc =
-        rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("load samples/투명도0-50.hwp");
+        rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("load samples/투명도0-50.hwp");
 
     let caret_json = doc.get_caret_position().expect("getCaretPosition");
     let caret = parse_json("caret", &caret_json);
@@ -193,7 +193,7 @@ fn arrow_up_from_second_tac_picture_end_moves_to_first_picture_end() {
         let repo_root = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(repo_root).join("samples/투명도0-50.hwp");
         let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {}: {e}", path.display()));
-        rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("load samples/투명도0-50.hwp")
+        rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("load samples/투명도0-50.hwp")
     };
 
     let moved = parse_json(
@@ -229,7 +229,7 @@ fn clicking_after_second_tac_picture_hits_picture_end_position() {
         let repo_root = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(repo_root).join("samples/투명도0-50.hwp");
         let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {}: {e}", path.display()));
-        rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("load samples/투명도0-50.hwp")
+        rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("load samples/투명도0-50.hwp")
     };
 
     let saved_rect = parse_json(
@@ -263,7 +263,7 @@ fn arrow_up_after_enter_before_first_tac_picture_moves_to_previous_picture_end()
         let repo_root = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(repo_root).join("samples/투명도0-50.hwp");
         let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {}: {e}", path.display()));
-        rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("load samples/투명도0-50.hwp")
+        rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("load samples/투명도0-50.hwp")
     };
 
     doc.split_paragraph_native(0, 0, 0, None)
@@ -321,7 +321,7 @@ fn arrow_up_after_enter_before_first_tac_picture_moves_to_previous_picture_end()
 
 #[test]
 fn transparency_test_sample_text_line_boundaries_keep_visual_affinity() {
-    let mut doc = rhwp::wasm_api::HwpDocument::create_empty();
+    let mut doc = rhwp::document_api::HwpDocument::create_empty();
     let text = "1".repeat(240);
     doc.insert_text(0, 0, 0, &text)
         .expect("insert wrapped text");

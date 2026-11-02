@@ -9,8 +9,6 @@
 //! (`serializer/hwpx/shape.rs`). 종전에는 쓰는 쪽이 되돌리지 않아 **HWPX 를 열어 다시 저장할
 //! 때마다 두 값이 뒤집혔다**(두 번 저장하면 원상 복귀).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::io::Read;
 use std::path::PathBuf;
 

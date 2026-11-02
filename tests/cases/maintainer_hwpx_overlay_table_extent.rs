@@ -1,9 +1,8 @@
 //! 하단 문단의 글 뒤로 표는 자리차지 표 뒤에 별도 흐름 높이로 더하지 않는다.
 //! 독립 한컴 PDF의 1쪽과 하단 전화 기준선이 속한 글줄로 실제 내용 소유를 검증한다.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 fn verify_footer(sample: &str, phone: &str, pdf_phone_baseline: f64) {
     let bytes = std::fs::read(std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join(sample))

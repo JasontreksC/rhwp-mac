@@ -1,9 +1,9 @@
 //! 셀 높이 편집은 행마다 다른 칸 너비와 표의 선언 너비를 바꾸지 않는다.
 //! 모델·HWP 원본 헤더와 두 저장 형식의 속성 보존 계약만 검사한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::table::Table;
-use rhwp::wasm_api::HwpDocument;
 
 fn table(doc: &HwpDocument, paragraph: usize) -> &Table {
     doc.document().sections[0].paragraphs[paragraph]

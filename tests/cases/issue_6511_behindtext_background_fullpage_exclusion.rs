@@ -10,7 +10,6 @@
 //!
 //! 픽스처는 합성이다(운영 문서는 개인정보로 첨부 불가): A4 빈 문단에 전면 크기
 //! 그림을 wrap 만 바꿔 싣고, HWP5 직렬화 왕복 후 쪽수를 계약으로 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::control::Control;
 use rhwp::model::document::{Document, Section};

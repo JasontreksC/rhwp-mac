@@ -2,7 +2,7 @@
 //!
 //! Pure-Rust replacement for `tools/verify_hwpx.py`, which requires Windows
 //! + Hancom Office + pyhwpx and cannot run in CI. This harness invokes
-//!   `rhwp::wasm_api::HwpDocument::render_page_svg_native()` directly so the
+//!   `rhwp::document_api::HwpDocument::render_page_svg_native()` directly so the
 //!   same SVG the CLI produces is diffed against committed golden files.
 //!
 //! # Updating goldens
@@ -41,7 +41,7 @@ fn check_snapshot(hwpx_relpath: &str, page: u32, golden_name: &str) {
     let bytes =
         fs::read(&hwpx_path).unwrap_or_else(|e| panic!("read {}: {}", hwpx_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", hwpx_relpath, e));
 
     let actual = doc
@@ -102,7 +102,7 @@ fn form_002_page_0() {
     // 한컴2020 정본 전10쪽의 Native·fresh WASM 시각 검증을 선행한다.
     // SVG 바이트·절대 좌표 대신 쪽수, 원본 표 소유, 분할 문단의 소속을 검사한다.
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/hwpx/form-002.hwpx");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&fs::read(path).expect("원문 읽기"))
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&fs::read(path).expect("원문 읽기"))
         .expect("원문 열기");
     assert_eq!(doc.page_count(), 10, "독립 한컴 PDF의 전체 쪽수");
     let owners = [
@@ -194,7 +194,7 @@ fn table_text_page_0() {
     }
 
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/hwpx/table-text.hwpx");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&fs::read(path).expect("원문 읽기"))
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&fs::read(path).expect("원문 읽기"))
         .expect("원문 열기");
     assert_eq!(doc.page_count(), 1, "정본의 전체 쪽수");
     let tree: Value = serde_json::from_str(&doc.get_page_render_tree(0).expect("1쪽 렌더 트리"))
@@ -278,7 +278,7 @@ fn issue_157_page_1() {
     use serde_json::Value;
 
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/hwpx/issue_157.hwpx");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&fs::read(path).expect("원문 읽기"))
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&fs::read(path).expect("원문 읽기"))
         .expect("원문 열기");
     assert_eq!(doc.page_count(), 2, "독립 한컴 PDF의 전체 쪽수");
     let tree: Value = serde_json::from_str(&doc.get_page_render_tree(1).expect("2쪽 렌더 트리"))
@@ -373,7 +373,7 @@ fn issue_617_exam_kor_page5() {
     }
 
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/exam_kor.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&fs::read(path).expect("원문 읽기"))
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&fs::read(path).expect("원문 읽기"))
         .expect("원문 열기");
     assert_eq!(doc.page_count(), 20, "독립 한컴 PDF의 전체 쪽수");
 
@@ -445,7 +445,7 @@ fn render_is_deterministic_within_process() {
     let bytes =
         fs::read(Path::new(repo_root).join("samples/hwpx/form-002.hwpx")).expect("sample present");
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     let a = doc.render_page_svg_native(0).expect("render #1");
     let b = doc.render_page_svg_native(0).expect("render #2");
     assert_eq!(a, b, "render_page_svg_native must be deterministic");

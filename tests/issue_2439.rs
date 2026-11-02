@@ -9,13 +9,13 @@
 //! - page-fitting float B cannot fit the remainder and is deferred whole to page 2;
 //! - `AFTER FLOAT` must resume below B's exclusion, never inside B.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::LineSeg;
 use rhwp::model::provenance::{SourceFormat, SourceProvenance};
 use rhwp::model::table::TablePageBreak;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 use rhwp::renderer::{hwpunit_to_px, DEFAULT_DPI};
-use rhwp::wasm_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

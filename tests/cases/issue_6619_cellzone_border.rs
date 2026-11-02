@@ -20,8 +20,6 @@
 //! 어디서도 참조하지 않는다. 31쪽 통계표에서는 zone(L/R SOLID)이 무시돼 셀 고유의
 //! **점선**이 그대로 남았다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::document::{Document, Section};

@@ -54,10 +54,8 @@
 //! `>= 0` 으로 넓히면 겹침은 사라지지만 표가 `pi=114` 뒤로 가 **쪽 순서가 뒤집힌다**.
 //! 문단 기준 높이(`para_start_height`)를 쪽 넘김 뒤 다시 잡는 안은 ②가 막아 효과가 0이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6795/1341000-201100013-cyber-university-application.hwp";
 

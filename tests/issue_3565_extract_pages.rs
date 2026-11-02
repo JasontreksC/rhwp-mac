@@ -11,7 +11,6 @@
 //!
 //! 결과 쪽수가 요청 범위와 정확히 같을 필요는 없다(잘라 낸 뒤 레이아웃이 다시 흐른다).
 //! 목적은 재현 최소화이지 정밀한 페이지 오려내기가 아니다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 

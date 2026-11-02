@@ -8,7 +8,6 @@
 //!
 //! 수정: 저장 리셋 경계에서 비-TAC 자리차지(TopAndBottom, vert=문단) 개체를 떠나는
 //! 쪽에 남긴다. 판별은 물리적으로 — 개체 아래끝이 용지 안에 남을 때만.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

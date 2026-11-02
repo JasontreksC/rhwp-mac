@@ -11,7 +11,6 @@
 //!
 //! 이 검사는 합성 계약 검사다 — 한컴 출력과의 일치 증거가 아니라, 자리표를 실은 뒤에도
 //! 저장→재파스에서 탭 n 번째 확장이 n 번째 탭에 남는지를 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::paragraph::{tab_ext_is_placeholder, TAB_EXT_PLACEHOLDER};
 

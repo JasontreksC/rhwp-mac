@@ -2,8 +2,6 @@
 //! 칸은 그 변을 NONE 으로 둔다. 표 테두리를 occupancy 로 막으면 왼쪽·아래·
 //! 제목왼쪽이 레이아웃에서 사라진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::document::{Document, Section};

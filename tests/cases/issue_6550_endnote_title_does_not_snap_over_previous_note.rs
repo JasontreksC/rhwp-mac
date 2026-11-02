@@ -20,8 +20,6 @@
 //! 사이(5669HU)의 spacer 접기와 큰 수식 tail 뒤 제한 backtrack(#1284 PDF 핀)은
 //! 각각 다른 계약이라 건드리면 깨진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

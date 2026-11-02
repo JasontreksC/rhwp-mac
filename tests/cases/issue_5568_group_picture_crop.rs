@@ -5,12 +5,11 @@
 //! 경로가 `ImageNode.crop`/`original_size_hu` 를 싣지 않으면 원본 전체가 대상
 //! 상자에 압착돼 비율이 깨진다. SVG 렌더러는 crop 이 있으면 중첩
 //! `<svg x=.. viewBox=..>` 로 잘린 영역만 표시한다 — 그 방출 여부가 판정이다.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::image::CropInfo;
 use rhwp::model::shape::{GroupShape, ShapeObject};
-use rhwp::wasm_api::HwpDocument;
 
 /// 8x8 빨강 단색 PNG (crop 판정은 이미지 픽셀 크기 파싱이 필요해 실제 PNG 를 쓴다).
 const PNG_8X8: &[u8] = &[

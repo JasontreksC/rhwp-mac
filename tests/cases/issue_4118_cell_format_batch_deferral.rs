@@ -7,13 +7,12 @@
 //! 바이트까지 동일함을 확인한다 — 지연이 관측 가능한 결과를 바꾸지 않는다는
 //! 계약이다. 배치는 호출마다 O(문서) 재조판을 없애 #4118 의 O(n²) 를 O(n) 으로
 //! 낮춘다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::queries::table_extract::extract_tables;
 use rhwp::model::control::Control;
-use rhwp::wasm_api::HwpDocument;
 
 fn sample() -> String {
     Path::new(env!("CARGO_MANIFEST_DIR"))

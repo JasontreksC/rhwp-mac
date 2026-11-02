@@ -22,8 +22,6 @@
 //!
 //! ⚠ 기준점과 `om_top` 은 **같이** 움직여야 한다 — 하나만 켜면 1.9px 어긋난다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

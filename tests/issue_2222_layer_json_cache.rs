@@ -17,7 +17,7 @@ fn issue_2222_layer_json_cache_correctness_and_speed() {
         Path::new(repo_root).join("samples/basic/issue1994_behindtext_table_20200830.hwp");
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
-    let mut doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let mut doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse issue1994_behindtext_table_20200830.hwp");
 
     let j1 = doc.get_page_layer_tree(1).expect("layer tree p2");

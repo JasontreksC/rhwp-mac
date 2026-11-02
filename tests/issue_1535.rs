@@ -8,8 +8,8 @@
 //! 내려가야 한다(겹침 금지). 수정 전에는 B 가 A 영역 안(y≈376, A=[362,437])에
 //! 그려져 텍스트가 겹쳤다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

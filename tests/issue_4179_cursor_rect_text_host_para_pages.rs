@@ -26,7 +26,7 @@ fn text_host_para_cursor_rect_builds_few_page_trees() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("samples/issue1949_giant_cell_nested_tables_perf.hwp");
     let bytes = fs::read(&path).expect("read sample");
-    let mut doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let mut doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     assert_eq!(doc.page_count(), 115, "issue1949 기준 쪽수 핀");
 
     // "(1)" 변형 재현: 호스트 문단에 타이핑 — 별도 체크인 픽스처 불필요.

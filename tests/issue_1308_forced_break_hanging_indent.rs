@@ -18,23 +18,23 @@ fn parse_document(rel: &str) -> rhwp::model::document::Document {
     rhwp::parser::parse_document(&bytes).unwrap_or_else(|e| panic!("parse {}: {e:?}", rel))
 }
 
-fn load_wasm_document(rel: &str) -> rhwp::wasm_api::HwpDocument {
+fn load_wasm_document(rel: &str) -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", rel, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {e:?}", rel))
 }
 
 fn render_svg(rel: &str) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", rel, e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {e:?}", rel));
     doc.render_page_svg_native(0)
         .unwrap_or_else(|e| panic!("render {}: {e:?}", rel))
 }
 
-fn cursor_rect(doc: &rhwp::wasm_api::HwpDocument, para: u32, offset: u32) -> Value {
+fn cursor_rect(doc: &rhwp::document_api::HwpDocument, para: u32, offset: u32) -> Value {
     let json = doc
         .get_cursor_rect(0, para, offset)
         .unwrap_or_else(|e| panic!("cursor rect para={para} offset={offset}: {e:?}"));

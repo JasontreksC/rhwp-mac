@@ -12,10 +12,10 @@ use std::path::Path;
 
 const SAMPLE: &str = "samples/task1753/deferred_takeplace_fill_ahead.hwpx";
 
-fn load_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_doc() -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", SAMPLE, e))
 }
 
@@ -48,11 +48,11 @@ fn issue_1755_host_heading_pre_emitted_on_page_9() {
 
 const DECORATION_HOST_SAMPLE: &str = "samples/issue6969/synth_decoration_host_title.hwp";
 
-fn load_decoration_host_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_decoration_host_doc() -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(DECORATION_HOST_SAMPLE);
     let bytes =
         fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", DECORATION_HOST_SAMPLE, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", DECORATION_HOST_SAMPLE, e))
 }
 

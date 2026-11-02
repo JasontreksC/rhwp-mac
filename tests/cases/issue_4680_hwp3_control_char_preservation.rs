@@ -15,8 +15,6 @@
 //!
 //! 묶음 빈칸(코드 30)은 어느 쪽으로도 증거가 없어 이 수정의 범위 밖이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::parser::{parse_document, parse_document_with_password};
 use std::path::Path;
 

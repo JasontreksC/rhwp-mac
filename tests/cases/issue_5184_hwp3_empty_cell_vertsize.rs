@@ -6,8 +6,6 @@
 //! `paragraph[7]` 이 1000→29096 이 됐다. TAC host LINE_SEG 확대는
 //! 기본 lh=100 합성 seg 에만 적용한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use std::path::Path;
 

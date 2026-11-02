@@ -1,9 +1,8 @@
 //! 본문 선택은 렌더·캐럿 질의가 이미 만든 쪽 트리만 재사용한다.
 //! 선택 때문에 보이지 않는 모든 쪽을 공유 캐시에 남기지는 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::diagnostics::perf_counters;
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 #[test]
 fn body_selection_reuses_a_rendered_page_without_changing_rects() {

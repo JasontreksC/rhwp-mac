@@ -7,7 +7,6 @@
 //! w=213 1위).
 //!
 //! 수정: 0xF0827 → ═(U+2550, 이웃 0xF0832 와 같은 이중선 계열).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

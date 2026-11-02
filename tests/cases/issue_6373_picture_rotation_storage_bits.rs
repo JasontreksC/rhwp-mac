@@ -8,7 +8,6 @@
 //! 한컴 저장본 5660개 개체에서 bit19 는 회전 개체 569건 중 559건이 꺼져 있고 비회전 개체
 //! 5091건 중 4416건이 켜져 있다. 한글 2024 는 회전 0 그림의 bit19 를 켜 두고 34° 회전
 //! 그림의 `rotateimage` 를 0 으로 둔다. 그래서 세우는 것도 지우는 것도 근거가 없다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

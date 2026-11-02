@@ -4,11 +4,10 @@
 //! 앵커 줄을 다음 쪽 상단으로 이월해 계상한다(저장 lineseg 마지막 세그 vpos=0).
 //! 한글 2024 는 이월 계상을 하지 않아 다음 쪽 사다리가 그만큼(이 샘플 3,597HU)
 //! 위로 당겨지고, 하류 쪽 경계(pi42)가 한 쪽 앞으로 온다 — 재저장 오라클 실측.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 fn sample_bytes() -> Vec<u8> {
     std::fs::read(

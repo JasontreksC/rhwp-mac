@@ -17,10 +17,10 @@ use std::path::Path;
 
 const SAMPLE: &str = "samples/issue1770_rowsplit_tolerance.hwpx";
 
-fn load(path: &str) -> rhwp::wasm_api::HwpDocument {
+fn load(path: &str) -> rhwp::document_api::HwpDocument {
     let p = Path::new(env!("CARGO_MANIFEST_DIR")).join(path);
     let bytes = fs::read(&p).unwrap_or_else(|e| panic!("read {path}: {e}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {path}: {e:?}"))
 }
 
@@ -32,7 +32,7 @@ fn convert_hwp_pagination_matches_hwpx_source() {
     assert_eq!(hwpx_pages, 4, "#1770 전제: HWPX 원본 4쪽");
 
     let hwp_bytes = hwpx.export_hwp_with_adapter().expect("convert");
-    let conv = rhwp::wasm_api::HwpDocument::from_bytes(&hwp_bytes).expect("reparse");
+    let conv = rhwp::document_api::HwpDocument::from_bytes(&hwp_bytes).expect("reparse");
     assert_eq!(
         conv.page_count(),
         hwpx_pages,

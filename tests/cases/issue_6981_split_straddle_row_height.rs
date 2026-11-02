@@ -27,7 +27,6 @@
 //!   1,140.8px 을 892.9px 행합에 요구해 표가 쪽 밖으로 나갔다).
 //! - `samples/issue6795/1341000-…​.hwp` — 걸친 셀의 마지막 행이 조각 끝에서 **다시
 //!   잘리는** 형상. 조판만 앞서 예약하면 셀 상자가 내용보다 작아진다(실측 2줄).
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

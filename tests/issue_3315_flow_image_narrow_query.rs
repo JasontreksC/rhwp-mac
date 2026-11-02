@@ -145,16 +145,16 @@ const FLOW_IMAGE_SAMPLES: &[&str] = &[
     "samples/3-09월_교육_통합_2023.hwpx",
 ];
 
-fn open(relative: &str) -> rhwp::wasm_api::HwpDocument {
+fn open(relative: &str) -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let bytes = std::fs::read(std::path::Path::new(repo_root).join(relative))
         .unwrap_or_else(|error| panic!("read {relative}: {error}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|error| panic!("parse {relative}: {error:?}"))
 }
 
 /// 대형 JPEG 을 세션 중에 넣은 문서 — 크기 이득을 재는 데 쓴다.
-fn open_with_large_inserted_image() -> rhwp::wasm_api::HwpDocument {
+fn open_with_large_inserted_image() -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let jpeg = std::fs::read(std::path::Path::new(repo_root).join("samples/images/tiger01.jpg"))
         .expect("read tiger01.jpg");
@@ -178,14 +178,14 @@ fn open_with_large_inserted_image() -> rhwp::wasm_api::HwpDocument {
     doc
 }
 
-fn narrow(doc: &rhwp::wasm_api::HwpDocument, page: u32) -> Value {
+fn narrow(doc: &rhwp::document_api::HwpDocument, page: u32) -> Value {
     let json = doc
         .get_page_flow_image_ops_native(page)
         .expect("flow image ops");
     serde_json::from_str(&json).expect("좁은 질의 JSON 이 유효해야 한다")
 }
 
-fn tree_flow_images(doc: &rhwp::wasm_api::HwpDocument, page: u32) -> Vec<TreeFlowImage> {
+fn tree_flow_images(doc: &rhwp::document_api::HwpDocument, page: u32) -> Vec<TreeFlowImage> {
     let json = doc
         .get_page_layer_tree_with_profile_native(page, rhwp::paint::RenderProfile::Screen)
         .expect("layer tree");

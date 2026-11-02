@@ -13,17 +13,16 @@
 //! 게이트 계약: HWPX 컨테이너 제외(36397752 하자검사조서 — 한글 1쪽 유지 실측,
 //! 발동 시 +1 회귀), 직파싱 HWP3 는 tac=true 모순 조합만(tac=false TopAndBottom 은
 //! 겹침이 한글 정본인 #4533 하동군 계열).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
 const SAMPLE: &str = "samples/issue5699/20099369_yeongwol_forms.hwp";
 
-fn load() -> rhwp::wasm_api::HwpDocument {
+fn load() -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"))
 }
 

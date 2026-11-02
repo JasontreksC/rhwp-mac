@@ -31,8 +31,6 @@ use shaping_context::{
 };
 use std::collections::HashSet;
 use std::sync::Arc;
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen_test::wasm_bindgen_test;
 
 const NOTO: &[u8] = include_bytes!("../../ttfs/opensource/NotoSansKR-Regular.ttf");
 const SOURCE_HAN: &[u8] =
@@ -120,7 +118,6 @@ fn variable_request<'a>(
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_a_default_and_title_are_distinct_instance_cache_entries() {
     let defaults = [
         ShapingVariation {
@@ -179,7 +176,6 @@ fn instance_axes(wght: f32, opsz: f32) -> Vec<ShapingVariation> {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_b_public_instance_matrix_is_deterministic_for_hangul_and_latin() {
     let matrix = [
         instance_axes(400.0, 400.0),
@@ -258,7 +254,6 @@ fn issue_4969_q3_b_public_instance_matrix_is_deterministic_for_hangul_and_latin(
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_b_instance_and_run_matrix_has_bounded_cache_ownership() {
     let matrix = [
         instance_axes(400.0, 400.0),
@@ -326,7 +321,6 @@ fn issue_4969_q3_b_instance_and_run_matrix_has_bounded_cache_ownership() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_b_invalid_variations_keep_structured_terminal_reasons() {
     let cases = [
         (
@@ -388,7 +382,6 @@ fn issue_4969_q3_b_invalid_variations_keep_structured_terminal_reasons() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_d_explicit_slot_request_is_canonical_and_generation_owned() {
     let sources = registry();
     let reversed_title = [
@@ -547,7 +540,6 @@ fn issue_4969_q5_c_instance_request_limit_is_coupled_to_exact_source_slots() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_e1_per_slot_clear_preserves_other_requests() {
     let sources = registry();
     let mut requests = HorizontalShapingInstanceRequestRegistry::default();
@@ -577,7 +569,6 @@ fn issue_4969_q3_e1_per_slot_clear_preserves_other_requests() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_d_invalid_requests_do_not_mutate_the_owner_snapshot() {
     let sources = registry();
     let mut requests = HorizontalShapingInstanceRequestRegistry::default();
@@ -635,7 +626,6 @@ fn issue_4969_q3_d_invalid_requests_do_not_mutate_the_owner_snapshot() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_d_slot_mismatch_and_adhoc_override_fail_before_cache_mutation() {
     let sources = registry();
     let mut requests = HorizontalShapingInstanceRequestRegistry::default();
@@ -681,7 +671,6 @@ fn issue_4969_q3_d_slot_mismatch_and_adhoc_override_fail_before_cache_mutation()
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_d_explicit_default_preserves_q2_output_but_not_cache_provenance() {
     let sources = registry();
     let mut requests = HorizontalShapingInstanceRequestRegistry::default();
@@ -728,7 +717,6 @@ fn issue_4969_q3_d_explicit_default_preserves_q2_output_but_not_cache_provenance
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_b_transaction_parses_each_source_once_and_reuses_owned_result() {
     let context = HorizontalShapingContext::new(registry());
     assert!(context.registry_generation() > 0);
@@ -772,7 +760,6 @@ fn issue_4969_q2_b_transaction_parses_each_source_once_and_reuses_owned_result()
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_b_latin_ligature_has_cluster_aligned_px_widths() {
     let context = HorizontalShapingContext::new(registry());
     let liga_off = [ShapingFeature {
@@ -820,7 +807,6 @@ fn issue_4969_q2_b_latin_ligature_has_cluster_aligned_px_widths() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_b_old_hangul_cluster_cannot_be_split_into_fake_scalar_advances() {
     let context = HorizontalShapingContext::new(registry());
     let outcome = context.transaction().shadow_measure(&request(
@@ -861,7 +847,6 @@ fn issue_4969_q2_b_old_hangul_cluster_cannot_be_split_into_fake_scalar_advances(
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_b_kern_feature_delta_is_single_owner_shadow_data() {
     let context = HorizontalShapingContext::new(registry());
     let kern_off = [ShapingFeature {
@@ -895,7 +880,6 @@ fn issue_4969_q2_b_kern_feature_delta_is_single_owner_shadow_data() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_b_limits_and_invalid_scale_fail_closed_without_partial_measurement() {
     assert_eq!(MAX_HORIZONTAL_SHAPING_CACHE_ENTRIES, 4_096);
     assert_eq!(MAX_HORIZONTAL_SHAPING_CLUSTERS, 4_096);
@@ -952,7 +936,7 @@ fn issue_4969_q2_b_limits_and_invalid_scale_fail_closed_without_partial_measurem
 
 const Q3_E_DOCUMENT_COMMAND_SOURCE: &str =
     include_str!("../../src/document_core/commands/document.rs");
-const Q3_E_WASM_API_SOURCE: &str = include_str!("../../src/wasm_api.rs");
+const Q3_E_WASM_API_SOURCE: &str = include_str!("../../src/document_api.rs");
 const Q3_E_SHAPING_PARAGRAPH_SOURCE: &str = include_str!("../../src/renderer/shaping_paragraph.rs");
 const Q3_E_SHAPING_GLYPH_SOURCE: &str = include_str!("../../src/paint/shaping_glyph.rs");
 
@@ -967,11 +951,12 @@ fn issue_4969_q3_e0_red_reversible_exact_instance_owner_is_absent() {
 #[test]
 fn issue_4969_q3_e0_red_public_instance_adapters_are_absent() {
     assert!(
-        Q3_E_WASM_API_SOURCE.contains("js_name = setExactFontInstance")
-            && Q3_E_WASM_API_SOURCE.contains("js_name = clearExactFontInstance")
+        // 웹 바인딩(`js_name`)을 제거했으므로 파사드 메서드 정의로 확인한다.
+        Q3_E_WASM_API_SOURCE.contains("pub fn set_exact_font_instance(")
+            && Q3_E_WASM_API_SOURCE.contains("pub fn clear_exact_font_instance(")
             && Q3_E_WASM_API_SOURCE.contains("self.set_exact_font_instance_native(options_json)")
             && Q3_E_WASM_API_SOURCE.contains("self.clear_exact_font_instance_native(options_json)"),
-        "Q3-E2 red: the strict set/clear WASM adapters are absent"
+        "Q3-E2 red: the strict set/clear facade adapters are absent"
     );
 }
 

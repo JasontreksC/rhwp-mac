@@ -16,11 +16,11 @@ use std::path::Path;
 
 const FIXTURE: &str = "samples/issue2527_empty_linesegs.hwpx";
 
-fn load_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_doc() -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let path = Path::new(repo_root).join(FIXTURE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {FIXTURE}: {e}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {FIXTURE}: {e:?}"))
 }
 

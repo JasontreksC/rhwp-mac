@@ -7,8 +7,8 @@
 //! 정규화는 **표에 값이 있을 때만** 한다 — 값이 없는 코드포인트는 원문을 유지해
 //! 미등록 PUA 축(#5599)의 관측 표면을 바꾸지 않는다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::composer::{expand_pua_render_text, pua_to_display_text, pua_to_text_surface};
-use rhwp::wasm_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

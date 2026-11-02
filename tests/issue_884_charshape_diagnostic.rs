@@ -21,7 +21,7 @@
 //!
 //! 본 테스트는 footer "충" 이 HY수평선B(해석 A)로 렌더됨을 가드한다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

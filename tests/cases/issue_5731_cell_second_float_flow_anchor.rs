@@ -4,7 +4,6 @@
 //! 첫 그림의 저장 자르기 범위는 높이가 비어 한컴이 그리지 않는다.
 //! 이전 검사의 "한컴도 그림7개" 주장과 절대 픽셀 위치 고정은 독립 출력과 달랐다.
 //! 빈 그림도 저장 글줄의 공간은 점유하므로 그 프레임·캡션 뒤에 둘째 그림이 온다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
@@ -52,7 +51,7 @@ fn issue_5731_second_cell_float_uses_stored_flow_anchor() {
         "둘째 그림은 자리차지 앵커다"
     );
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("실물 문서 렌더링");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("실물 문서 렌더링");
     assert_eq!(doc.page_count(), 7, "한컴 정본의 쪽수");
     let tree: Value = serde_json::from_str(&doc.get_page_render_tree(2).expect("3쪽 트리"))
         .expect("렌더 트리 JSON");

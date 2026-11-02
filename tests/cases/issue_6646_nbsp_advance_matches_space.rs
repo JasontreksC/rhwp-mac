@@ -12,7 +12,6 @@
 //!
 //! 한컴 PDF와의 시각 대조는 별도 Visual Sweep 증적에 남기고, 이 검사는
 //! 글줄 내용 및 공백 측정 갈래를 검사한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

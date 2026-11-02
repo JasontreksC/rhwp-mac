@@ -66,8 +66,8 @@ fn equation_line_hangul_not_compressed() {
     let hwp_path = Path::new(repo_root).join("samples/3-09월_교육_통합_2023.hwp");
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
-    let doc =
-        rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse 3-09월_교육_통합_2023.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
+        .expect("parse 3-09월_교육_통합_2023.hwp");
 
     // 6쪽 (0-indexed page=5) — 문26 이 있는 페이지.
     let svg = doc.render_page_svg_native(5).expect("render page 6");

@@ -3,7 +3,7 @@
 //! 번호·글머리표는 문서 글자가 아닌 `char_start: None` TextRun 이다. 셀 캐럿·선택
 //! 질의가 이 run 의 시작을 0으로 보아, 위치 0부터 번호 글자 수까지 번호 위에 놓였다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use serde_json::Value;
 
 fn json(text: &str) -> Value {

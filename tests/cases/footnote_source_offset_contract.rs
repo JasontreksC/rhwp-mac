@@ -1,5 +1,4 @@
 //! 각주 번호 표시가 숨긴 문자는 본문 커서의 원본 주소를 이동시키지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use serde_json::Value;

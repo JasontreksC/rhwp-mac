@@ -20,7 +20,6 @@
 //!
 //! 이 검사는 앞 문단 비침범과 정본 괘선 0.5px 이내 정렬, 비대칭 여백을 고정한다.
 //! 다른 페이지의 별도 표 배치는 이 시험으로 해결했다고 주장하지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
@@ -53,7 +52,7 @@ fn collect(node: &RenderNode, tables: &mut Vec<(f64, f64)>, host_line: &mut Opti
 fn para_float_table_top_sits_at_the_stored_anchor_not_a_line_above() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(FIXTURE);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {FIXTURE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {FIXTURE}: {e:?}"));
     let tree = doc
         .build_page_render_tree(27)

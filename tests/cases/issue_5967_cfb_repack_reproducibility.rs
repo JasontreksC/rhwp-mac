@@ -17,7 +17,6 @@
 //!
 //! 생성기(`b2_variants`)에 기대지 않고 커밋된 자산만으로 자기완결한다 — `output/` 을 쓰지
 //! 않으므로 CI 에서 상시로 돈다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::parser::ole_container::{all_ole_streams, ole_root_clsid};
 use rhwp::serializer::mini_cfb::build_cfb_with_root_clsid;

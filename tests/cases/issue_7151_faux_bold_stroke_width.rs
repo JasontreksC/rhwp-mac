@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [Issue #7151] 실제 Bold face 가 없는 face 의 볼드를 `font-weight="bold"` 로만
 //! 내보내 굵히는 양이 받는 래스터라이저 몫이 된다 — Chromium 은 한/글보다 굵다.
 //!

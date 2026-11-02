@@ -40,19 +40,19 @@ fn image_ops(json: &str) -> Vec<Value> {
     ops
 }
 
-fn open_sample() -> rhwp::wasm_api::HwpDocument {
+fn open_sample() -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let bytes = std::fs::read(std::path::Path::new(repo_root).join("samples/hwpx/issue_241.hwpx"))
         .expect("read samples/hwpx/issue_241.hwpx");
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse issue_241.hwpx")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse issue_241.hwpx")
 }
 
-fn inline_json(doc: &rhwp::wasm_api::HwpDocument) -> String {
+fn inline_json(doc: &rhwp::document_api::HwpDocument) -> String {
     doc.get_page_layer_tree_native(0)
         .expect("inline layer tree")
 }
 
-fn omitted_json(doc: &rhwp::wasm_api::HwpDocument) -> String {
+fn omitted_json(doc: &rhwp::document_api::HwpDocument) -> String {
     doc.get_page_layer_tree_with_options_native(
         0,
         rhwp::paint::RenderProfile::Screen,

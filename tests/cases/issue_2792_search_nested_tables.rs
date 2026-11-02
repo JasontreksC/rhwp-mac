@@ -20,7 +20,6 @@
 //! 4. 중첩 매치는 `page` 를 **싣지 않는다** — 바깥 행으로 계산한 쪽은 틀리기 때문이다.
 //! 5. 본문·바깥 셀 매치의 동작은 종전 그대로다(순서 포함).
 //! 6. `replace_all_native` 는 중첩 전용 토큰도 같은 검색 순회로 찾아 바꾼다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 

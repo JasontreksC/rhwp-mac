@@ -33,7 +33,7 @@ fn collect_image_keys(node: &Value, out: &mut Vec<String>) {
     }
 }
 
-fn image_keys(doc: &rhwp::wasm_api::HwpDocument) -> Vec<String> {
+fn image_keys(doc: &rhwp::document_api::HwpDocument) -> Vec<String> {
     let json = doc.get_page_layer_tree_native(0).expect("layer tree");
     let value: Value = serde_json::from_str(&json).expect("valid layer JSON");
     let mut keys = Vec::new();
@@ -41,11 +41,11 @@ fn image_keys(doc: &rhwp::wasm_api::HwpDocument) -> Vec<String> {
     keys
 }
 
-fn open_sample() -> rhwp::wasm_api::HwpDocument {
+fn open_sample() -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let bytes = std::fs::read(std::path::Path::new(repo_root).join("samples/hwpx/issue_241.hwpx"))
         .expect("read samples/hwpx/issue_241.hwpx");
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse issue_241.hwpx")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse issue_241.hwpx")
 }
 
 #[test]

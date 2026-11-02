@@ -4458,7 +4458,6 @@ fn known_bold_font_filenames(font_name: &str) -> Vec<&'static str> {
 /// 주의: 현 임베딩 subsetter(typst, PDF용)는 cmap 을 제거하므로 @font-face 임베딩은
 /// 브라우저 `<text>` 매핑에 무효. 본 대체의 실효 경로는 **폴백 체인 + fontconfig/웹폰트로
 /// 설치된 ExtraLight** 이다(Task #1224 보고서 참조).
-#[cfg(not(target_arch = "wasm32"))]
 fn korean_gothic_substitute(font_name: &str) -> Option<&'static str> {
     let lower = font_name.to_ascii_lowercase();
     let is_gothic = font_name.contains("돋움")
@@ -4479,11 +4478,9 @@ fn korean_gothic_substitute(font_name: &str) -> Option<&'static str> {
 /// 문서 메타데이터에서 유래한 후보는 SVG 폰트 해석 단계에서만
 /// 이 형식으로 바뀐다. 파일시스템 루프는 이 타입의 후보만
 /// 설정된 검색 루트에 결합한다.
-#[cfg(not(target_arch = "wasm32"))]
 #[derive(Clone, Debug)]
 struct FontFileName(String);
 
-#[cfg(not(target_arch = "wasm32"))]
 impl FontFileName {
     fn from_document_candidate(candidate: String) -> Option<Self> {
         use std::path::Component;
@@ -4502,7 +4499,6 @@ impl FontFileName {
 }
 
 /// SVG 폰트 해석이 선택한 파일명과 탐색 루트.
-#[cfg(not(target_arch = "wasm32"))]
 struct FontFileLookupPlan {
     candidates: Vec<FontFileName>,
     search_dirs: Vec<std::path::PathBuf>,
@@ -4512,7 +4508,6 @@ struct FontFileLookupPlan {
 ///
 /// 별칭·대체 폰트·후보 우선순위는 렌더러 정책이므로 여기서
 /// 선택한다. 이후의 파일시스템 조회는 타입으로 검증된 후보를 읽는 기계적 단계다.
-#[cfg(not(target_arch = "wasm32"))]
 fn plan_svg_font_file_lookup(
     font_name: &str,
     extra_paths: &[std::path::PathBuf],
@@ -4573,7 +4568,6 @@ fn plan_svg_font_file_lookup(
 }
 
 /// 계획된 폰트 파일을 설정된 루트에서 읽는다.
-#[cfg(not(target_arch = "wasm32"))]
 fn find_font_file(plan: &FontFileLookupPlan) -> Option<std::path::PathBuf> {
     for dir in &plan.search_dirs {
         if !dir.exists() {
@@ -4847,7 +4841,6 @@ fn font_data_uri_format(bytes: &[u8]) -> (&'static str, &'static str) {
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn append_local_bold_font_face_css(css: &mut String, font_name: &str) {
     let aliases = font_local_bold_aliases(font_name);
     if aliases.is_empty() {
@@ -4870,7 +4863,6 @@ fn append_local_bold_font_face_css(css: &mut String, font_name: &str) {
 /// 서브셋 경로도 Bold는 전체 파일을 사용한다. 현재 subsetter 산출물은 browser
 /// `<text>`에서 필요한 cmap를 보존하지 않는 경우가 있어, real Bold 대신
 /// synthetic bold로 되돌아가는 것보다 원본 face를 보존하는 편이 정확하다.
-#[cfg(not(target_arch = "wasm32"))]
 fn append_embedded_bold_font_face_css(
     css: &mut String,
     font_name: &str,
@@ -4921,7 +4913,6 @@ pub fn generate_embedded_font_style(
 ///
 /// `embedded_fonts` (face명 → 원본 폰트 bytes) 에 있는 폰트는 임베드 모드와
 /// 무관하게 data-URI 로 전체 임베딩한다(#2524, 미설치 임베디드 폰트 대응).
-#[cfg(not(target_arch = "wasm32"))]
 pub fn generate_font_style(
     renderer: &SvgRenderer,
     font_paths: &[std::path::PathBuf],

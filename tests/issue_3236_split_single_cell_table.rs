@@ -9,7 +9,7 @@
 //! 선언의 1.5배를 넘으면 폰트 팽창이 아니라 진짜 큰 내용이므로 인트라-로우 분할
 //! 경로에 맡긴다. 분할점은 한컴과 글자 단위로 일치한다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const FIXTURE: &str = "samples/task3236/issue3236_split_table.hwpx";
 

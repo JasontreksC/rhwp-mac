@@ -42,8 +42,6 @@
 //! `ext[2]` 고바이트(탭 종류)는 정본이 0(미지정)을 쓰므로 건드리지 않는다. 우리
 //! 렌더러가 인라인 탭 채움으로 점선을 그리지 않는 **읽기 쪽** 축도 범위 밖이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::paragraph::Paragraph;
 use std::path::Path;
 

@@ -12,7 +12,6 @@
 //!
 //! 같은 서명이 #1637 cause B 였다 — HWPX 직렬화기가 `flowWithText="1"` 을 하드코딩해
 //! 표 partial-split 임계를 바꿔 페이지네이션을 흔들었다. 이번 것은 그 HWP5 변환 경로판.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::converters::hwpx_to_hwp::convert_hwpx_to_hwp_ir;
 use rhwp::document_core::DocumentCore;

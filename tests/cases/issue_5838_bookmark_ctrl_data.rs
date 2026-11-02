@@ -8,7 +8,6 @@
 //! 정답지는 같은 문서의 한컴 저작본이다. `samples/aift.hwp` 의 `%bmk` 아래에는
 //! `ParameterSet ps_id=0x021b · item id=0x4000(String) = "_top"` 이 있고, 이는 누름틀
 //! 경로가 이미 쓰던 바이트 모양과 같다(스펙 §4.2.10.11 "책갈피는 이름 밖에 없다").
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

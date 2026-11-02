@@ -39,12 +39,11 @@
 //! 넘침이 된다. 그래서 어울림 갈래에도 같은 near-miss 상한을 적용한다.
 //!
 //! 재현: `rhwp dump-pages <문서>` — 수정 전 1쪽, 수정 후 2쪽(한글 2024 도 2쪽).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6549/16418295_square_rowbreak_table.hwp";
 /// 한글 2024 와 같은 쪽수. 회귀 시에는 1쪽으로 뭉친다.

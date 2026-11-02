@@ -5,7 +5,7 @@
 //! `solid`·`#ffffff` 로 답해 진짜 흰색과 구분되지 않았고, HWPX 저장 후에는 답이 바뀌었다.
 //! 진짜 흰색(`0x00FFFFFF`)은 그대로 `solid`·`#ffffff` 여야 한다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use serde_json::Value;
 
 fn load(rel: &str) -> HwpDocument {

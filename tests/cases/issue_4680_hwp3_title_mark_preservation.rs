@@ -16,8 +16,6 @@
 //! 비트 8 을 125문단에 세우고 `PARA_TEXT` 안 `0x0008` 148건이 전부 `Mtit` 인데, 수정
 //! 전 우리는 하나도 세우지 않았다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::document::Document;
 use std::path::Path;

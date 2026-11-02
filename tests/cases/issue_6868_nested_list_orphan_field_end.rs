@@ -12,8 +12,6 @@
 //! `src/` 안 `#[cfg(test)]` 총량은 래칫으로 묶여 있어(`rust-unit-test-tiers`) 이 시험은
 //! 통합 시험으로 둔다. `parse_hwpx_section` 은 이미 공개 경로라 그대로 부를 수 있다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::control::Control;
 use rhwp::parser::hwpx::section::{link_orphan_field_ends_across_sections, parse_hwpx_section};
 

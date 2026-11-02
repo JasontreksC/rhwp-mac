@@ -24,13 +24,13 @@
 use std::fs;
 use std::path::Path;
 
-fn load(rel: &str) -> rhwp::wasm_api::HwpDocument {
+fn load(rel: &str) -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", rel, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse")
 }
 
-fn page_svg(doc: &rhwp::wasm_api::HwpDocument, page: u32) -> String {
+fn page_svg(doc: &rhwp::document_api::HwpDocument, page: u32) -> String {
     doc.render_page_svg_native(page).expect("render_page_svg")
 }
 
@@ -59,7 +59,7 @@ fn issue_1050_hwpx_to_hwp_textbox_footnote_roundtrip() {
     let hwp_bytes = doc
         .export_hwp_with_adapter()
         .expect("export_hwp_with_adapter");
-    let saved = rhwp::wasm_api::HwpDocument::from_bytes(&hwp_bytes).expect("re-parse");
+    let saved = rhwp::document_api::HwpDocument::from_bytes(&hwp_bytes).expect("re-parse");
     let svg = page_svg(&saved, 0);
     let seq = svg_text_seq(&svg);
     assert!(
@@ -80,7 +80,7 @@ fn issue_1050_hwpx_to_hwp_textbox_footnote_roundtrip() {
 fn issue_1050_hwp_roundtrip_footnote_preserved() {
     let mut doc = load("samples/footnote-01.hwp");
     let bytes = doc.export_hwp_with_adapter().expect("export");
-    let saved = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("re-parse");
+    let saved = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("re-parse");
     let document = saved.document();
 
     // 모든 footnote 의 paragraphs 가 보존되는지 확인
@@ -312,7 +312,7 @@ fn issue_1050_footnote_paragraph_char_offsets() {
 fn issue_1050_footnote_01_hwpx_roundtrip() {
     let mut doc = load("samples/hwpx/footnote-01.hwpx");
     let bytes = doc.export_hwp_with_adapter().expect("export");
-    let saved = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("re-parse");
+    let saved = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("re-parse");
     let document = saved.document();
 
     // 9 개 이상의 footnote 보유

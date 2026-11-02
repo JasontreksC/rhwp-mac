@@ -12,7 +12,6 @@
 //!
 //! 픽스처는 원본 HWPX 구역1 문단 20..32(목차 대항목) 절단 + 스텁(36KB) — 목차는
 //! 2쪽에 온다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

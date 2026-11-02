@@ -32,14 +32,14 @@ struct SvgText {
 fn render_bookreview_page1_svg() -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/basic/BookReview.hwp");
     let bytes = fs::read(&path).expect("read samples/basic/BookReview.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse BookReview.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse BookReview.hwp");
     doc.render_page_svg_native(0).expect("render page 1 svg")
 }
 
 fn render_bookreview_page1_layer_json() -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/basic/BookReview.hwp");
     let bytes = fs::read(&path).expect("read samples/basic/BookReview.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse BookReview.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse BookReview.hwp");
     doc.get_page_layer_tree_native(0)
         .expect("render page 1 layer tree")
 }

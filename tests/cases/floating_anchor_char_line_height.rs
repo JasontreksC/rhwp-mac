@@ -14,8 +14,6 @@
 //! 하나 넣어 줄을 다시 계산시킨 뒤 첫 줄이 그 높이를 유지하는지 본다. 기준 문자가 더 작은
 //! 문단은 텍스트 크기를 유지해야 한다(대조군).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 
 struct Case {

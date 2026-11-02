@@ -7,8 +7,6 @@
 //!
 //! 표본은 #6196 과 같다 — 그 문서 4쪽 마지막 열에도 잔여 +0.68pt 가 남는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

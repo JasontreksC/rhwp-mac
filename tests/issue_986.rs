@@ -35,11 +35,11 @@ impl TableBBox {
     }
 }
 
-fn load_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_doc() -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = Path::new(repo_root).join(SAMPLE);
     let bytes = fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", SAMPLE, e))
 }
 
@@ -66,7 +66,7 @@ fn collect_table_bboxes(
     }
 }
 
-fn table_bboxes(doc: &rhwp::wasm_api::HwpDocument, control_index: usize) -> Vec<TableBBox> {
+fn table_bboxes(doc: &rhwp::document_api::HwpDocument, control_index: usize) -> Vec<TableBBox> {
     let mut out = Vec::new();
     for page in 0..doc.page_count() {
         let tree = doc
@@ -77,7 +77,7 @@ fn table_bboxes(doc: &rhwp::wasm_api::HwpDocument, control_index: usize) -> Vec<
     out
 }
 
-fn first_page_table(doc: &rhwp::wasm_api::HwpDocument, control_index: usize) -> TableBBox {
+fn first_page_table(doc: &rhwp::document_api::HwpDocument, control_index: usize) -> TableBBox {
     table_bboxes(doc, control_index)
         .into_iter()
         .find(|bbox| bbox.page == 0)

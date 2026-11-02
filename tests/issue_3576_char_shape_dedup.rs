@@ -16,11 +16,10 @@
 //! 슬라이스 범위 패닉을 낸다. 따라서 전부 실제 편집 API 경로로 구성한다.
 //!
 //! fixture: `samples/2010-01-06.hwp` s0 p4 c0 cell0 — 9행 표의 첫 칸.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::document::Document;
-use rhwp::wasm_api::HwpDocument;
 use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;

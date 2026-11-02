@@ -4,8 +4,6 @@
 //! `.hwpx` 하나가 SIGSEGV(catch_unwind 로 못 잡는 하드 크래시)를 낸다.
 //! 가드는 큰 본문 프레임을 쌓기 전에 동작해야 한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::parser::hwpx::section::parse_hwpx_section;
 use rhwp::parser::hwpx::HwpxError;
 

@@ -25,8 +25,6 @@
 //! 넘침 0 은 들어가고 +100 HWPUNIT(1.3px)만 넘쳐도 빈 쪽이다 — 일반 적합 판정과 같다.
 //! 문서가 다음 문단의 저장 vpos 로 쪽 끝을 적어 둔 경우(#7288)의 흡수는 그대로다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

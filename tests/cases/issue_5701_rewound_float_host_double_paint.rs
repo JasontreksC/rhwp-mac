@@ -6,7 +6,6 @@
 //! 한컴2020에서 같은 슬라이스를 정상 재저장한 기존 픽스처로 검사한다.
 //! 이전 IR 원본과 두 입력의 정확한 PDF는 검토 자산에 보존한다.
 //! Native/fresh WASM 전3쪽 90% 이상 근거는 slice5701_prefix_validation.json을 따른다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

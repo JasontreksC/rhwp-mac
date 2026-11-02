@@ -916,12 +916,12 @@ fn task949_stage33_hwpx_h03_explicit_lineseg_vpos_survives_adapter_export_reload
 }
 
 #[test]
-fn stage5_wasm_api_export_hwp_uses_adapter() {
-    // wasm_api 의 export_hwp (네이티브 래퍼: export_hwp_native_wrapper 가 아니라
+fn stage5_document_api_export_hwp_uses_adapter() {
+    // document_api 의 export_hwp (네이티브 래퍼: export_hwp_native_wrapper 가 아니라
     // HwpDocument 자체가 DerefMut<DocumentCore>) 가 어댑터를 자동 적용하는지 확인.
-    // 본 테스트는 네이티브 환경에서 wasm_api 진입점 동작을 검증.
+    // 본 테스트는 네이티브 환경에서 document_api 진입점 동작을 검증.
     let bytes = load_sample("hwpx-h-01.hwpx");
-    let mut doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("HWPX 로드");
+    let mut doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("HWPX 로드");
     let orig = doc.page_count();
 
     // export_hwp 는 wasm_bindgen 메서드라 직접 호출 불가 → 동등한 export_hwp_with_adapter 호출
@@ -931,7 +931,7 @@ fn stage5_wasm_api_export_hwp_uses_adapter() {
     assert_eq!(
         reloaded.page_count(),
         orig as u32,
-        "wasm_api 경로: 페이지 수 보존 (orig={}, reloaded={})",
+        "document_api 경로: 페이지 수 보존 (orig={}, reloaded={})",
         orig,
         reloaded.page_count()
     );

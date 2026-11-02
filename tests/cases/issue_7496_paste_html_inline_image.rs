@@ -1,5 +1,4 @@
 //! 글 사이 `<img>`(data: URI)가 든 HTML 을 붙이면 그 자리에 글자처럼 취급하는 그림이 들어간다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

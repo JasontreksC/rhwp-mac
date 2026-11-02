@@ -13,8 +13,6 @@
 //! 구현이 아니라 **한/글 변환본**에서 가져온다 — 수정 전에는 HWP3 쪽만 전부 0 이라
 //! 이 대조가 깨진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::document::Document;

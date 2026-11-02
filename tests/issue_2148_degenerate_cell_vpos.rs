@@ -6,7 +6,7 @@
 //! y 에 겹쳐 그렸다(한글 PDF 실측: 14.4pt 피치 순차 적층). extent 가 줄높이
 //! 합의 절반에도 못 미치면 저장 흐름을 불신하고 누적 적층으로 폴백한다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue_2148_degenerate_cell_vpos.hwpx";
 

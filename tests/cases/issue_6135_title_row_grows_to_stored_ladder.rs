@@ -14,7 +14,6 @@
 //!
 //! 한글 2024 PDF(2-up, 축척 0.7099) 실측: 제목 글줄 위끝 → "(단위…)" 글줄 위끝이
 //! 23.8px. 수정 후 rhwp 는 23.4px(수정 전 14.0px, 겹침).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

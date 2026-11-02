@@ -20,17 +20,13 @@ use kerning::{
     MAX_KERNING_REGISTRY_FACES, MAX_KERNING_RUN_CODE_POINTS, MAX_KERNING_RUN_GLYPHS,
 };
 use std::cell::Cell;
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen_test::wasm_bindgen_test;
 
 const NOTO_REGULAR: &[u8] = include_bytes!("../../ttfs/opensource/NotoSansKR-Regular.ttf");
 const NO_PAIR_TABLE: &[u8] = include_bytes!("../fixtures/fonts/RHWPBitmapSvgGlyphSmoke.ttf");
 const EXACT_KERNING_SMOKE: &[u8] = include_bytes!("../fixtures/fonts/RHWPExactKerningSmoke.ttf");
-#[cfg(not(target_arch = "wasm32"))]
 const R4E_RUNTIME_FIXTURE: &[u8] = include_bytes!(
     "../../mydocs/tech/investigations/issue-4968/fixtures/kerning_runtime_fixture.hwpx"
 );
-#[cfg(not(target_arch = "wasm32"))]
 const R4E_RUNTIME_MANIFEST: &str = include_str!(
     "../../mydocs/tech/investigations/issue-4968/fixtures/kerning_runtime_fixture.manifest.json"
 );
@@ -134,7 +130,6 @@ fn issue_4968_external_exact_source_registration_keeps_k0_svg_identical() {
     assert_eq!(after, before);
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn issue_4968_r4e_sha256_hex(bytes: &[u8]) -> String {
     use sha2::{Digest, Sha256};
 
@@ -144,37 +139,6 @@ fn issue_4968_r4e_sha256_hex(bytes: &[u8]) -> String {
         .collect()
 }
 
-#[cfg(not(target_arch = "wasm32"))]
-fn issue_4968_r4e_runtime_snapshot(core: &rhwp::document_core::DocumentCore) -> serde_json::Value {
-    let render_tree = core.build_page_render_tree(0).expect("R4E render tree");
-    let layer_tree = core.build_page_layer_tree(0).expect("R4E layer tree");
-    let svg = core.render_page_svg_native(0).expect("R4E SVG");
-    let canvas_command_count = core
-        .render_page_canvas_native(0)
-        .expect("R4E Canvas commands");
-    let canvaskit: serde_json::Value = serde_json::from_str(
-        &core
-            .get_canvaskit_replay_plan_native(0, "default")
-            .expect("R4E CanvasKit plan"),
-    )
-    .expect("R4E CanvasKit JSON");
-
-    serde_json::json!({
-        "pageCount": core.page_count(),
-        "renderTree": serde_json::from_str::<serde_json::Value>(&render_tree.root.to_json())
-            .expect("R4E render tree JSON"),
-        "layerTree": serde_json::from_str::<serde_json::Value>(&layer_tree.to_json())
-            .expect("R4E layer tree JSON"),
-        "svg": {
-            "bytes": svg.len(),
-            "sha256": issue_4968_r4e_sha256_hex(svg.as_bytes()),
-        },
-        "canvasCommandCount": canvas_command_count,
-        "canvasKit": canvaskit,
-    })
-}
-
-#[cfg(not(target_arch = "wasm32"))]
 fn issue_4968_r4e_positions_for_key(
     value: &serde_json::Value,
     stable_source_key: &str,
@@ -206,7 +170,6 @@ fn issue_4968_r4e_positions_for_key(
     None
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn issue_4968_r4e_registration_attempt(
     core: &mut rhwp::document_core::DocumentCore,
     char_shape_id: u32,
@@ -229,207 +192,6 @@ fn issue_4968_r4e_registration_attempt(
             "ok": false,
             "error": error.to_string(),
         }),
-    }
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-fn issue_4968_r4e_registration_failure_case(
-    name: &str,
-    font_bytes: &[u8],
-    face_index: u32,
-    language_index: usize,
-) -> serde_json::Value {
-    let mut core = rhwp::document_core::DocumentCore::from_bytes(R4E_RUNTIME_FIXTURE)
-        .expect("R4E failure fixture");
-    let before = issue_4968_r4e_runtime_snapshot(&core);
-    let registration =
-        issue_4968_r4e_registration_attempt(&mut core, 8, language_index, font_bytes, face_index);
-    let after = issue_4968_r4e_runtime_snapshot(&core);
-    serde_json::json!({
-        "case": name,
-        "registration": registration,
-        "before": before,
-        "after": after,
-    })
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-fn issue_4968_r4e_registration_failure_matrix() -> Vec<serde_json::Value> {
-    let oversized = vec![0; MAX_KERNING_FONT_BYTES + 1];
-    let mut cases = vec![
-        issue_4968_r4e_registration_failure_case("malformed-sfnt", b"not-an-sfnt", 0, 1),
-        issue_4968_r4e_registration_failure_case("pair-table-unsupported", NO_PAIR_TABLE, 0, 1),
-        issue_4968_r4e_registration_failure_case(
-            "unavailable-face-index",
-            EXACT_KERNING_SMOKE,
-            1,
-            1,
-        ),
-        issue_4968_r4e_registration_failure_case(
-            "invalid-language-index",
-            EXACT_KERNING_SMOKE,
-            0,
-            7,
-        ),
-        issue_4968_r4e_registration_failure_case("font-byte-limit-exceeded", &oversized, 0, 1),
-    ];
-
-    let mut conflict_core = rhwp::document_core::DocumentCore::from_bytes(R4E_RUNTIME_FIXTURE)
-        .expect("R4E conflict fixture");
-    issue_4968_r4e_registration_attempt(&mut conflict_core, 8, 1, EXACT_KERNING_SMOKE, 0);
-    let before = issue_4968_r4e_runtime_snapshot(&conflict_core);
-    let registration =
-        issue_4968_r4e_registration_attempt(&mut conflict_core, 8, 1, NO_PAIR_TABLE, 0);
-    let after = issue_4968_r4e_runtime_snapshot(&conflict_core);
-    cases.push(serde_json::json!({
-        "case": "slot-conflict",
-        "registration": registration,
-        "before": before,
-        "after": after,
-    }));
-
-    for case in &cases {
-        assert_eq!(
-            case.get("before"),
-            case.get("after"),
-            "failure matrix must preserve the pre-attempt render state: {}",
-            case.get("case")
-                .and_then(serde_json::Value::as_str)
-                .unwrap_or("unknown")
-        );
-    }
-    for index in 0..3 {
-        assert_eq!(
-            cases[index].pointer("/registration/ok"),
-            Some(&serde_json::json!(true))
-        );
-    }
-    for (index, reason) in [
-        (3, "invalid-language-index"),
-        (4, "font-byte-limit-exceeded"),
-        (5, "slot-conflict"),
-    ] {
-        assert_eq!(
-            cases[index].pointer("/registration/ok"),
-            Some(&serde_json::json!(false))
-        );
-        assert!(cases[index]
-            .pointer("/registration/error")
-            .and_then(serde_json::Value::as_str)
-            .is_some_and(|error| error.contains(reason)));
-    }
-    cases
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-#[test]
-fn issue_4968_r4e_native_runtime_probe_registers_exact_slots_and_changes_only_k1() {
-    let manifest: serde_json::Value =
-        serde_json::from_str(R4E_RUNTIME_MANIFEST).expect("R4E manifest JSON");
-    let fixture_sha256 = issue_4968_r4e_sha256_hex(R4E_RUNTIME_FIXTURE);
-    let font_sha256 = issue_4968_r4e_sha256_hex(EXACT_KERNING_SMOKE);
-    assert_eq!(
-        manifest
-            .get("inputSha256")
-            .and_then(serde_json::Value::as_str),
-        Some(fixture_sha256.as_str())
-    );
-    assert_eq!(
-        manifest
-            .pointer("/semantic/fontSource/sha256")
-            .and_then(serde_json::Value::as_str),
-        Some(font_sha256.as_str())
-    );
-
-    let mut core = rhwp::document_core::DocumentCore::from_bytes(R4E_RUNTIME_FIXTURE)
-        .expect("R4E runtime fixture");
-    let k0 = issue_4968_r4e_runtime_snapshot(&core);
-    let slots = manifest
-        .pointer("/semantic/exactSourceRegistration/slots")
-        .and_then(serde_json::Value::as_array)
-        .expect("R4E exact slots");
-    let mut registrations = Vec::with_capacity(slots.len());
-    for slot in slots {
-        let char_shape_id = slot
-            .get("charShapeId")
-            .and_then(serde_json::Value::as_u64)
-            .expect("R4E char shape id") as u32;
-        let language_index = slot
-            .get("languageIndex")
-            .and_then(serde_json::Value::as_u64)
-            .expect("R4E language index") as usize;
-        let registration = core
-            .register_exact_font_source_native(
-                char_shape_id,
-                language_index,
-                EXACT_KERNING_SMOKE,
-                0,
-            )
-            .expect("R4E exact source registration");
-        registrations.push(
-            serde_json::from_str::<serde_json::Value>(&registration)
-                .expect("R4E registration JSON"),
-        );
-    }
-    let k1 = issue_4968_r4e_runtime_snapshot(&core);
-
-    assert_eq!(slots.len(), 18);
-    assert_eq!(k0.get("pageCount"), Some(&serde_json::json!(1)));
-    assert_eq!(k1.get("pageCount"), Some(&serde_json::json!(1)));
-    assert_eq!(k0.get("canvasCommandCount"), k1.get("canvasCommandCount"));
-    assert_eq!(
-        registrations
-            .last()
-            .and_then(|value| value.pointer("/registry/slotCount")),
-        Some(&serde_json::json!(18))
-    );
-    assert_eq!(
-        registrations
-            .last()
-            .and_then(|value| value.pointer("/registry/sourceCount")),
-        Some(&serde_json::json!(1))
-    );
-    assert_eq!(
-        registrations
-            .last()
-            .and_then(|value| value.pointer("/registry/totalSourceBytes")),
-        Some(&serde_json::json!(EXACT_KERNING_SMOKE.len()))
-    );
-
-    let k0_layer = k0.get("layerTree").expect("R4E K0 layer tree");
-    let k1_layer = k1.get("layerTree").expect("R4E K1 layer tree");
-    let off_key = "section:0/para:1/char:0";
-    let on_key = "section:0/para:2/char:0";
-    assert_eq!(
-        issue_4968_r4e_positions_for_key(k0_layer, off_key),
-        issue_4968_r4e_positions_for_key(k1_layer, off_key),
-        "K0 row must remain identical after exact registration"
-    );
-    assert_ne!(
-        issue_4968_r4e_positions_for_key(k0_layer, on_key),
-        issue_4968_r4e_positions_for_key(k1_layer, on_key),
-        "K1 row must consume the registered exact pair positions"
-    );
-    assert_ne!(k0.get("svg"), k1.get("svg"));
-    assert_eq!(
-        k1.pointer("/canvasKit/summary/hiddenOverlayViolations"),
-        Some(&serde_json::json!(0))
-    );
-
-    let probe = serde_json::json!({
-        "schemaVersion": 1,
-        "issue": 4968,
-        "stage": "W9-Q3-5R4E-1",
-        "projectionContractSha256": manifest.get("projectionContractSha256"),
-        "registration": registrations,
-        "k0": k0,
-        "k1": k1,
-        "failureMatrix": issue_4968_r4e_registration_failure_matrix(),
-    });
-    if let Some(path) = std::env::var_os("RHWP_4968_R4E_NATIVE_PROBE") {
-        let mut bytes = serde_json::to_vec_pretty(&probe).expect("R4E native probe JSON");
-        bytes.push(b'\n');
-        std::fs::write(path, bytes).expect("write R4E native probe");
     }
 }
 
@@ -761,8 +523,7 @@ fn issue_4968_layout_session_caches_resolution_failures_closed() {
     assert!(mismatch_session.engine(&handle).is_none());
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_public_exact_source_fixture_is_native_wasm_portable() {
     let source = ExactFontSource {
         bytes: EXACT_KERNING_SMOKE,
@@ -1004,8 +765,7 @@ fn linear_positions(code_points: usize, advance: f64) -> Vec<f64> {
         .collect()
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_common_run_measurement_applies_pair_delta_after_ratio_and_spacing() {
     let text = "AV To WA HH";
     let code_points = text.chars().count();
@@ -1100,8 +860,7 @@ fn issue_4968_common_run_measurement_applies_pair_delta_after_ratio_and_spacing(
     }
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_common_run_measurement_preserves_k0_and_fail_closed_positions() {
     let text = "AV";
     let base_positions = vec![0.0, 9.25, 18.5];
@@ -1188,8 +947,7 @@ fn issue_4968_common_run_measurement_preserves_k0_and_fail_closed_positions() {
     );
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_layout_transaction_pins_slot_generation_and_reuses_face_cache() {
     let slot = ExactFontSlot::new(4968, 1);
     let mut registry = ExactFontSourceRegistry::default();
@@ -1245,8 +1003,7 @@ fn issue_4968_layout_transaction_pins_slot_generation_and_reuses_face_cache() {
     assert!(k0.session.is_none());
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_paragraph_measurement_commits_segments_to_one_position_map() {
     let slot = ExactFontSlot::new(4968, 1);
     let mut registry = ExactFontSourceRegistry::default();
@@ -1310,8 +1067,7 @@ fn issue_4968_paragraph_measurement_commits_segments_to_one_position_map() {
     }
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_paragraph_measurement_rolls_back_k0_and_segment_limit() {
     let slot = ExactFontSlot::new(4968, 1);
     let registry = ExactFontSourceRegistry::default();
@@ -1363,8 +1119,7 @@ fn paragraph_scalar_style(slot: ExactFontSlot, requested: bool) -> KerningParagr
     }
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_paragraph_segmentation_honors_slot_control_and_inline_boundaries() {
     let slot_a = ExactFontSlot::new(4968, 1);
     let slot_b = ExactFontSlot::new(4969, 1);
@@ -1443,8 +1198,7 @@ fn issue_4968_paragraph_segmentation_honors_slot_control_and_inline_boundaries()
         .cache_hit));
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_paragraph_segmentation_retries_nominal_identity_failure_by_word() {
     let slot = ExactFontSlot::new(4968, 1);
     let mut registry = ExactFontSourceRegistry::default();
@@ -1507,8 +1261,7 @@ fn issue_4968_paragraph_segmentation_retries_nominal_identity_failure_by_word() 
     assert!(paragraph.range_width(4, 6).expect("AV width") < 20.0);
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_paragraph_segmentation_rolls_back_execution_budget_atomically() {
     let text = "A".repeat(MAX_KERNING_PARAGRAPH_SEGMENTS + 1);
     let code_points = text.chars().count();
@@ -1570,8 +1323,7 @@ fn issue_4968_paragraph_segmentation_rolls_back_execution_budget_atomically() {
     assert_eq!(oversized.positions(), oversized_positions);
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_long_word_and_line_boundary_consume_one_paragraph_measurement() {
     let slot = ExactFontSlot::new(4968, 1);
     let mut registry = ExactFontSourceRegistry::default();
@@ -1649,8 +1401,7 @@ fn issue_4968_long_word_and_line_boundary_consume_one_paragraph_measurement() {
     }
 }
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
-#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[test]
 fn issue_4968_line_boundary_remeasurement_shares_the_segment_budget() {
     let text = "A".repeat(MAX_KERNING_PARAGRAPH_SEGMENTS);
     let code_points = text.chars().count();
@@ -1698,7 +1449,6 @@ fn issue_4968_line_boundary_remeasurement_shares_the_segment_budget() {
     assert_eq!(line_measurement.find_fitting_end(0, 2, 20.0), None);
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn public_edit_reflow_line_starts(with_exact_source: bool, body_width_hwp: u32) -> Vec<u32> {
     use rhwp::document_core::DocumentCore;
     use rhwp::model::paragraph::{CharShapeRef, Paragraph};
@@ -1739,7 +1489,6 @@ fn public_edit_reflow_line_starts(with_exact_source: bool, body_width_hwp: u32) 
         .collect()
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn issue_4968_edit_reflow_consumes_exact_boundary_measurement() {
     let (body_width_hwp, k0, k1) = (7_000..=13_000)
@@ -1757,7 +1506,6 @@ fn issue_4968_edit_reflow_consumes_exact_boundary_measurement() {
     );
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn collect_public_av_run_lengths(core: &mut rhwp::document_core::DocumentCore) -> Vec<usize> {
     fn collect(node: &serde_json::Value, lengths: &mut Vec<usize>) {
         if node.get("type").and_then(|value| value.as_str()) == Some("TextRun") {
@@ -1790,7 +1538,6 @@ fn collect_public_av_run_lengths(core: &mut rhwp::document_core::DocumentCore) -
     lengths
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[derive(Debug)]
 struct PublicAvLayoutRun {
     text: String,
@@ -1800,7 +1547,6 @@ struct PublicAvLayoutRun {
     layout_positions: Option<Vec<f64>>,
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn collect_public_av_layout_runs(
     core: &mut rhwp::document_core::DocumentCore,
 ) -> Vec<PublicAvLayoutRun> {
@@ -1836,7 +1582,6 @@ fn collect_public_av_layout_runs(
     runs
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn set_public_av_paragraph(paragraph: &mut rhwp::model::paragraph::Paragraph, char_shape_id: u32) {
     use rhwp::model::paragraph::CharShapeRef;
 
@@ -1850,7 +1595,6 @@ fn set_public_av_paragraph(paragraph: &mut rhwp::model::paragraph::Paragraph, ch
     paragraph.line_segs.clear();
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn public_fresh_render_av_core(
     with_exact_source: bool,
     body_width_hwp: u32,
@@ -1893,13 +1637,11 @@ fn public_fresh_render_av_core(
     core
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn public_fresh_render_av_run_lengths(with_exact_source: bool, body_width_hwp: u32) -> Vec<usize> {
     let mut core = public_fresh_render_av_core(with_exact_source, body_width_hwp);
     collect_public_av_run_lengths(&mut core)
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn issue_4968_fresh_pagination_and_page_tree_share_exact_boundaries() {
     let (body_width_hwp, k0, k1) = (7_000..=13_000)
@@ -1918,7 +1660,6 @@ fn issue_4968_fresh_pagination_and_page_tree_share_exact_boundaries() {
     );
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn issue_4968_final_emitted_runs_publish_exact_positions_once() {
     let body_width_hwp = (7_000..=13_000)
@@ -1951,343 +1692,6 @@ fn issue_4968_final_emitted_runs_publish_exact_positions_once() {
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
-#[test]
-fn issue_4968_visual_consumers_replay_the_published_positions() {
-    use rhwp::renderer::canvas::{CanvasCommand, CanvasRenderer};
-    use rhwp::renderer::html::HtmlRenderer;
-    use rhwp::renderer::svg::SvgRenderer;
-    use rhwp::renderer::{Renderer, TextStyle};
-
-    let mut malformed_canvas = CanvasRenderer::new();
-    malformed_canvas.draw_text_positioned(
-        "AV",
-        0.0,
-        0.0,
-        &TextStyle::default(),
-        Some(&[0.0, f64::NAN, 12.0]),
-    );
-    assert!(matches!(
-        malformed_canvas.commands(),
-        [CanvasCommand::FillText(text, 0.0, 0.0)] if text == "AV"
-    ));
-
-    let body_width_hwp = 10_000;
-    let mut k0_core = public_fresh_render_av_core(false, body_width_hwp);
-    let k0_tree = k0_core
-        .build_page_render_tree(0)
-        .expect("K0 public page tree");
-    let mut k0_canvas = CanvasRenderer::new();
-    k0_canvas.render_tree(&k0_tree);
-    assert!(k0_canvas
-        .commands()
-        .iter()
-        .all(|command| !matches!(command, CanvasCommand::FillTextPositioned(..))));
-
-    let mut k1_core = public_fresh_render_av_core(true, body_width_hwp);
-    let k1_runs = collect_public_av_layout_runs(&mut k1_core);
-    let adjusted = k1_runs
-        .iter()
-        .find(|run| run.layout_positions.is_some())
-        .expect("K1 adjusted public run");
-    let expected_positions = adjusted
-        .layout_positions
-        .as_deref()
-        .expect("K1 published positions");
-
-    let k1_tree = k1_core
-        .build_page_render_tree(0)
-        .expect("K1 public page tree");
-    let mut k1_canvas = CanvasRenderer::new();
-    k1_canvas.render_tree(&k1_tree);
-    assert!(k1_canvas.commands().iter().any(|command| matches!(
-        command,
-        CanvasCommand::FillTextPositioned(text, _, _, positions)
-            if text == &adjusted.text && positions == expected_positions
-    )));
-
-    let mut svg = SvgRenderer::new();
-    svg.render_tree(&k1_tree);
-    let second_scalar_x = adjusted.bbox_x + expected_positions[1];
-    assert!(
-        svg.output().contains(&format!("x=\"{second_scalar_x}\"")),
-        "SVG must consume the second published scalar position"
-    );
-
-    let mut html = HtmlRenderer::new();
-    html.render_tree(&k1_tree);
-    assert!(html.output().contains("text-run-positioned"));
-    let second_scalar_left = adjusted.bbox_x + expected_positions[1];
-    assert!(
-        html.output()
-            .contains(&format!("left:{second_scalar_left}px;")),
-        "HTML must consume the second published scalar position"
-    );
-
-    let k1_layer = k1_core
-        .build_page_layer_tree(0)
-        .expect("K1 public layer tree");
-    let mut layer_canvas = CanvasRenderer::new();
-    layer_canvas.render_layer_tree(&k1_layer);
-    assert!(layer_canvas.commands().iter().any(|command| matches!(
-        command,
-        CanvasCommand::FillTextPositioned(text, _, _, positions)
-            if text == &adjusted.text && positions == expected_positions
-    )));
-
-    let expected_json_positions = expected_positions
-        .iter()
-        .map(|position| format!("{position:.3}"))
-        .collect::<Vec<_>>()
-        .join(",");
-    assert!(k1_layer
-        .to_json()
-        .contains(&format!("\"positions\":[{expected_json_positions}]")));
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-#[test]
-fn issue_4968_bounded_positions_replay_and_canvaskit_work_are_fail_closed() {
-    use rhwp::paint::{LayerNode, PageLayerTree, PaintOp, RenderProfile, TextDecorationKind};
-    use rhwp::renderer::canvas::{CanvasCommand, CanvasRenderer};
-    use rhwp::renderer::canvaskit_policy::{
-        analyze_canvaskit_document_preflight, estimate_canvaskit_page_lowering_work,
-        CanvasKitBoundedWorkCount, CanvasKitPreflightPageBuild, CanvasKitReplayMode,
-    };
-    use rhwp::renderer::render_tree::{
-        BoundingBox, FieldMarkerType, PageRenderTree, RenderNode, RenderNodeType, TextRunNode,
-    };
-    use rhwp::renderer::{Renderer, TextStyle};
-
-    fn text_run(text: String, layout_positions: Option<Vec<f64>>) -> TextRunNode {
-        TextRunNode {
-            text,
-            style: TextStyle {
-                font_family: "RHWP bounded replay fixture".to_string(),
-                font_size: 12.0,
-                ..Default::default()
-            },
-            char_shape_id: None,
-            para_shape_id: None,
-            section_index: None,
-            para_index: None,
-            char_start: None,
-            cell_context: None,
-            is_para_end: false,
-            is_line_break_end: false,
-            rotation: 0.0,
-            is_vertical: false,
-            char_overlap: None,
-            border_fill_id: 0,
-            baseline: 12.0,
-            field_marker: FieldMarkerType::None,
-            layout_positions,
-            display_text: None,
-        }
-    }
-
-    fn page_tree(run: TextRunNode) -> PageRenderTree {
-        let bbox = BoundingBox::new(0.0, 0.0, 100.0, 20.0);
-        let mut tree = PageRenderTree::new(0, 100.0, 100.0);
-        tree.root
-            .children
-            .push(RenderNode::new(1, RenderNodeType::TextRun(run), bbox));
-        tree
-    }
-
-    fn layer_tree(run: TextRunNode, decoration_only: bool) -> PageLayerTree {
-        let bbox = BoundingBox::new(0.0, 0.0, 100.0, 20.0);
-        let op = if decoration_only {
-            PaintOp::text_decoration(bbox, run, TextDecorationKind::Underline)
-        } else {
-            PaintOp::text_run(bbox, run)
-        };
-        PageLayerTree::new(100.0, 100.0, LayerNode::leaf(bbox, None, vec![op]))
-    }
-
-    let k0_json =
-        serde_json::to_string(&text_run("AV".to_string(), None)).expect("serialize K0 text run");
-    assert!(!k0_json.contains("layout_positions"));
-    let valid_positions = vec![0.0, 7.5, 14.0];
-    let k1_json = serde_json::to_string(&text_run("AV".to_string(), Some(valid_positions.clone())))
-        .expect("serialize K1 text run");
-    assert!(k1_json.contains("\"layout_positions\":[0.0,7.5,14.0]"));
-
-    let mut valid_tree_canvas = CanvasRenderer::new();
-    valid_tree_canvas.render_tree(&page_tree(text_run(
-        "AV".to_string(),
-        Some(valid_positions.clone()),
-    )));
-    assert!(valid_tree_canvas.commands().iter().any(|command| matches!(
-        command,
-        CanvasCommand::FillTextPositioned(text, _, _, positions)
-            if text == "AV" && positions == &valid_positions
-    )));
-
-    for malformed in [
-        vec![1.0, 7.5, 14.0],
-        vec![0.0, f64::NAN, 14.0],
-        vec![0.0, 8.0, 7.0],
-        vec![0.0, 7.5],
-    ] {
-        let mut malformed_tree_canvas = CanvasRenderer::new();
-        malformed_tree_canvas.render_tree(&page_tree(text_run("AV".to_string(), Some(malformed))));
-        assert!(malformed_tree_canvas
-            .commands()
-            .iter()
-            .any(|command| matches!(command, CanvasCommand::FillText(text, _, _) if text == "AV")));
-        assert!(malformed_tree_canvas
-            .commands()
-            .iter()
-            .all(|command| !matches!(command, CanvasCommand::FillTextPositioned(..))));
-    }
-
-    let mut mismatched_run = text_run("AV".to_string(), Some(valid_positions));
-    mismatched_run.display_text = Some("A".to_string());
-    let mut mismatched_tree_canvas = CanvasRenderer::new();
-    mismatched_tree_canvas.render_tree(&page_tree(mismatched_run));
-    assert!(mismatched_tree_canvas
-        .commands()
-        .iter()
-        .any(|command| matches!(command, CanvasCommand::FillText(text, _, _) if text == "A")));
-    assert!(mismatched_tree_canvas
-        .commands()
-        .iter()
-        .all(|command| !matches!(command, CanvasCommand::FillTextPositioned(..))));
-
-    let max_text = "A".repeat(MAX_KERNING_RUN_CODE_POINTS);
-    let max_positions = (0..=MAX_KERNING_RUN_CODE_POINTS)
-        .map(|value| value as f64)
-        .collect::<Vec<_>>();
-    let mut max_canvas = CanvasRenderer::new();
-    max_canvas.draw_text_positioned(
-        &max_text,
-        0.0,
-        0.0,
-        &TextStyle::default(),
-        Some(&max_positions),
-    );
-    assert!(matches!(
-        max_canvas.commands(),
-        [CanvasCommand::FillTextPositioned(_, 0.0, 0.0, positions)]
-            if positions.len() == MAX_KERNING_RUN_CODE_POINTS + 1
-    ));
-
-    let over_text = "A".repeat(MAX_KERNING_RUN_CODE_POINTS + 1);
-    let over_positions = (0..=MAX_KERNING_RUN_CODE_POINTS + 1)
-        .map(|value| value as f64)
-        .collect::<Vec<_>>();
-    let malformed_positions = [
-        vec![0.0, f64::INFINITY, 2.0],
-        vec![0.0, 2.0, 1.0],
-        vec![0.0, 1.0],
-    ];
-    let mut over_canvas = CanvasRenderer::new();
-    over_canvas.draw_text_positioned(
-        &over_text,
-        0.0,
-        0.0,
-        &TextStyle::default(),
-        Some(&over_positions),
-    );
-    assert!(matches!(
-        over_canvas.commands(),
-        [CanvasCommand::FillText(_, 0.0, 0.0)]
-    ));
-    for malformed in &malformed_positions {
-        let mut canvas = CanvasRenderer::new();
-        canvas.draw_text_positioned("AV", 0.0, 0.0, &TextStyle::default(), Some(malformed));
-        assert!(matches!(
-            canvas.commands(),
-            [CanvasCommand::FillText(_, 0.0, 0.0)]
-        ));
-    }
-
-    let baseline_tree = page_tree(text_run(max_text.clone(), None));
-    let positioned_tree = page_tree(text_run(max_text.clone(), Some(max_positions.clone())));
-    let CanvasKitBoundedWorkCount::Complete(baseline_work) =
-        estimate_canvaskit_page_lowering_work(&baseline_tree, u32::MAX)
-    else {
-        panic!("bounded baseline pre-lowering work");
-    };
-    let CanvasKitBoundedWorkCount::Complete(positioned_work) =
-        estimate_canvaskit_page_lowering_work(&positioned_tree, u32::MAX)
-    else {
-        panic!("bounded positioned pre-lowering work");
-    };
-    assert!(positioned_work > baseline_work);
-    assert_eq!(
-        estimate_canvaskit_page_lowering_work(&positioned_tree, baseline_work),
-        CanvasKitBoundedWorkCount::Exceeded
-    );
-
-    let oversized_tree = page_tree(text_run("A".to_string(), Some(vec![0.0; 140_000])));
-    assert_eq!(
-        estimate_canvaskit_page_lowering_work(&oversized_tree, u32::MAX),
-        CanvasKitBoundedWorkCount::Exceeded
-    );
-
-    let baseline_layer = layer_tree(text_run(max_text.clone(), None), false);
-    let positioned_layer = layer_tree(
-        text_run(max_text.clone(), Some(max_positions.clone())),
-        false,
-    );
-    let baseline_preflight = analyze_canvaskit_document_preflight(
-        1,
-        CanvasKitReplayMode::Default,
-        RenderProfile::Screen,
-        move |_, _| {
-            Ok::<_, &'static str>(CanvasKitPreflightPageBuild::Complete {
-                tree: Box::new(baseline_layer.clone()),
-                prelower_work_units: 0,
-            })
-        },
-    );
-    let positioned_preflight = analyze_canvaskit_document_preflight(
-        1,
-        CanvasKitReplayMode::Default,
-        RenderProfile::Screen,
-        move |_, _| {
-            Ok::<_, &'static str>(CanvasKitPreflightPageBuild::Complete {
-                tree: Box::new(positioned_layer.clone()),
-                prelower_work_units: 0,
-            })
-        },
-    );
-    assert!(positioned_preflight.scanned_work_units > baseline_preflight.scanned_work_units);
-
-    let bounded_json = layer_tree(text_run(max_text, Some(max_positions)), true).to_json();
-    let bounded_value: serde_json::Value =
-        serde_json::from_str(&bounded_json).expect("bounded positions JSON");
-    let bounded_decoration = &bounded_value["root"]["ops"][0]["decoration"];
-    assert_eq!(bounded_decoration["positionsComplete"], true);
-    assert_eq!(
-        bounded_decoration["positions"]
-            .as_array()
-            .expect("bounded positions")
-            .len(),
-        MAX_KERNING_RUN_CODE_POINTS + 1
-    );
-    assert_eq!(
-        bounded_decoration["positions"][MAX_KERNING_RUN_CODE_POINTS],
-        MAX_KERNING_RUN_CODE_POINTS as f64
-    );
-
-    let oversized_json = layer_tree(text_run(over_text, Some(over_positions)), true).to_json();
-    let oversized_value: serde_json::Value =
-        serde_json::from_str(&oversized_json).expect("oversized positions JSON");
-    let oversized_decoration = &oversized_value["root"]["ops"][0]["decoration"];
-    assert_eq!(oversized_decoration["positionsComplete"], false);
-    assert_eq!(
-        oversized_decoration["positions"]
-            .as_array()
-            .expect("bounded oversized positions")
-            .len(),
-        MAX_KERNING_RUN_CODE_POINTS + 1
-    );
-}
-
-#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn issue_4968_portable_glyph_run_reuses_the_published_positions() {
     use rhwp::paint::{
@@ -2352,7 +1756,6 @@ fn issue_4968_portable_glyph_run_reuses_the_published_positions() {
     assert_eq!(advances[1].dx, published[2] - published[1]);
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn public_fresh_table_cell_av_core(
     with_exact_source: bool,
     content_width_hwp: u32,
@@ -2414,7 +1817,6 @@ fn public_fresh_table_cell_av_core(
     core
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn public_fresh_table_cell_av_run_lengths(
     with_exact_source: bool,
     content_width_hwp: u32,
@@ -2423,7 +1825,6 @@ fn public_fresh_table_cell_av_run_lengths(
     collect_public_av_run_lengths(&mut core)
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn public_fresh_text_box_av_core(
     with_exact_source: bool,
     content_width_hwp: u32,
@@ -2501,7 +1902,6 @@ fn public_fresh_text_box_av_core(
     core
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn public_fresh_text_box_av_run_lengths(
     with_exact_source: bool,
     content_width_hwp: u32,
@@ -2510,7 +1910,6 @@ fn public_fresh_text_box_av_run_lengths(
     collect_public_av_run_lengths(&mut core)
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn issue_4968_fresh_table_cell_and_text_box_share_exact_boundaries() {
     type ContainerRunLengths = fn(bool, u32) -> Vec<usize>;

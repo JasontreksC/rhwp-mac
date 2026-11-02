@@ -13,7 +13,7 @@ fn issue_241_hwpx_stamp_overlay_uses_host_paragraph_position() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let path = std::path::Path::new(repo_root).join("samples/hwpx/issue_241.hwpx");
     let bytes = std::fs::read(&path).expect("read samples/hwpx/issue_241.hwpx");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse issue_241.hwpx");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse issue_241.hwpx");
 
     let overlay_json = doc
         .get_page_overlay_images_native(0)
@@ -52,7 +52,7 @@ fn issue_241_hwpx_stamp_host_paragraph_keeps_flow_line_height() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let path = std::path::Path::new(repo_root).join("samples/hwpx/issue_241.hwpx");
     let bytes = std::fs::read(&path).expect("read samples/hwpx/issue_241.hwpx");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse issue_241.hwpx");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse issue_241.hwpx");
 
     let overlay_json = doc
         .get_page_overlay_images_native(0)

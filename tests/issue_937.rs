@@ -4,10 +4,10 @@
 //! 원본 HWP5 IR 에서는 이 기호가 한컴 PUA `U+F012B` 1글자로 저장되어 있으므로,
 //! 원문 문자는 보존하되 렌더링/측정 경로에서 표시 문자열 `(인)` 으로 치환해야 한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::Paragraph;
 use rhwp::renderer::composer::{expand_pua_render_text, pua_to_display_text};
-use rhwp::wasm_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

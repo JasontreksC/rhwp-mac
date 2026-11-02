@@ -50,10 +50,8 @@
 //! 정본의 윗여백 141HU(1.88px)와 현재 셀 패딩 약 0.95px의 기존 차이는 0.93px다.
 //! 따라서 상대 위치 오차는 1px까지만 허용하며, 셀 하단과 용지 하단의 이탈은 별도로 금지한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6896/156564340-ip-dispute-mediation.hwpx";
 /// OLE 개체가 있는 쪽 (0-based).

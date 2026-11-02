@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [#6740] 묶음(Group) 속성 setter 의 변환 파생 상태 순수성.
 //!
 //! 직렬화기는 `raw_rendering` 이 비어 있을 때만 변환 행렬을 새로 만든다

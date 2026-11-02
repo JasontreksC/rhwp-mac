@@ -3,13 +3,13 @@
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::header_footer::{HeaderFooterApply, MasterPage};
 use rhwp::model::shape::ShapeObject;
 use rhwp::model::style::BorderLineType;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const FIXTURE: &str = "samples/2025 행정업무운영 편람(최종).hwpx";
 const HWP_FIXTURE: &str = "samples/2025 행정업무운영 편람(최종).hwp";

@@ -1,7 +1,6 @@
 //! Synthetic nested-table Markdown regression.
-#![cfg(not(target_arch = "wasm32"))]
 use base64::Engine;
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 #[test]
 fn nested_tables_keep_cell_text_and_order() {

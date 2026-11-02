@@ -6,7 +6,7 @@
 //! 원본 저장 줄의 대응으로 정했다. 문서 전체의 Native/fresh WASM
 //! 시각 검증으로 확인하고 기존 두 검사에서 실제 소유와 예약 경계를 검사한다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

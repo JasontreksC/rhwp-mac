@@ -12,7 +12,7 @@
 //! `get_header_footer_edit_target_native` 는 히트테스트(`hit_test_header_footer_native`)가
 //! 쓰는 것과 같은 해석을 좌표 없이 쪽만으로 제공한다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 /// 3쪽 문서 — 쪽 번호 1(홀), 2(짝), 3(홀).
 fn three_page_doc() -> HwpDocument {

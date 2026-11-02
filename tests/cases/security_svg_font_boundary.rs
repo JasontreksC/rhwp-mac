@@ -1,7 +1,6 @@
 //! Private security regression: document font names are data in CSS and SVG.
 //! Synthetic IR preserves a real blank-document structure and a valid fixture font;
 //! this checks serialization boundaries, not Hancom layout fidelity.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::bin_data::{BinData, BinDataContent, BinDataType};
 use rhwp::paint::RenderProfile;

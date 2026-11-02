@@ -15,7 +15,6 @@
 //!     앞 쪽의 pre-emit 을 못 보고 같은 줄을 두 쪽에 그렸다.
 //!
 //! 재현물은 원본(1.5MB)의 문단 286..325 창을 잘라낸 IR 슬라이스(20KB)다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

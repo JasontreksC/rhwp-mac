@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 #[derive(Debug)]
 struct Rect {

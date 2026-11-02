@@ -51,8 +51,6 @@
 //! 들어왔다. 종전에는 이 EMF 가 파싱에 실패해 WMF 폴백으로 내려가 가려져 있었다.
 //! `the_page_transform_maps_logical_units_onto_the_device` 가 이 계약을 잠근다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::parser::ole_container::{
     contents_emf_payload, raw_contents_is_emf, strip_ole_presentation_header,
 };

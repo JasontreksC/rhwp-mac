@@ -27,7 +27,6 @@
 //!
 //! 이 시험은 순수 함수 `linear_gradient_axis` 를 직접 집는다 — 렌더 산출물을 거치지 않고
 //! 계약을 잠그므로, SVG·canvas 어느 쪽 표현이 바뀌어도 축 규약은 남는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::renderer::linear_gradient_axis;
 

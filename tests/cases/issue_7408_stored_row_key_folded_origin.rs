@@ -48,7 +48,6 @@
 //! 넘어 상자 밖으로 나간다. `edited_paragraph_is_rewrapped` 가 그 경계를 잠근다.
 //! 폭이 다른 캐시는 이 변경과 무관하게 종전대로 거절된다 — 이동량은 첫 슬롯에서만
 //! 나오고 폭은 여전히 정확히 같아야 한다(`stored_column_width_quantization` 계약).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::{Path, PathBuf};
 

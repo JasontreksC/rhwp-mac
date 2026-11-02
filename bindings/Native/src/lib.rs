@@ -8,8 +8,8 @@ use std::fs;
 use std::os::raw::c_char;
 use std::sync::Mutex;
 
+use rhwp_core::document_api::HwpDocument;
 use rhwp_core::paint::{LayerJsonOptions, RenderProfile};
-use rhwp_core::wasm_api::HwpDocument;
 
 // ── 핸들 기반 문서 API ──────────────────────────────────────────────────────
 //

@@ -5,7 +5,6 @@
 //! 읽고 attr1 에는 싣지 않으므로(짝 breakNonLatinWord 는 attr1 bit7 에 인코딩하는 것과
 //! 비대칭), HWP5 직렬화기가 lexical 값을 attr1 bits5-6 으로 재인코딩하지 않으면
 //! HWPX→HWP5 저장에서 라틴 줄나눔 설정이 통째로 사라진다. #5298(HWP5→HWPX)의 거울.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::style::ParaShape;
 use rhwp::serializer::doc_info::serialize_para_shape;

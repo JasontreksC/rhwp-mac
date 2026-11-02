@@ -22,7 +22,6 @@
 //!
 //! 판정은 렌더 트리에서 한다 — `pagination` 은 crate 내부 필드라 통합 시험에서 볼 수
 //! 없고, 무엇보다 사용자가 보는 것은 "그 쪽에 바탕쪽이 몇 겹 그려졌는가" 이기 때문이다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

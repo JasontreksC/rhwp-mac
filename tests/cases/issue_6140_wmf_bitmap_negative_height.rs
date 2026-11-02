@@ -13,7 +13,6 @@
 //!
 //! 이 테스트는 그 계약을 SVG 산출로 고정한다 — CLI PNG 는 PyMuPDF 가 내장 SVG 를
 //! 건너뛰어("ignoring external image") 이 결함을 못 잡는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

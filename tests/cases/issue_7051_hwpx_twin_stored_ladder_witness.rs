@@ -12,8 +12,6 @@
 //!
 //! 정본: `pdf/pr7268/hwp3-sample10-hwp5-p301-600-2024.pdf`(같은 문서의 한컴 2024 출력) 489쪽.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

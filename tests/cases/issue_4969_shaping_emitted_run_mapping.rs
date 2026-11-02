@@ -41,8 +41,6 @@ use shaping_paragraph::{
     HorizontalShapingParagraphScalarStyle,
 };
 use shaping_publication::HorizontalShapingPageSidecars;
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen_test::wasm_bindgen_test;
 
 const SOURCE_HAN: &[u8] =
     include_bytes!("../../ttfs/opensource/SourceHanSerifK-OldHangul-subset.otf");
@@ -157,7 +155,6 @@ fn legacy_geometry() -> HorizontalShapingLegacyGeometry {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d2_maps_three_coordinates_and_one_geometry_owner() {
     let outcome = qualified_outcome();
     let measurement = Arc::clone(&outcome.lines[0].target_runs[0].measurement);
@@ -180,7 +177,6 @@ fn issue_4969_q2_d2_maps_three_coordinates_and_one_geometry_owner() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d2_attaches_the_same_node_and_measurement_arc() {
     let outcome = qualified_outcome();
     let measurement = Arc::clone(&outcome.lines[0].target_runs[0].measurement);
@@ -204,7 +200,6 @@ fn issue_4969_q2_d2_attaches_the_same_node_and_measurement_arc() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d2_rejects_partial_or_conflicting_emitted_surfaces() {
     let outcome = qualified_outcome();
     let mut partial = candidate(TEXT, TEXT);
@@ -240,7 +235,6 @@ fn issue_4969_q2_d2_rejects_partial_or_conflicting_emitted_surfaces() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d2_utf8_and_utf16_offsets_are_not_scalar_aliases() {
     let range = project_horizontal_shaping_run_range("😀ᄒᆞᆫ글", 1, 5).expect("bounded projection");
     assert_eq!(range.scalar_start, 1);
@@ -252,7 +246,6 @@ fn issue_4969_q2_d2_utf8_and_utf16_offsets_are_not_scalar_aliases() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d5_n0_no_lineseg_owner_keeps_four_consumers_on_one_arc() {
     let (context, outcome) = qualified_context_and_outcome();
     let target_measurement = Arc::clone(&outcome.lines[0].target_runs[0].measurement);
@@ -299,7 +292,6 @@ fn issue_4969_q2_d5_n0_no_lineseg_owner_keeps_four_consumers_on_one_arc() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d5_n0_feature_detection_rejects_unsupported_surfaces_by_type() {
     let cases = [
         (
@@ -370,7 +362,6 @@ fn issue_4969_q2_d5_n0_feature_detection_rejects_unsupported_surfaces_by_type() 
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d5_n0_late_source_failure_rolls_back_all_consumers() {
     let (_, outcome) = qualified_context_and_outcome();
     let stale_context = HorizontalShapingContext::new(ExactFontSourceRegistry::default());
@@ -394,7 +385,6 @@ fn issue_4969_q2_d5_n0_late_source_failure_rolls_back_all_consumers() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d5_n0_multiple_targets_are_rejected_before_publication() {
     let (context, outcome) = qualified_context_and_outcome();
     let mut multiple = (*outcome).clone();
@@ -418,7 +408,6 @@ fn issue_4969_q2_d5_n0_multiple_targets_are_rejected_before_publication() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d5_n1_publishes_four_consumers_and_sidecar_atomically() {
     let (context, outcome) = qualified_context_and_outcome();
     let target_measurement = Arc::clone(&outcome.lines[0].target_runs[0].measurement);
@@ -488,7 +477,6 @@ fn issue_4969_q2_d5_n1_publishes_four_consumers_and_sidecar_atomically() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d5_n1_sidecar_conflict_keeps_existing_owner_and_legacy_geometry() {
     let (context, outcome) = qualified_context_and_outcome();
     let existing = map_horizontal_shaping_emitted_run(&outcome, candidate(TEXT, TEXT))
@@ -595,7 +583,6 @@ fn collect_product_text_ops<'a>(node: &'a LayerNode, ops: &mut Vec<&'a PaintOp>)
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d5_n1_product_no_lineseg_uses_one_common_run_without_nominal_duplicate() {
     let layer_tree = no_lineseg_product_core(rhwp::model::style::Alignment::Left, false, true)
         .build_page_layer_tree(0)
@@ -647,7 +634,6 @@ fn issue_4969_q2_d5_n1_product_no_lineseg_uses_one_common_run_without_nominal_du
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d5_n1_product_rejects_unsupported_no_lineseg_surfaces_before_resources() {
     let cases = [
         (rhwp::model::style::Alignment::Center, false),

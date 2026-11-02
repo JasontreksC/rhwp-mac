@@ -2655,7 +2655,7 @@ mod tests {
     /// `field_ranges[].control_idx` 가 실제 `controls[]` 인덱스보다 하나 크게 잡힌다.**
     ///
     /// `controls` 벡터 자체는 CTRL_HEADER 레코드 순서로 따로 만들어지므로 멀쩡하다 —
-    /// 어긋나는 것은 위치↔인덱스 매핑이고, 그 매핑을 `wasm_api` 의 필드 조회들이 쓴다.
+    /// 어긋나는 것은 위치↔인덱스 매핑이고, 그 매핑을 `document_api` 의 필드 조회들이 쓴다.
     #[test]
     fn test_hyperlink_does_not_shift_following_field_control_idx() {
         let para = Paragraph {

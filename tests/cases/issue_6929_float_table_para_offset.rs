@@ -21,7 +21,6 @@
 //! 완화를 넓히면 형제들이 같은 자리로 모여 겹친다. 그래서 **단에 아직 아무것도 안 놓였을
 //! 때**(`col_node.children.is_empty()`)만 앵커를 바닥으로 쓴다. 보이는 host 제목이 있는
 //! `#1549` 형상은 앵커가 단 최상단이어도 제목 줄이 먼저 놓이므로 조건에서 빠진다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

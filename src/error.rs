@@ -13,6 +13,15 @@ pub enum HwpError {
     RenderError(String),
     /// 필드 관련 오류
     InvalidField(String),
+    /// 분류가 필요 없는 일반 오류(인자 검증 실패, 이미 소비된 값 등). 메시지를 그대로 전달한다.
+    Other(String),
+}
+
+impl HwpError {
+    /// 메시지만 있는 일반 오류를 만든다.
+    pub fn other(message: impl AsRef<str>) -> Self {
+        HwpError::Other(message.as_ref().to_string())
+    }
 }
 
 impl From<crate::parser::ParseError> for HwpError {
@@ -41,6 +50,7 @@ impl std::fmt::Display for HwpError {
             HwpError::PageOutOfRange(n) => write!(f, "페이지 {}을(를) 찾을 수 없습니다", n),
             HwpError::RenderError(msg) => write!(f, "렌더링 오류: {}", msg),
             HwpError::InvalidField(msg) => write!(f, "필드 오류: {}", msg),
+            HwpError::Other(msg) => write!(f, "{}", msg),
         }
     }
 }

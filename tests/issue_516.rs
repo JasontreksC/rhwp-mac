@@ -86,7 +86,7 @@ fn issue_516_layer_tree_json_includes_watermark_for_emblem() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = std::path::Path::new(repo_root).join("samples/복학원서.hwp");
     let bytes = std::fs::read(&hwp_path).expect("read 복학원서.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
 
     let json = doc
         .get_page_layer_tree_native(0)
@@ -111,7 +111,7 @@ fn issue_516_layer_tree_json_no_watermark_for_normal_image() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = std::path::Path::new(repo_root).join("samples/복학원서.hwp");
     let bytes = std::fs::read(&hwp_path).expect("read 복학원서.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
 
     let json = doc
         .get_page_layer_tree_native(0)
@@ -133,7 +133,7 @@ fn issue_516_layer_tree_json_includes_wrap_for_behind_text() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = std::path::Path::new(repo_root).join("samples/복학원서.hwp");
     let bytes = std::fs::read(&hwp_path).expect("read 복학원서.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
 
     let json = doc
         .get_page_layer_tree_native(0)
@@ -151,7 +151,7 @@ fn issue_516_diag_count_image_ops() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = std::path::Path::new(repo_root).join("samples/복학원서.hwp");
     let bytes = std::fs::read(&hwp_path).expect("read");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     let json = doc.get_page_layer_tree_native(0).expect("layer tree");
     let image_count = json.matches("\"type\":\"image\"").count();
     let wrap_behind = json.matches("\"wrap\":\"behindText\"").count();
@@ -168,7 +168,7 @@ fn issue_516_diag_image_op_locations() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = std::path::Path::new(repo_root).join("samples/복학원서.hwp");
     let bytes = std::fs::read(&hwp_path).expect("read");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     let json = doc.get_page_layer_tree_native(0).expect("layer tree");
 
     // 모든 image op 위치의 직전 100 byte 표시

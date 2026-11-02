@@ -25,7 +25,6 @@
 //!
 //! [#7140] 중첩 표 행 유닛이 페인트 행 높이를 쓰고, 조각 예산이 mixed nested 첫 가시
 //! 유닛 예약을 함께 빼면서 쪽수·부속서 Ⅱ 쪽이 정본과 같아졌다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

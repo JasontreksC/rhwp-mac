@@ -31,8 +31,6 @@
 //! 칸 높이·괘선 위치는 여기서 잠그지 않는다(Visual Sweep 으로 확인). 판별자의 문턱(2 글자)이
 //! 코퍼스 밖에서 유지되는지도 말하지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

@@ -26,13 +26,13 @@ const SAMPLE: &str = "samples/issue1949_giant_cell_nested_tables_perf.hwp";
 const CTRL_IDX: usize = 2;
 const TARGET_ROW: u16 = 2;
 
-fn load() -> rhwp::wasm_api::HwpDocument {
+fn load() -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).expect("read sample");
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse")
 }
 
-fn target_table(doc: &rhwp::wasm_api::HwpDocument) -> &Table {
+fn target_table(doc: &rhwp::document_api::HwpDocument) -> &Table {
     match &doc.document().sections[0].paragraphs[0].controls[CTRL_IDX] {
         Control::Table(t) => t,
         other => panic!("controls[{CTRL_IDX}] 이 표가 아님: {other:?}"),
@@ -42,12 +42,12 @@ fn target_table(doc: &rhwp::wasm_api::HwpDocument) -> &Table {
 /// 편집한 native HWP의 제품 경로는 저장 뒤 다시 여는 것이다. 메모리 `page_count()`는
 /// serializer가 정규화하는 line segment/문단 상태를 거치지 않으므로, 한컴 PDF와의
 /// 쪽수 oracle에는 저장본을 재파싱한 값만 사용한다.
-fn saved_hwp(doc: &rhwp::wasm_api::HwpDocument) -> rhwp::wasm_api::HwpDocument {
+fn saved_hwp(doc: &rhwp::document_api::HwpDocument) -> rhwp::document_api::HwpDocument {
     let bytes = doc.export_hwp_native().expect("분할 HWP 저장");
     if let Ok(dump) = std::env::var("RHWP_DUMP_4138") {
         std::fs::write(dump, &bytes).expect("분할 HWP 덤프");
     }
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("분할 HWP 재파싱")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("분할 HWP 재파싱")
 }
 
 fn paragraph_instance_id(para: &rhwp::model::paragraph::Paragraph) -> Option<u32> {
@@ -59,7 +59,7 @@ fn paragraph_instance_id(para: &rhwp::model::paragraph::Paragraph) -> Option<u32
 /// `Cell::new_from_template`가 만든 오른쪽 빈 peer의 zeroed instanceId는 HWP5
 /// 저장·재파싱 뒤에도 남는다. 이 값과 clone metadata가 renderer의 strict-cut
 /// provenance이므로 실제 제품 저장 경계에서 직접 고정한다.
-fn saved_hwp_page_count_and_split_provenance(doc: &rhwp::wasm_api::HwpDocument) -> u32 {
+fn saved_hwp_page_count_and_split_provenance(doc: &rhwp::document_api::HwpDocument) -> u32 {
     let reparsed = saved_hwp(doc);
     let table = target_table(&reparsed);
     let source = table

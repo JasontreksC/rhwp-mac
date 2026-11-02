@@ -26,8 +26,6 @@
 //! 저장 줄(`LINE_SEG`)을 쓰는 문단의 줄 나눔은 바뀌지 않는다. `samples/` 1,176개 중 쪽 경계가
 //! 바뀐 문서는 이 문서 하나다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 
 const DOC: &str = "samples/issue6776/78494-virtual-convergence-industry-decree.hwpx";

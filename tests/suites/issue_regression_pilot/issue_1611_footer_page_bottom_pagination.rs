@@ -23,7 +23,7 @@ fn issue_1611_footer_page_bottom_splits_to_second_page() {
     let bytes =
         fs::read(&hwpx_path).unwrap_or_else(|e| panic!("read {}: {}", hwpx_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse 36387725_footer_page_bottom.hwpx");
 
     // 한글 정답지 2쪽 — 발신명의 footer 가 본문 직후 흡수되지 않고 다음 쪽으로 분할되어야 함.

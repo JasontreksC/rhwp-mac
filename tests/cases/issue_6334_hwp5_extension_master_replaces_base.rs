@@ -23,7 +23,6 @@
 //! 의도를 구분하지 못한다 — 한컴의 HWPX -> HWP5 저장본은 `pageDuplicate="0"` 인 바탕쪽도
 //! overlap 비트를 함께 세운다(`parser/hwpx/section.rs` 의 같은 지점 주석). 그래서 판정
 //! 근거가 파일 안이 아니라 **한컴이 실제로 어떻게 그리는가**(정답지)다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

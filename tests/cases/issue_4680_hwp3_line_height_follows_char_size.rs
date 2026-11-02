@@ -45,12 +45,11 @@
 //! 이슈의 서식 넘침 8건 중 이 축으로 닫히는 것은 `04442` 다. `04640`·`05610` 은 이미
 //! `vertsize == charPr` 이라 **다른 원인**이고, `06314` 는 위 경계에 걸리지 않는다.
 //! 본문 소실 18건·크래시 8건·`07615` 264쪽→0쪽도 이 수정의 범위가 아니다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 /// `#4680` 이 센 "서식 1쪽 → 2쪽" 8건 중 하나의 실물(부산 기장군 사무 인계인수 규칙
 /// 별지 제23-1호서식). 한/글은 원본을 1쪽으로, 수정 전 rhwp 산출을 2쪽으로 읽었다.

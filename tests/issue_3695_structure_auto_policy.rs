@@ -1,5 +1,4 @@
 //! [#3695] `export-structure --mode auto` 증거 우선순위 회귀 테스트.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::{Path, PathBuf};
 

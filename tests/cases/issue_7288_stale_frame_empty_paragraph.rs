@@ -29,8 +29,6 @@
 //! 같은 쪽에서 본문 아래로 넘치는 요소가 없어야 한다. 밀림이 되살아나면 마지막 줄이
 //! 다시 본문을 넘으므로, 위치 검사와 넘침 검사가 같은 결함을 두 각도로 잡는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

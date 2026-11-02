@@ -18,7 +18,6 @@
 //! 컨트롤 차이 3건이 보였다.
 //!
 //! 규약을 한쪽으로 통일하고, 다시 갈라지지 않도록 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 /// 종결자를 세지 않던 HWP 3.0 문서.
 const HWP3_SAMPLE: &str = "samples/SO-SUEOP.hwp";

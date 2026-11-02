@@ -16,7 +16,8 @@ fn issue_530_tac_top_caption_does_not_overlap_header_row() {
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse treatise sample.hwp");
+    let doc =
+        rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse treatise sample.hwp");
 
     // page=5, global_idx=4
     let tree = doc

@@ -55,8 +55,6 @@
 //! `pdf/156160455-social-pig-farm-income-2020.pdf` 전11쪽이다.
 //! 저장 사다리와 앞 표·두 그래프·후속 제목의 소속 및 순서를 함께 검증한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

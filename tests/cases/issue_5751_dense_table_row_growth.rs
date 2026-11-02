@@ -60,7 +60,7 @@ fn find_row_cell_height(node: &serde_json::Value, pi: u64, row: u64) -> Option<f
 fn issue_5751_dense_row_grows_to_content_plus_padding() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
 
     // s0:pi=7 표는 2쪽(index 1)에서 행 0~8 을 그린다.

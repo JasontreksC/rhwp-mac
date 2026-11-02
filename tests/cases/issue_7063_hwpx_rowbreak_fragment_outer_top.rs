@@ -35,8 +35,6 @@
 //! 리베이스 전 전29쪽 Native/fresh WASM 최저92.22927% 증적은 별도로 보존한다.
 //! 현재 검사는 원본 HU 관계를 검증하며 그 통과만으로 최신 시각 검증·PR 승인을 선언하지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

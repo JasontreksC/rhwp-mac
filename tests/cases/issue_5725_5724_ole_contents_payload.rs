@@ -7,7 +7,6 @@
 //!
 //! - #5725: `Hwp 5.0 Equation Editor(HwpEq5x)` 봉투 → 기존 수식 렌더러로 배선.
 //! - #5724: placeable/표준 WMF·EMF·비트맵 `CONTENTS` → 기존 재생기로 배선.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 use std::path::Path;

@@ -53,8 +53,6 @@
 //!   (래칫은 감소를 통과시키므로 낮추지 않으면 재발이 안 잡힌다.)
 //! ```
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

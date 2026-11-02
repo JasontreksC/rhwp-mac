@@ -9,7 +9,6 @@
 //! inset 오인 차단) 셀 줄도 저장 cs/sw 를 존중한다.
 //!
 //! 픽스처는 원본 HWPX 구역0 문단 0..2 절단 + BinData 1×1 스텁 축소본(69KB).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

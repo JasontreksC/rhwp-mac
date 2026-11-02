@@ -4,13 +4,13 @@
 //! 중첩 1x1 표가 있다. 해당 문단의 LINE_SEG.line_height는 내부 표의 실제 높이를 담지
 //! 않으므로, 측정 결과는 `line_seg.vpos + line_height`보다 커야 한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::parser::parse_document;
 use rhwp::renderer::composer::compose_paragraph;
 use rhwp::renderer::height_measurer::HeightMeasurer;
 use rhwp::renderer::style_resolver::resolve_styles_with_variant;
 use rhwp::renderer::{hwpunit_to_px, DEFAULT_DPI};
-use rhwp::wasm_api::HwpDocument;
 
 fn assert_issue_1133_nested_table_height_contract(path: &str) {
     let bytes = std::fs::read(path).unwrap_or_else(|e| panic!("read {path}: {e}"));

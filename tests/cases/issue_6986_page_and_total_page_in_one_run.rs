@@ -27,7 +27,6 @@
 //!
 //! 픽스처는 `samples/issue5590_per_row_column_widths.hwpx` 의 첫 칸 문단을 제보 구조로
 //! 바꾼 것이다(1쪽 문서라 기대값은 `- 1 / 1 -`).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

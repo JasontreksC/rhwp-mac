@@ -9,7 +9,7 @@
 //! 실제로 그려진 번호)와 탐색 질의의 번호가 같아야 한다. fixture 는
 //! `scripts/generate_outline_navigation_fixture.py` 가 만든다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const FIXTURE: &str = "samples/pr4093/outline_navigation_table_cell_number.hwpx";
 const DEMO_FIXTURE: &str = "samples/pr4093/outline_navigation_panel_demo.hwpx";

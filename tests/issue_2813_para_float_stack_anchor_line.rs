@@ -26,7 +26,8 @@ fn issue_2813_stack_stays_on_first_page_with_trailing_anchor_line() {
     let bytes =
         fs::read(&hwpx_path).unwrap_or_else(|e| panic!("read {}: {}", hwpx_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse dangjik_dutylog.hwpx");
+    let doc =
+        rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse dangjik_dutylog.hwpx");
 
     // 한글 COM PageCount = 2 (저장 PDF 동일). 수정 전 3쪽.
     assert_eq!(

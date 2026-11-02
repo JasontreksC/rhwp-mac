@@ -6,7 +6,6 @@
 //!
 //! 문서 IrDiff-0 왕복은 M04-2/3 본체다. 여기는 proptest 가 CI 에서 실제로
 //! 돈다는 최소 불변식만 본다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use proptest::prelude::*;
 

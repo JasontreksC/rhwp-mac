@@ -11,7 +11,6 @@
 //! 수정: `stored_empty_anchor_band_host_line_advance_hu` — #2439 가 native
 //! HWP5·단일 표·양수 offset 으로 갖고 있던 같은 사다리 증거를 HWPX 저장
 //! 레이아웃과 다중 자리차지 개체로 넓힌다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

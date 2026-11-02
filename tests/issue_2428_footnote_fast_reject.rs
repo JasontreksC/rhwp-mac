@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 /// #2428: 각주가 없는 페이지는 render tree 기반 hit-test 전에 빠르게 제외한다.
 ///

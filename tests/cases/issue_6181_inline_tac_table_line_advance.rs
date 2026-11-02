@@ -21,13 +21,12 @@
 //!
 //! 쪽수는 12/12 로 한/글과 같고 넘침·겹침 지표도 전후가 같아 게이트가 전부 침묵한다.
 //! 그래서 좌표를 직접 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6181/156562368_inline_tac_table_line_advance.hwpx";
 const PAGE_INDEX: u32 = 4; // 0-based — 인쇄 4쪽(물리 5쪽)

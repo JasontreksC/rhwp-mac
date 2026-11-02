@@ -46,7 +46,6 @@ mod renderer {
 mod shaping_glyph;
 
 use std::sync::Arc;
-#[cfg(not(target_arch = "wasm32"))]
 use std::time::Instant;
 
 use kerning::{ExactFontSlot, ExactFontSource, ExactFontSourceRegistry};
@@ -83,8 +82,6 @@ use shaping_paragraph::{
 use shaping_publication::{
     HorizontalShapingPageSidecars, HorizontalShapingRunDecision, HorizontalShapingRunRange,
 };
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen_test::wasm_bindgen_test;
 
 const SOURCE_HAN: &[u8] =
     include_bytes!("../../ttfs/opensource/SourceHanSerifK-OldHangul-subset.otf");
@@ -355,7 +352,6 @@ fn same_f64(left: f64, right: f64) -> bool {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_c_canonical_instance_reaches_glyph_run_and_variable_outline() {
     let title = [
         ShapingVariation {
@@ -413,7 +409,6 @@ fn issue_4969_q3_c_canonical_instance_reaches_glyph_run_and_variable_outline() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_c_default_and_title_instances_do_not_share_outline_identity() {
     let title = [
         ShapingVariation {
@@ -457,7 +452,6 @@ fn issue_4969_q3_c_default_and_title_instances_do_not_share_outline_identity() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_c_variable_outline_is_selected_only_on_proven_shadow_backends() {
     let title = [
         ShapingVariation {
@@ -551,7 +545,6 @@ fn issue_4969_q3_c_variable_outline_is_selected_only_on_proven_shadow_backends()
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_e4_incomplete_or_malformed_outline_falls_back_atomically() {
     let title = [
         ShapingVariation {
@@ -645,56 +638,6 @@ fn issue_4969_q3_e4_incomplete_or_malformed_outline_falls_back_atomically() {
 }
 
 #[test]
-#[cfg(all(not(target_arch = "wasm32"), feature = "native-skia"))]
-fn issue_4969_q3_c_native_skia_exact_blob_instance_round_trips_coordinates() {
-    use skia_safe::font_arguments::{variation_position::Coordinate, VariationPosition};
-    use skia_safe::{Font, FontArguments, FontMgr, FourByteTag};
-
-    let default_typeface = FontMgr::default()
-        .new_from_data(skia_safe::Data::new_copy(HAPPINESS), Some(0))
-        .expect("Native Skia must construct the exact official variable TTF");
-    let coordinates = [
-        Coordinate {
-            axis: FourByteTag::from_chars('o', 'p', 's', 'z'),
-            value: 900.0,
-        },
-        Coordinate {
-            axis: FourByteTag::from_chars('w', 'g', 'h', 't'),
-            value: 900.0,
-        },
-    ];
-    let arguments = FontArguments::new().set_variation_design_position(VariationPosition {
-        coordinates: &coordinates,
-    });
-    let title_typeface = default_typeface
-        .clone_with_arguments(&arguments)
-        .expect("Native Skia must clone the exact Title instance");
-    let round_trip = title_typeface
-        .variation_design_position()
-        .expect("Native Skia must expose the applied design coordinates");
-    for expected in coordinates {
-        assert!(round_trip.iter().any(|actual| {
-            actual.axis == expected.axis && (actual.value - expected.value).abs() <= f32::EPSILON
-        }));
-    }
-
-    let mut default_font = Font::new(default_typeface, 1_000.0);
-    default_font.set_linear_metrics(true).set_subpixel(true);
-    let glyphs = default_font.text_to_glyphs_vec(VARIABLE_TEXT);
-    let mut default_widths = vec![0.0; glyphs.len()];
-    default_font.get_widths(&glyphs, &mut default_widths);
-    let mut title_font = Font::new(title_typeface, 1_000.0);
-    title_font.set_linear_metrics(true).set_subpixel(true);
-    let mut title_widths = vec![0.0; glyphs.len()];
-    title_font.get_widths(&glyphs, &mut title_widths);
-    assert!(default_widths
-        .iter()
-        .zip(&title_widths)
-        .any(|(default, title)| (default - title).abs() > f32::EPSILON));
-}
-
-#[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d4_a_projects_exact_local_geometry_and_clusters() {
     let (sidecars, measurement, _) = prepared_sidecar();
     let run = text_run();
@@ -802,7 +745,6 @@ fn issue_4969_q2_d4_a_projects_exact_local_geometry_and_clusters() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d4_a_fails_closed_without_node_or_source_certificate() {
     let (sidecars, _, _) = prepared_sidecar();
     let run = text_run();
@@ -868,7 +810,6 @@ fn issue_4969_q2_d4_a_fails_closed_without_node_or_source_certificate() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d4_a_certificate_shares_registry_bytes_and_rejects_stale_generation() {
     let (context, outcome) = qualified_context_and_outcome();
     let measurement = Arc::clone(&outcome.lines[0].target_runs[0].measurement);
@@ -918,7 +859,6 @@ fn issue_4969_q2_d4_a_certificate_shares_registry_bytes_and_rejects_stale_genera
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d4_a_defers_nonzero_vertical_design_positioning() {
     let (sidecars, measurement, certificate) = prepared_sidecar();
     let mut changed_measurement = (*measurement).clone();
@@ -967,7 +907,6 @@ fn issue_4969_q2_d4_a_defers_nonzero_vertical_design_positioning() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d4_a_shadow_lowerer_does_not_mutate_the_input_leaf() {
     let (sidecars, _, _) = prepared_sidecar();
     let run = text_run();
@@ -986,7 +925,6 @@ fn issue_4969_q2_d4_a_shadow_lowerer_does_not_mutate_the_input_leaf() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d4_b_common_run_claim_is_unique_and_resource_bounded() {
     let (sidecars, measurement, _) = prepared_sidecar();
     let run = text_run();
@@ -1018,7 +956,6 @@ fn issue_4969_q2_d4_b_common_run_claim_is_unique_and_resource_bounded() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d4_a_reject_reason_names_are_stable_and_non_sensitive() {
     assert_eq!(
         HorizontalShapingGlyphLoweringRejectReason::MissingSidecar.as_str(),
@@ -1092,7 +1029,6 @@ fn issue_4969_q2_d5_r0_prepares_one_portable_source_once_for_1_2_8_runs() {
 }
 
 #[test]
-#[cfg(not(target_arch = "wasm32"))]
 fn issue_4969_q3_e5_instance_run_payload_matrix_is_resource_bounded() {
     let instance = |opsz, wght| {
         vec![
@@ -1268,7 +1204,6 @@ fn issue_4969_q3_e5_instance_run_payload_matrix_is_resource_bounded() {
 
 #[test]
 #[ignore = "local Q3-E5 component performance receipt"]
-#[cfg(not(target_arch = "wasm32"))]
 fn issue_4969_q3_e5_local_lowering_component_performance_receipt() {
     const ITERATIONS: usize = 64;
     let mode = std::env::var("RHWP_Q3_E5_LOWERING_MODE")

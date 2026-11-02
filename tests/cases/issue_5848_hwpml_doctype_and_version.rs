@@ -12,7 +12,6 @@
 //! 이 시험은 네 겹이 모두 열렸는지와, **열면서 보안 가드가 살아 있는지**를 함께 고정한다.
 //! 픽스처는 저장소의 2.91 HML 을 시험 시점에 변형해 만든다 — 새 이진 자산을 넣지
 //! 않는 기존 방식(#3707)과 같다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::PathBuf;
 
@@ -60,8 +59,8 @@ fn variant(prologue: &str, version: Option<&str>, body_patch: Option<(&str, &str
 }
 
 fn open_pages(xml: &str) -> Result<usize, String> {
-    let doc =
-        rhwp::wasm_api::HwpDocument::from_bytes(xml.as_bytes()).map_err(|e| format!("{e:?}"))?;
+    let doc = rhwp::document_api::HwpDocument::from_bytes(xml.as_bytes())
+        .map_err(|e| format!("{e:?}"))?;
     Ok(doc.page_count() as usize)
 }
 

@@ -33,10 +33,8 @@
 //! 대상을 `pi`/`ci` 로 직접 집는다 — 표 개수만 보면 대상 표가 사라지거나 다른 쪽으로 가도
 //! 통과한다. lane 으로 쌓인 형제(`#6795` fixture 의 통제군)와 조각 형제(`#6795`)는 그대로다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6946/44529-logistics-policy-rule-amendment.hwp";
 
