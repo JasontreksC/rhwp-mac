@@ -9,6 +9,7 @@ use std::fs;
 use std::os::raw::c_char;
 use std::path::{Path, PathBuf};
 
+use rhwp_core::paint::{LayerJsonOptions, RenderProfile};
 use rhwp_core::wasm_api::HwpDocument;
 
 const ALL_PAGES: i32 = -1;
@@ -55,12 +56,30 @@ pub extern "C" fn rhwp_read_text(input_path: *const c_char, page: i32) -> *mut c
     })
 }
 
+/// [macOS 네이티브 스파이크] 한 쪽의 레이어 트리(PaintOp IR)를 JSON으로 돌려준다.
+///
+/// Swift 렌더러가 `PaintOp`을 CoreGraphics/CoreText로 재생할 수 있는지 검증하기 위한
+/// 경로다. 기존 함수들과 같은 무상태(경로 입력) 형태로 두었으며, 쪽마다 문서를 다시
+/// 파싱하므로 성능 측정용이 아니다. 핸들 기반 API로 대체되기 전까지의 임시 표면이다.
+///
+/// 반환 JSON: `{"ok":true,"pageCount":N,"page":P,"layerTree":{...}}`
+/// (`layerTree`는 `get_page_layer_tree_native` 원문을 그대로 싣는다.)
+#[no_mangle]
+pub extern "C" fn rhwp_page_layer_tree(input_path: *const c_char, page: i32) -> *mut c_char {
+    ffi_result(|| {
+        let input_path = read_utf8(input_path, "input_path")?;
+        let page = normalize_page(page)?
+            .ok_or_else(|| "page는 0 이상의 단일 페이지 번호여야 합니다.".to_string())?;
+        page_layer_tree(Path::new(&input_path), page)
+    })
+}
+
 /// 이 모듈이 돌려준 문자열을 해제한다.
 ///
 /// # Safety
 ///
-/// `ptr` 은 이 모듈의 `rhwp_export_text`·`rhwp_export_markdown`·`rhwp_read_text` 가
-/// 돌려준 포인터이거나 널이어야 한다. 다른 할당자에서 온 포인터를 넘기거나 같은
+/// `ptr` 은 이 모듈의 `rhwp_export_text`·`rhwp_export_markdown`·`rhwp_read_text`·
+/// `rhwp_page_layer_tree` 가 돌려준 포인터이거나 널이어야 한다. 다른 할당자에서 온 포인터를 넘기거나 같은
 /// 포인터를 두 번 넘기면 정의되지 않은 동작이다.
 ///
 /// C ABI 심볼은 바뀌지 않으므로 C#·Swift 등 호출 측 선언은 그대로 쓸 수 있다.
@@ -128,6 +147,29 @@ fn read_text(input_path: &Path, target_page: Option<u32>) -> Result<String, Stri
     }
 
     Ok(text_json(page_count, &extracted))
+}
+
+fn page_layer_tree(input_path: &Path, page: u32) -> Result<String, String> {
+    let data = fs::read(input_path)
+        .map_err(|e| format!("파일을 읽을 수 없습니다 - {}: {}", input_path.display(), e))?;
+    let doc = HwpDocument::from_bytes(&data).map_err(|e| format!("HWP 파싱 실패 - {}", e))?;
+    let page_count = doc.page_count();
+    // 범위 검사는 기존 경로와 같은 규칙(select_pages)을 재사용한다.
+    select_pages(page_count, Some(page))?;
+
+    let layer_tree = doc
+        .get_page_layer_tree_with_options_native(
+            page,
+            RenderProfile::Screen,
+            LayerJsonOptions::default(),
+        )
+        .map_err(|e| format!("페이지 {} 레이어 트리 생성 실패 - {:?}", page, e))?;
+
+    // layerTree는 이미 유효한 JSON이므로 이스케이프 없이 그대로 끼워 넣는다.
+    Ok(format!(
+        "{{\"ok\":true,\"pageCount\":{},\"page\":{},\"layerTree\":{}}}",
+        page_count, page, layer_tree
+    ))
 }
 
 fn export_markdown_to_dir(
@@ -379,4 +421,56 @@ fn json_escape(s: &str) -> String {
         }
     }
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// 저장소 루트 기준 샘플 경로. 파일이 없으면 조용히 통과하지 않고 실패시킨다.
+    fn sample(name: &str) -> PathBuf {
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../samples")
+            .join(name);
+        assert!(path.exists(), "샘플 파일 없음: {}", path.display());
+        path
+    }
+
+    #[test]
+    fn page_layer_tree_wraps_raw_layer_json() {
+        let json = page_layer_tree(&sample("KTX.hwp"), 0).expect("레이어 트리 생성");
+
+        // 봉투 필드와, Swift 렌더러가 소비하는 최상위 필드가 모두 실려 있어야 한다.
+        assert!(json.starts_with("{\"ok\":true,\"pageCount\":"));
+        assert!(json.contains("\"page\":0,\"layerTree\":{"));
+        assert!(json.contains("\"coordinateSystem\":\"page-top-left-y-down\""));
+        assert!(json.contains("\"pageWidth\":") && json.contains("\"pageHeight\":"));
+        // 레이어 트리 원문은 이스케이프 없이 그대로 들어간다(문자열 안에 갇히면 안 된다).
+        assert!(!json.contains("\\\"layerTree\\\""));
+        assert!(json.ends_with('}'));
+    }
+
+    #[test]
+    fn page_layer_tree_rejects_out_of_range_page() {
+        let error = page_layer_tree(&sample("KTX.hwp"), 9999).expect_err("범위 초과는 오류");
+        assert!(error.contains("범위를 벗어났습니다"), "{error}");
+    }
+
+    #[test]
+    fn page_layer_tree_reports_missing_file() {
+        let error =
+            page_layer_tree(Path::new("/nonexistent/rhwp.hwp"), 0).expect_err("파일 없음은 오류");
+        assert!(error.contains("파일을 읽을 수 없습니다"), "{error}");
+    }
+
+    #[test]
+    fn ffi_rejects_all_pages_sentinel_for_layer_tree() {
+        // 레이어 트리는 한 쪽씩만 받는다. -1(전체)은 오류 봉투로 돌아와야 한다.
+        let path = CString::new(sample("KTX.hwp").to_str().unwrap()).unwrap();
+        let raw = rhwp_page_layer_tree(path.as_ptr(), -1);
+        assert!(!raw.is_null());
+        let text = unsafe { CStr::from_ptr(raw) }.to_str().unwrap().to_owned();
+        unsafe { rhwp_string_free(raw) };
+        assert!(text.starts_with("{\"ok\":false"), "{text}");
+    }
 }
