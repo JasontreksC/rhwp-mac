@@ -19817,7 +19817,7 @@ fn test_get_table_bbox_at_page_for_giant_multi_page_cell() {
     use std::path::Path;
 
     for path in [
-        "rhwp-studio/public/samples/issue1949_giant_cell_nested_tables_perf.hwp",
+        "samples/issue1949_giant_cell_nested_tables_perf.hwp",
         "samples/issue1949_giant_cell_nested_tables_perf.hwpx",
     ] {
         let data = std::fs::read(Path::new(path)).expect("#2400 권위 샘플 읽기");

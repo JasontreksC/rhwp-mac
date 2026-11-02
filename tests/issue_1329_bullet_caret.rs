@@ -39,7 +39,7 @@ fn assert_caret_x_matches_body_start(actual: f64, expected: f64, context: &str) 
 
 #[test]
 fn issue_1329_bullet_enter_empty_line_caret_stays_after_marker() {
-    let mut doc = load_doc("rhwp-studio/public/samples/number-bullet.hwp");
+    let mut doc = load_doc("samples/number-bullet.hwp");
     let split_para = 1;
     let split_offset = paragraph_len(&doc, split_para);
 
@@ -56,7 +56,7 @@ fn issue_1329_bullet_enter_empty_line_caret_stays_after_marker() {
 
 #[test]
 fn issue_1329_number_enter_empty_line_caret_stays_after_marker() {
-    let mut doc = load_doc("rhwp-studio/public/samples/para-head-num-2.hwp");
+    let mut doc = load_doc("samples/para-head-num-2.hwp");
     let split_para = 1;
     let split_offset = paragraph_len(&doc, split_para);
 

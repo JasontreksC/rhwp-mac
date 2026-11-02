@@ -2,31 +2,20 @@
 name = "rhwp"
 version = "0.8.7"
 edition = "2021"
-description = "HWP file viewer and editor written in Rust, targeting WebAssembly"
+description = "HWP/HWPX/HWP3 document engine (parse, layout, edit, serialize) used by the macOS app"
 license = "MIT"
 repository = "https://github.com/edwardkim/rhwp"
 autotests = false
 autoexamples = false
 
 [workspace]
-members = [".", "crates/*", "tools/rhwp-subsecond", "bindings/Native", "tools/batch-convert", "tools/llm_verifier/verdict_protocol", "tools/llm_verifier/claim_bind", "tools/llm_verifier/criteria_decomp"]
+members = [".", "crates/*", "bindings/Native"]
 default-members = [".", "crates/*"]
 resolver = "2"
 
 [lib]
-# rhwp 는 Rust 라이브러리가 먼저다 — CLI 두 개, `bindings/Native`, `tools/*` 가 전부 rlib 으로
-# 링크한다. 브라우저용 cdylib 이 그 다음이다. 이 순서는 Dioxus CLI 가 핫패치 인자를 잡을 때 첫
-# crate type 으로 분류하는 규칙과도 맞아떨어진다 — 뒤집으면 `--hot-patch` 가 조용히 안 먹는다.
-# (버전은 여기 적지 않는다. 유일한 사본은 아래 `subsecond` 의 정확 핀이다 — #4580.)
-crate-type = ["rlib", "cdylib"]
-
-[[bin]]
-name = "rhwp"
-path = "src/main.rs"
-
-[[bin]]
-name = "font-metric-gen"
-path = "src/tools/font_metric_gen.rs"
+# 엔진은 rlib 하나다. macOS 앱은 bindings/Native 가 이 rlib 을 정적 라이브러리(XCFramework)로 감싸 쓴다.
+crate-type = ["rlib"]
 
 # BEGIN RHWP GENERATED TEST TARGETS
 # tests/suites/manifest.json에서 생성한다. 직접 수정하지 않는다.
@@ -144,20 +133,8 @@ name = "regression_suite_028"
 path = "tests/generated/regression_suite_028.rs"
 
 [[test]]
-name = "cli_exit_codes"
-path = "tests/cli_exit_codes.rs"
-
-[[test]]
-name = "cli_exit_codes_native"
-path = "tests/cli_exit_codes_native.rs"
-
-[[test]]
 name = "issue_1144"
 path = "tests/issue_1144.rs"
-
-[[test]]
-name = "issue_1144_native"
-path = "tests/issue_1144_native.rs"
 
 [[test]]
 name = "issue_2833_hml_adapter_row_sizes"
@@ -231,48 +208,14 @@ rhwp-ooxml-chart = { path = "crates/rhwp-ooxml-chart" }
 rhwp-password-crypto = { path = "crates/rhwp-password-crypto" }
 wasm-bindgen = "0.2"
 cfb = "0.15"
-crc32fast = "1"
-des = "0.9"
 flate2 = "1.0"
 byteorder = "1.5"
 base64 = "0.23"
-# [#4509] 캡슐 서명(4년 축) — 결정론 서명이라 replay/lineage 의 결정론 문화와
-# 정합. 순수 Rust 라 wasm 타깃도 그대로 컴파일된다.
-ed25519-dalek = "3"
-# 양자내성 서명(ML-DSA / Dilithium, NIST FIPS 204) — Ed25519 는 Shor 로 깨지므로
-# 작업캡슐·출처 서명을 양자 이후에도 살리는 확장. 순수 Rust 라 wasm 도 그대로 컴파일된다.
-# 시드(32B) 결정론 키생성·결정론 서명만 쓰므로 crate 의 getrandom/rand_core/pkcs8 기능은
-# 끄고(엔트로피는 프로젝트의 getrandom::fill 로 공급) alloc 만 켠다 — 의존 표면 최소화.
-ml-dsa = { version = "0.1", default-features = false, features = ["alloc"] }
 aes = "0.9"
-cbc = "0.2"
 cipher = "0.5"
-hmac = "0.13"
-pbkdf2 = "0.13"
 getrandom = { version = "0.4", features = ["wasm_js"] }
-# [agent_seal] 에이전트 전용 완전 엔트로피 봉인(1번 모드)도 아래 보안 트레일러와
-# 같은 XChaCha20-Poly1305를 쓴다. OTP(2번 모드)는 XOR+getrandom뿐이라 별도
-# 의존성이 없다.
-sha1 = "0.11"
 sha2 = "0.11"
 blake3 = "1"
-# [보안 트레일러] HWP3 강암호 append 트레일러 — memory-hard KDF(Argon2id) +
-# misuse-resistant AEAD(XChaCha20-Poly1305). 순수 Rust(RustCrypto) 라 wasm 도 그대로 컴파일.
-#
-# 기본 피처는 끈다 — argon2 의 `rand`/`password-hash` 와 chacha20poly1305 의
-# `getrandom` 은 rand_core 0.6 을 거쳐 **getrandom 0.2** 를 끌어오는데, 0.2 는
-# wasm32-unknown-unknown 에서 `js` 피처 없이는 compile_error! 로 죽는다(이
-# 저장소는 getrandom 0.4 + wasm_js 를 쓴다). 여기 코드는 소금·논스를
-# `getrandom::fill` 로 직접 만들고 저수준 Argon2 API 만 쓰므로 그 피처가
-# 필요 없다 — 끊어 두면 wasm 빌드가 구버전 getrandom 을 아예 만나지 않는다.
-argon2 = { version = "0.6", default-features = false, features = ["alloc"] }
-chacha20poly1305 = { version = "0.11", default-features = false, features = ["alloc"] }
-zeroize = "1"
-# [보안 트레일러 · 포스트양자] ML-KEM-768(NIST FIPS 203) 격자 KEM — 공개키 봉인의
-# 양자안전 키교환. 대칭부(XChaCha20-Poly1305)는 이미 양자내성이고, Shor 에 깨지는
-# 비대칭 키교환만 격자 KEM 으로 교체한다. 순수 Rust(RustCrypto) 라 wasm 도 그대로 컴파일.
-ml-kem = "0.3"
-rand_core = "0.10"
 zip = { version = "8.5", default-features = false, features = ["deflate"] }
 quick-xml = "0.42"
 roxmltree = "0.21"
@@ -293,16 +236,9 @@ serde_json = "1"
 ttf-parser = "0.25"
 rustybuzz = "0.20"
 
-console_error_panic_hook = { version = "0.1", optional = true }
-# [#4580] 핫패치 버전의 **유일한** 사본. `dx` 가 만든 점프 테이블을 이 크레이트가 역직렬화하므로
-# 설치할 dioxus-cli 도 같은 버전이어야 한다 — `scripts/dioxus-cli-version.mjs` 가 여기서 유도한다.
-# 정확 핀(`=`)이 아니면 그 유도가 성립하지 않는다.
-subsecond = { version = "=0.7.10", optional = true }
-
 [features]
-default = ["console_error_panic_hook"]
+default = []
 native-skia = ["dep:resvg", "dep:skia-safe"]
-subsecond-dev = ["dep:subsecond"]
 # [gym_gpu_raster] GPU 가속 SVG 래스터화 경로 (네이티브 전용). native-skia 와 같은 방식으로
 # 선택 게이팅한다 — CI 는 GPU 없이도 컴파일되고, 실제 GPU 실행은 로컬에서만 일어난다.
 # vello(+vello_svg)로 SVG 를 GPU 래스터화하고, resvg(CPU)를 같은 usvg 트리로 돌려 정직한
@@ -432,57 +368,6 @@ unused_assignments = "allow"
 unused_macros = "allow"
 # wmf 모듈의 tracing feature cfg 경고 억제
 unexpected_cfgs = { level = "allow", check-cfg = ['cfg(feature, values("tracing", "svg"))'] }
-
-# 재사용 가능한 개발자 도구만 명시적으로 Cargo target에 등록한다.
-# 이슈별 일회성 probe는 mydocs/tech/investigations/issue-*/probes에 보존하며
-# 기본 build/clippy 대상으로 다시 끌어오지 않는다.
-[[example]]
-name = "audit_image_magic"
-path = "tools/diagnostics/audit_image_magic.rs"
-
-[[example]]
-name = "audit_studio_image_parity"
-path = "tools/diagnostics/audit_studio_image_parity.rs"
-
-[[example]]
-name = "dump_layer_json_page"
-path = "tools/diagnostics/dump_layer_json_page.rs"
-
-[[example]]
-name = "dump_source_images"
-path = "tools/diagnostics/dump_source_images.rs"
-
-[[example]]
-name = "edit_sweep"
-path = "tools/diagnostics/edit_sweep.rs"
-
-[[example]]
-name = "hwpx_dump_empty"
-path = "tools/diagnostics/hwpx_dump_empty.rs"
-
-[[example]]
-name = "hwpx_dump_text"
-path = "tools/diagnostics/hwpx_dump_text.rs"
-
-[[example]]
-name = "hwpx_hwp_ir_diff"
-path = "tools/diagnostics/hwpx_hwp_ir_diff.rs"
-
-[[example]]
-name = "hwpx_roundtrip"
-path = "tools/diagnostics/hwpx_roundtrip.rs"
-
-[[example]]
-name = "build_issue_505_fixture"
-path = "tools/fixture_generators/build_issue_505_fixture.rs"
-
-[[example]]
-name = "build_issue_5800_fixture"
-path = "tools/fixture_generators/build_issue_5800_fixture.rs"
-
-[[example]]
-name = "font_metric_coverage_worker"
-path = "tools/diagnostics/font_metric_coverage_worker.rs"
 
 [profile.release]
 lto = true

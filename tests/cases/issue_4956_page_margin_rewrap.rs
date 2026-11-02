@@ -124,8 +124,7 @@ fn no_lineseg_text_paragraphs(core: &DocumentCore) -> usize {
 
 #[test]
 fn body_rewraps_when_right_margin_grows() {
-    let bytes = std::fs::read("rhwp-studio/public/samples/biz_plan.hwp")
-        .expect("fixture 를 읽을 수 있어야 한다");
+    let bytes = std::fs::read("samples/biz_plan.hwp").expect("fixture 를 읽을 수 있어야 한다");
     let mut core = DocumentCore::from_bytes(&bytes).expect("fixture 파싱");
 
     let before_right = max_text_right_all_pages(&core);
@@ -165,8 +164,7 @@ fn body_rewraps_when_right_margin_grows() {
 fn body_rewraps_when_left_margin_grows() {
     // 왼쪽 여백은 본문 원점이 함께 움직여 글이 따라가는 것처럼 보이지만, 줄 폭이 옛 값이면
     // 오른쪽으로 그만큼 넘친다 — 오른쪽 여백과 같은 결함의 다른 얼굴이다.
-    let bytes = std::fs::read("rhwp-studio/public/samples/biz_plan.hwp")
-        .expect("fixture 를 읽을 수 있어야 한다");
+    let bytes = std::fs::read("samples/biz_plan.hwp").expect("fixture 를 읽을 수 있어야 한다");
     let mut core = DocumentCore::from_bytes(&bytes).expect("fixture 파싱");
 
     let before_overflow = max_text_right_all_pages(&core) - body_right_px(&core);
@@ -253,8 +251,7 @@ fn page_height_alone_does_not_rewrap() {
     // 재래핑은 공짜가 아니다 — 저장 분할을 버리고 새로 접는 것은 실측 광역 회귀가 있는
     // 동작이라(commands/document.rs 의 92셋 전수: 88→76) 본문 가로 폭이 실제로 바뀐
     // 구역에만 걸어야 한다. 용지 높이는 줄바꿈과 무관하므로 아무것도 건드리면 안 된다.
-    let bytes = std::fs::read("rhwp-studio/public/samples/biz_plan.hwp")
-        .expect("fixture 를 읽을 수 있어야 한다");
+    let bytes = std::fs::read("samples/biz_plan.hwp").expect("fixture 를 읽을 수 있어야 한다");
     let mut core = DocumentCore::from_bytes(&bytes).expect("fixture 파싱");
 
     // 줄 수가 아니라 분할 내용(각 줄의 시작 오프셋과 세로 좌표)을 본다. 같은 폭으로 다시
@@ -281,8 +278,7 @@ fn rewrapped_paragraphs_keep_their_line_segs() {
     // `para.line_segs.is_empty()` 분기) 렌더는 그대로 그린다 — 여백을 1 HWPUNIT 만 건드려도
     // 쪽 나눔과 그리기가 문단마다 spacing_before 만큼 어긋나, 본문 끝이 본문 상자 아래로
     // 흘러내리고 쪽 수가 모자라게 계산된다.
-    let bytes = std::fs::read("rhwp-studio/public/samples/biz_plan.hwp")
-        .expect("fixture 를 읽을 수 있어야 한다");
+    let bytes = std::fs::read("samples/biz_plan.hwp").expect("fixture 를 읽을 수 있어야 한다");
     let mut core = DocumentCore::from_bytes(&bytes).expect("fixture 파싱");
 
     let before = no_lineseg_text_paragraphs(&core);
@@ -303,8 +299,7 @@ fn rewrapped_paragraphs_keep_their_line_segs() {
 fn body_rewraps_when_the_column_count_changes() {
     // [#4972] 단 설정도 본문이 접히는 폭을 바꾼다. 쪽 여백과 같은 결함이 같은 이유로 생긴다 —
     // 저장 분할이 1단 시절의 줄 나눔으로 남으면 2단 폭을 넘어 삐져나온다.
-    let bytes = std::fs::read("rhwp-studio/public/samples/biz_plan.hwp")
-        .expect("fixture 를 읽을 수 있어야 한다");
+    let bytes = std::fs::read("samples/biz_plan.hwp").expect("fixture 를 읽을 수 있어야 한다");
     let mut core = DocumentCore::from_bytes(&bytes).expect("fixture 파싱");
 
     let before = body_line_seg_fingerprint(&core);
