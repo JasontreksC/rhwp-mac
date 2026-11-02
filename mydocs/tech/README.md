@@ -30,6 +30,7 @@ last_verified: 2026-09-03
 | 폰트 대체와 충실도 | [폰트 fallback 전략](font_fallback_strategy.md) | [Issue #124 캔버스·폰트 측정 조사](investigations/issue-124/README.md), [Issue #2125 font ownership 조사](investigations/issue-2125/README.md) |
 | 편집 undo/redo | [편집 action undo/redo 아키텍처](edit_action_undo_redo_architecture.md) | 이슈별 실동작 조사 문서 |
 | 기술 채택·비채택 | [ThorVG 결정 기록](thorvg_decision.md) | [Issue #112-115 ThorVG PoC 조사](investigations/issue-112/README.md) |
+| macOS 네이티브 앱(Swift) | [macOS 네이티브 앱 아키텍처 결정](macos_native_app_architecture.md) | 0단계 스파이크 `macos/Spikes/PaintOpSpike`, FFI `bindings/Native` |
 | 초소형 모델용 매크로 도구 축 | [초소형 모델용 매크로 도구 축 설계 결정](tiny_model_macro_tools.md) | 계약 테스트 `tests/digest_macro_contract.rs`, CLI 명령은 [CLI 명령 레퍼런스](../manual/cli_commands.md) 재확인 |
 | OLE chart renderer | [OLE chart renderer 선택 결정](hwp_ole_chart_renderer_architecture_decision_1251.md) | [Issue #1251 시각 차이 조사](investigations/issue-1251/README.md) |
 | 차트 OLE v1 경계 | [차트 OLE v1 경계](chart_ole_v1_boundary.md) | WMF/EMF 골든 `tests/cases/wmf_emf_goldens.rs`, 퍼즈 `parse_wmf` |

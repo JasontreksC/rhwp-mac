@@ -88,6 +88,7 @@ front matter는 `mydocs/manual`, `mydocs/tech`, `mydocs/troubleshootings`의 모
 | [편집 action undo/redo 아키텍처](tech/edit_action_undo_redo_architecture.md) | canonical | active | `tech/edit_action_undo_redo_architecture.md` | 2026-07-16 |
 | [포맷 파서와 공통 Document IR 경계](tech/parser_architecture.md) | canonical | active | `tech/parser_architecture.md` | 2026-07-17 |
 | [ThorVG 결정 기록](tech/thorvg_decision.md) | decision | active | `tech/thorvg_decision.md` | 2026-07-16 |
+| [macOS 네이티브 앱 아키텍처 결정](tech/macos_native_app_architecture.md) | decision | active | `tech/macos_native_app_architecture.md` | 2026-11-02 |
 | [이전 개발 로드맵](tech/archive/dev_roadmap_v1_backup.md) | snapshot | historical | `tech/archive/README.md` | 2026-07-16 |
 | [이슈별 기술 조사 지도](tech/investigations/README.md) | guide | active | `tech/investigations/README.md` | 2026-07-17 |
 | [트러블슈팅 문서 지도](troubleshootings/README.md) | guide | active | `troubleshootings/README.md` | 2026-07-16 |
