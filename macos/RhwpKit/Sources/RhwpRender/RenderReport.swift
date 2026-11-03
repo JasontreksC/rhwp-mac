@@ -48,4 +48,6 @@ public enum RenderError: Error, Equatable {
     case invalidPageSize(width: Double, height: Double)
     /// 비트맵 컨텍스트나 이미지를 만들지 못했다.
     case bitmapUnavailable
+    /// 타일이 쪽 비트맵을 벗어나거나 크기가 상한(`PageRenderer.maxTileDimension`)을 넘는다.
+    case invalidTile(PixelRect)
 }

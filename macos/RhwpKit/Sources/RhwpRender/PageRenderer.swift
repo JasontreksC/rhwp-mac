@@ -21,7 +21,9 @@ import RhwpKit
 ///   가운뎃점·사각 안 숫자·옛 글꼴 글머리표
 /// - 그림: 밝기·대비·그림 효과(`image:effect`), 세로쓰기 글자의 장식선
 /// - SVG 조각: 무늬·마스크·필터·`clipPath`와 `url(#…)` 칠
-/// - 타일링 렌더러(큰 쪽을 조각으로 나눠 그리기)는 이 렌더러가 아니라 뷰어의 배율 정책이 정한다.
+///
+/// 큰 쪽은 `renderTile(_:scale:tile:)`로 비트맵의 일부(타일)만 그린다. 타일을 어떻게 나누고 캐시하는지는 뷰어의
+/// 몫이고(`TileGrid`는 나눔의 기하만 준다), 이 렌더러는 "비트맵의 이 영역을 통째 렌더와 같은 픽셀로" 약속한다.
 public struct PageRenderer: Sendable {
     private let fontResolver: FontResolver
 
@@ -36,17 +38,15 @@ public struct PageRenderer: Sendable {
         let width = tree.pageWidth * scale
         let height = tree.pageHeight * scale
         // 0 이하, NaN, 한 변이 16384px를 넘는 크기는 비트맵을 만들지 않는다(메모리 폭주 방지).
+        // 더 큰 배율은 `renderTile`로 나눠 그린다.
         guard width >= 1, height >= 1, width <= 16384, height <= 16384 else {
             throw RenderError.invalidPageSize(width: tree.pageWidth, height: tree.pageHeight)
         }
         let pixelWidth = Int(width.rounded(.up))
         let pixelHeight = Int(height.rounded(.up))
-        guard let context = CGContext(
-            data: nil, width: pixelWidth, height: pixelHeight,
-            bitsPerComponent: 8, bytesPerRow: 0,
-            space: CGColorSpace(name: CGColorSpace.sRGB)!,
-            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-        ) else { throw RenderError.bitmapUnavailable }
+        guard let context = makeBitmapContext(width: pixelWidth, height: pixelHeight) else {
+            throw RenderError.bitmapUnavailable
+        }
 
         // y-down 쪽 좌표로 뒤집는다. CoreGraphics 기본은 y-up이다.
         context.translateBy(x: 0, y: CGFloat(pixelHeight))
@@ -57,13 +57,67 @@ public struct PageRenderer: Sendable {
         return RenderedPage(image: image, report: report)
     }
 
+    /// 쪽 비트맵(`render(_:scale:)`가 만드는 것과 같은 크기·같은 격자)의 `tile` 영역만 그린다.
+    ///
+    /// 결과는 통째로 그린 비트맵의 같은 영역과 **픽셀 단위로 같다**. 비결: 타일 컨텍스트를 비트맵 픽셀 격자에서
+    /// **정수 픽셀만큼만** 옮기므로 모든 도형이 통째 렌더와 같은 부분 픽셀 위치에 놓이고, 안티앨리어싱 덮임도
+    /// 같다. (정수가 아닌 이동이나 타일마다 다른 배율을 쓰면 타일 이음매에 줄이 보인다.)
+    ///
+    /// - Parameters:
+    ///   - scale: px → 출력 비트맵 배율. `TileGrid`를 만들 때 쓴 값과 같아야 한다.
+    ///   - tile: 비트맵 안의 영역(`TileGrid.rect(of:)`). 비트맵을 벗어나거나 한 변이 4096px를 넘으면 오류다.
+    public func renderTile(_ tree: PageLayerTree, scale: Double, tile: PixelRect) throws -> RenderedPage {
+        let grid = TileGrid(pageWidth: tree.pageWidth, pageHeight: tree.pageHeight, scale: scale)
+        guard !grid.isEmpty else {
+            throw RenderError.invalidPageSize(width: tree.pageWidth, height: tree.pageHeight)
+        }
+        guard tile.width >= 1, tile.height >= 1, tile.width <= Self.maxTileDimension, tile.height <= Self.maxTileDimension,
+              tile.x >= 0, tile.y >= 0, tile.maxX <= grid.pixelWidth, tile.maxY <= grid.pixelHeight
+        else { throw RenderError.invalidTile(tile) }
+        guard let context = makeBitmapContext(width: tile.width, height: tile.height) else {
+            throw RenderError.bitmapUnavailable
+        }
+
+        // 통째 렌더의 변환은 translate(0, H) · scale(s, −s)다: 쪽 좌표 y는 장치(y 위로) y = H − s·y 로 간다. 비트맵의
+        // 위에서 r번째 행이 장치 y = H − r 이므로, 위에서 `tile.y`만큼 내려온 타일의 맨 윗줄은 장치 y = th 가 되도록
+        // 옮기면 장치 y = (th + tile.y) − s·y 다. 두 식의 차는 정수 (H − th − tile.y) 라 픽셀 격자가 어긋나지 않는다.
+        context.translateBy(x: -CGFloat(tile.x), y: CGFloat(tile.height + tile.y))
+        context.scaleBy(x: scale, y: -scale)
+        // 타일이 덮는 쪽 영역(px). 이 밖의 op는 어차피 타일에 보이지 않으므로 그리지 않는다.
+        let visible = CGRect(
+            x: Double(tile.x) / scale, y: Double(tile.y) / scale,
+            width: Double(tile.width) / scale, height: Double(tile.height) / scale
+        )
+        let report = draw(tree, into: context, visibleRect: visible)
+
+        guard let image = context.makeImage() else { throw RenderError.bitmapUnavailable }
+        return RenderedPage(image: image, report: report)
+    }
+
+    /// 타일 한 장의 한 변 상한(px). 타일 하나가 64MB를 넘는 비트맵이 되지 않게 한다.
+    public static let maxTileDimension = 4096
+
+    /// 쪽 비트맵과 타일이 함께 쓰는 비트맵 형식. 두 경로의 픽셀이 같으려면 형식이 같아야 한다.
+    private func makeBitmapContext(width: Int, height: Int) -> CGContext? {
+        CGContext(
+            data: nil, width: width, height: height,
+            bitsPerComponent: 8, bytesPerRow: 0,
+            space: CGColorSpace(name: CGColorSpace.sRGB)!,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        )
+    }
+
     /// 한 쪽을 주어진 컨텍스트에 그린다.
     ///
     /// 컨텍스트는 **쪽 좌표(px, 원점 왼쪽 위, y 아래로 증가)** 로 이미 맞춰져 있어야 한다. 그림과 글자는 이
     /// 안에서 국소적으로 다시 뒤집어 그린다. 호출 전의 그래픽 상태는 보존된다.
+    ///
+    /// - Parameter visibleRect: 컨텍스트에서 실제로 보이는 쪽 영역(px). 주면 이 영역에 칠하지 않는 것이 확실한 op와
+    ///   잘라내기 영역은 그리지 않는다(`Culling`). 결과 픽셀은 주지 않았을 때와 같고 비용만 줄어든다. 컨텍스트가
+    ///   쪽의 일부만 덮을 때(타일) 쓴다.
     @discardableResult
-    public func draw(_ tree: PageLayerTree, into context: CGContext) -> RenderReport {
-        var drawing = Drawing(context: context, fontResolver: fontResolver)
+    public func draw(_ tree: PageLayerTree, into context: CGContext, visibleRect: CGRect? = nil) -> RenderReport {
+        var drawing = Drawing(context: context, fontResolver: fontResolver, visibleRect: visibleRect)
         context.saveGState()
         context.setAllowsAntialiasing(true)
         context.setShouldSmoothFonts(true)
@@ -78,11 +132,14 @@ public struct PageRenderer: Sendable {
 struct Drawing {
     let ctx: CGContext
     let fontResolver: FontResolver
+    /// 보이는 쪽 영역. nil 이면 걸러내지 않고 모두 그린다.
+    let visibleRect: CGRect?
     var report = RenderReport()
 
-    init(context: CGContext, fontResolver: FontResolver) {
+    init(context: CGContext, fontResolver: FontResolver, visibleRect: CGRect? = nil) {
         ctx = context
         self.fontResolver = fontResolver
+        self.visibleRect = visibleRect
     }
 
     // MARK: - 트리 순회
@@ -92,13 +149,19 @@ struct Drawing {
         case let .group(_, children):
             for child in children { draw(child) }
         case let .clip(rect, _, child):
+            // 잘라내기 영역이 보이는 영역과 겹치지 않으면 자식은 하나도 보이지 않는다(자식은 이 사각형 안에서만 보인다).
+            if let visibleRect, !Culling.overlaps(rect.cgRect, visibleRect) { return }
             // 표 셀·글상자·본문 영역의 잘라내기. 자식은 이 사각형 안에서만 보인다.
             ctx.saveGState()
             ctx.clip(to: rect.cgRect)
             draw(child)
             ctx.restoreGState()
         case let .leaf(ops):
-            for op in ops { draw(op) }
+            for op in ops {
+                // 걸러낸 op는 집계에도 넣지 않는다: 타일 하나의 집계는 그 타일에서 그린 것만 센다.
+                if let visibleRect, !Culling.mayDraw(op, in: visibleRect) { continue }
+                draw(op)
+            }
         case let .unsupported(kind):
             report.countSkipped("node:\(kind)")
         }

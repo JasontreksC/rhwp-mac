@@ -90,6 +90,28 @@ struct Pixels {
         bytes = data
     }
 
+    /// `region`(작은 비트맵)이 이 비트맵의 (x, y)에서 시작하는 같은 크기 영역과 얼마나 다른지 잰다.
+    /// 채널(RGBA) 값이 다른 픽셀 수, 가장 큰 채널 차이, 처음 어긋난 위치(이 비트맵 좌표)를 돌려준다. 같으면 (0, 0, nil)이다.
+    func compare(_ region: Pixels, atX x: Int, y: Int) -> (differing: Int, maxDelta: Int, first: (x: Int, y: Int)?) {
+        var differing = 0
+        var maxDelta = 0
+        var first: (x: Int, y: Int)?
+        for row in 0..<region.height {
+            for column in 0..<region.width {
+                let mine = ((y + row) * width + x + column) * 4
+                let theirs = (row * region.width + column) * 4
+                var delta = 0
+                for channel in 0..<4 { delta = max(delta, abs(Int(bytes[mine + channel]) - Int(region.bytes[theirs + channel]))) }
+                if delta > 0 {
+                    differing += 1
+                    maxDelta = max(maxDelta, delta)
+                    if first == nil { first = (x + column, y + row) }
+                }
+            }
+        }
+        return (differing, maxDelta, first)
+    }
+
     func rgb(_ x: Int, _ y: Int) -> (r: Int, g: Int, b: Int) {
         let i = (y * width + x) * 4
         return (Int(bytes[i]), Int(bytes[i + 1]), Int(bytes[i + 2]))

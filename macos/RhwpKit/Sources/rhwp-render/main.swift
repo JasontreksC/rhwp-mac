@@ -7,6 +7,7 @@ import RhwpRender
 //   rhwp-render <문서> <쪽(0부터)> <출력.png | 출력.json> [--scale N]
 //   rhwp-render <문서> --all <출력폴더> [--pages 1-8] [--scale N]
 //   rhwp-render --pdf <PDF> <출력폴더> [--pages 1-8] [--scale N]
+//   rhwp-render --bench <문서> [--pages 1-8] [--scale N] [--tile N]
 //
 // 출력이 .json 이면 엔진이 돌려준 응답 원문(봉투 포함)만 저장하고(형식 확인용), .png 이면 CoreGraphics로 그린
 // 결과를 저장한다. 시각 검증(scripts/visual_sweep.py --png-pair)의 입력 PNG를 만드는 용도다.
@@ -24,6 +25,8 @@ let usage = """
                                                                     여러 쪽을 page-001.png 형식으로 저장(쪽은 1부터).
                                                                     --json 을 주면 쪽마다 레이어 트리 JSON 원문도 저장
   rhwp-render --pdf <PDF> <출력폴더> [--pages 1-8] [--scale N]      기준 PDF를 같은 형식의 PNG로 래스터(배율 1 = 96dpi)
+  rhwp-render --bench <문서> [--pages 1-8] [--scale N] [--tile N]   쪽마다 엔진·디코딩·통째 렌더·타일 한 장의 시간과 메모리를
+                                                                    잰다(릴리스 빌드로 실행할 것)
 """
 
 var arguments = Array(CommandLine.arguments.dropFirst())
@@ -43,6 +46,11 @@ if let text = takeValue("--scale", from: &arguments) {
     scale = value
 }
 let jsonDirectory = takeValue("--json", from: &arguments).map { URL(fileURLWithPath: $0) }
+var tileSize = TileGrid.defaultTileSize
+if let text = takeValue("--tile", from: &arguments) {
+    guard let value = Int(text), value >= 16, value <= PageRenderer.maxTileDimension else { fail(usage) }
+    tileSize = value
+}
 var selection: PageSelection?
 if let text = takeValue("--pages", from: &arguments) {
     guard let parsed = PageSelection(text) else { fail("쪽 목록을 해석할 수 없음: \(text)\n\(usage)") }
@@ -59,7 +67,12 @@ func printReport(_ report: RenderReport) {
 }
 
 do {
-    if let flagIndex = arguments.firstIndex(of: "--pdf") {
+    if let flagIndex = arguments.firstIndex(of: "--bench") {
+        // 계측: --bench <문서>
+        arguments.remove(at: flagIndex)
+        guard arguments.count == 1 else { fail(usage) }
+        try await Bench.run(document: URL(fileURLWithPath: arguments[0]), pages: selection, scale: scale, tileSize: tileSize)
+    } else if let flagIndex = arguments.firstIndex(of: "--pdf") {
         // PDF 래스터: --pdf <PDF> <출력폴더>
         arguments.remove(at: flagIndex)
         guard arguments.count == 2 else { fail(usage) }
