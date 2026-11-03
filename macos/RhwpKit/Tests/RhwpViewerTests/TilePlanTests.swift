@@ -113,6 +113,10 @@ struct PageLayoutAnchorTests {
         // 맨 위 여백: 쪽 0의 위(24)보다 14 위 → 그대로 14 위.
         let top = layout(2).point(matching: CGPoint(x: 100, y: 10), in: layout(1))
         #expect(abs(top.y - 10) < 1e-9)
+        // 쪽 1 위 간격: 확대 1에서 쪽 1의 위(1040)보다 5 위(쪽 0 끝보다 11 아래라 쪽 1에 더 가깝다) → 확대 2에서 쪽 1의 위(2040)보다 5 위.
+        // 쪽 0의 위쪽 여백은 확대해도 y가 같아서(24) 이 분기를 가르지 못한다. 쪽 1 이후여야 한다.
+        let above = layout(2).point(matching: CGPoint(x: 100, y: 1035), in: layout(1))
+        #expect(abs(above.y - 2035) < 1e-9)
     }
 
     @Test("확대했다가 되돌리면 같은 점으로 돌아온다")
