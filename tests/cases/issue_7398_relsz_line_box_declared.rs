@@ -13,7 +13,6 @@
 //! - 저장 경로: 2쪽 19번 본문 문단의 렌더 줄 상단 거리 = 저장 vpos 거리(누적).
 //! - 재조판 경로: 같은 문단을 편집해 다시 줄 나눔해도 줄 상자(text_height)는 한/글이 같은
 //!   문단에 저장한 값(= 선언 크기) 그대로다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

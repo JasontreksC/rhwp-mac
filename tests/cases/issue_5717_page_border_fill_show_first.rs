@@ -7,7 +7,6 @@
 //! 테두리 문서 156494214 는 bit 가 꺼져 있고 한글도 3/3쪽 전부에 그린다 — COM
 //! PDF 양성대조). 한글 2022 가 같은 문서를 HWPX 로 저장하면
 //! `fill="SHOW_FIRST"` 로 내보낸다(SaveAs 실측).
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::style::{BorderFill, Fill, FillType, SolidFill};

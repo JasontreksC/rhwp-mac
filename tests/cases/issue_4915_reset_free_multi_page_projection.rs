@@ -24,8 +24,6 @@
 //! 임계에 걸리지 않는다. `issue_1891` 4건과 `overflow_cell partition_12` 로 반대쪽을
 //! 확인했다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
@@ -53,7 +51,7 @@ fn lowest_drawing_bottom(node: &serde_json::Value, out: &mut f64) {
 fn reset_free_multi_page_nested_table_fragments_stay_inside_the_page() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
 
     assert_eq!(

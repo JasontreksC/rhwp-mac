@@ -15,14 +15,13 @@
 //!
 //! 같은 쪽 다른 그림들은 앵커가 이 쪽에서 시작하므로 규칙 밖이다 — 그 값이 함께 바뀌지
 //! 않는지도 같이 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
 fn page_svg(rel: &str, page: u32) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {rel}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel}: {e:?}"));
     doc.render_page_svg(page)
         .unwrap_or_else(|e| panic!("render {rel} p{}: {e:?}", page + 1))

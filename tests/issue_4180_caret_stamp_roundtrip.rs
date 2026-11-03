@@ -13,7 +13,7 @@ fn set_caret_position_roundtrips_through_save() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("samples/issue1949_giant_cell_nested_tables_perf.hwp");
     let bytes = fs::read(&path).expect("read sample");
-    let mut doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let mut doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
 
     // 편집별 스탬핑이 (0,0,7) 을 남긴다 — 신고 파일과 같은 상태
     doc.insert_text(0, 0, 0, "rhwp pe").expect("insert");
@@ -27,7 +27,7 @@ fn set_caret_position_roundtrips_through_save() {
     doc.set_caret_position(0, 0, 3);
     let saved = doc.export_hwp().expect("export");
 
-    let doc2 = rhwp::wasm_api::HwpDocument::from_bytes(&saved).expect("reload");
+    let doc2 = rhwp::document_api::HwpDocument::from_bytes(&saved).expect("reload");
     assert_eq!(
         doc2.get_caret_position().expect("caret after reload"),
         r#"{"sectionIndex":0,"paragraphIndex":0,"charOffset":3}"#,
@@ -40,7 +40,7 @@ fn set_caret_position_out_of_range_is_ignored() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("samples/issue1949_giant_cell_nested_tables_perf.hwp");
     let bytes = fs::read(&path).expect("read sample");
-    let mut doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let mut doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
 
     let before = doc.get_caret_position().expect("caret before");
     doc.set_caret_position(99, 0, 0); // 존재하지 않는 구역 — 무시가 계약

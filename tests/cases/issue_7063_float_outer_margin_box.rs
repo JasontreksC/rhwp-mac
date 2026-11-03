@@ -41,8 +41,6 @@
 //! `vertical_offset` 이 0 인지 등을 판별), 가로처럼 무조건 더할 수 없다. 19쪽 표2 의 상단은
 //! 이 수정 뒤에도 정본 89.82 대비 88.13(−1.69px)이고 그 축은 `#7203`·`#6599` 의 몫이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::{Path, PathBuf};
 
 use rhwp::document_core::DocumentCore;
@@ -163,7 +161,7 @@ fn column_relative_float_table_keeps_its_outer_margin_even_with_a_stored_offset(
 fn block_wrapper_keeps_its_pdf_left_edge_when_margin_is_already_owned() {
     let bytes = std::fs::read(sample("samples/80168_regulatory_analysis.hwp"))
         .expect("tracked wrapper fixture");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("wrapper document");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("wrapper document");
     let svg = doc.render_page_svg(5).expect("wrapper page 6");
     let xml = roxmltree::Document::parse(&svg).expect("valid SVG");
     let left = xml

@@ -1,7 +1,6 @@
 //! #7104 메인터너 보정: 앞 단에 연결되어 다음 단에 놓이는 Square 그림.
 //! 동일 원본의 한컴 PDF는 그림 오른쪽으로 본문을 감싼다. 페이지 수나
 //! 흰색 이미지의 픽셀 대신 실제 그림/글줄의 교집합으로 계약을 확인한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::{control::Control, shape::TextWrap};

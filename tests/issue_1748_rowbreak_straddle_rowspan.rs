@@ -22,11 +22,11 @@ const SAMPLE: &str = "samples/table_scattered_header_rowbreak.hwp";
 const CUT_PAGE: u32 = 5;
 const CONT_PAGE: u32 = 6;
 
-fn load_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_doc() -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let sample_path = Path::new(repo_root).join(SAMPLE);
     let bytes = fs::read(&sample_path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e:?}"))
 }
 

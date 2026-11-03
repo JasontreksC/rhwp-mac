@@ -6,14 +6,13 @@
 //! 종전 rhwp 는 글자+도형 줄을 글꼴 높이(18.4)로 접어 p2 가 138.9(8.1px 위)였다. 본문은
 //! `layout_column_item` 바닥값이 되돌리지만 셀엔 그 바닥값이 없다. 한/글 2022 PDF(4절→A3
 //! 균일 배율 0.9385, 왼쪽 위 기준) 실측: 그림 상단 451.2 (셀 내용 상단 304.3 + 147.0).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
 fn page_svg(rel: &str, page: u32) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {rel}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel}: {e:?}"));
     doc.render_page_svg(page)
         .unwrap_or_else(|e| panic!("render {rel} p{}: {e:?}", page + 1))

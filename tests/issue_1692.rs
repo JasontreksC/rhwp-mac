@@ -1,12 +1,12 @@
 //! Issue #1692: HWP3 글자색 인덱스가 CharShape.text_color로 보존되는지 검증한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::footnote::Endnote;
 use rhwp::model::paragraph::Paragraph;
 use rhwp::model::style::{Alignment, HeadType};
 use rhwp::parser::ole_container::is_hmapsi_ole_container;
 use rhwp::parser::parse_document;
-use rhwp::wasm_api::HwpDocument;
 use serde_json::Value;
 
 fn load(path: &str) -> rhwp::model::document::Document {

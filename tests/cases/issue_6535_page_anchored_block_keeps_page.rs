@@ -20,12 +20,11 @@
 //! `anchor_vpos <= 0` 인 경우는 상류에서 이미 `prev_body_bottom_vpos`(직전 본문 문단의 저장
 //! 흐름 하단)로 복원한 **본문 좌표**라 이 예외 대상이 아니다 — 그 갈래는 `#2098`/`#2138` 이
 //! 눈금을 맞춘 50px 마진이 따로 판정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6535/36404612_page_anchored_footer_block.hwpx";
 

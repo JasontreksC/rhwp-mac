@@ -1,10 +1,9 @@
 //! #6788: 속성 변경은 선택 안의 각 원본 글자 모양을 보존해야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::{CharShapeRef, Paragraph};
 use rhwp::model::style::CharShape;
-use rhwp::wasm_api::HwpDocument;
 
 const TEXT: &str = "가나다라마바";
 const YELLOW: u32 = 0x0000_ffff;

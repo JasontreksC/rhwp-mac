@@ -10,7 +10,7 @@
 //! 2. 넘치는 내용은 소실되지 않고 다음 쪽에 실제로 배치된다(2쪽 이상 + 마지막
 //!    쪽에도 텍스트 존재).
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 /// SVG 의 `height="..."` 속성값(물리 페이지 높이 px).
 fn svg_height(svg: &str) -> f64 {

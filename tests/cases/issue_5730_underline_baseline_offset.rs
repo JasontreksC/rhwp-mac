@@ -7,7 +7,6 @@
 //!
 //! 픽스처 `samples/issue5730/underline_probe.hwp` 는 그 프로브 문서 자체다 —
 //! 한글 2022 가 만든 6개 크기의 실선 밑줄 문단.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

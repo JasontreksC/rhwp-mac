@@ -6,7 +6,6 @@
 //! 단 수가 실렸다(1단 → 2단 편집이 다시 열면 1단).
 //!
 //! 판정은 다시 연 문서가 편집한 문서와 같은 단 정의·같은 단 영역을 갖는가다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

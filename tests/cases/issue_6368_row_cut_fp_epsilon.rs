@@ -9,7 +9,6 @@
 //! 까지 삼키므로 이 핀은 관용 폭을 키우지 않는다.
 //!
 //! 한글 정답지 총쪽수 105는 유지해야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;

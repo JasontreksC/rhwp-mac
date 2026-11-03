@@ -14,7 +14,6 @@
 //!
 //! 판정은 **방출된 레코드 개수**로 한다. HWP5 파서는 `extra_page_border_fills` 를 채우지
 //! 않으므로(HWPX 파서만 채운다) 재파싱 IR 로는 이 계약을 볼 수 없다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::PathBuf;
 

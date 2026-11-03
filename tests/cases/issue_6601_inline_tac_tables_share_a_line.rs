@@ -47,8 +47,6 @@
 //!
 //! 선행 개수를 **인라인 표 중 문자 위치가 0 인 것**으로 세면 맞는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
@@ -82,7 +80,7 @@ fn collect_tables(node: &serde_json::Value, out: &mut Vec<(f64, f64, f64)>) {
 fn two_inline_tac_tables_stay_on_one_line() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
 
     let json = document

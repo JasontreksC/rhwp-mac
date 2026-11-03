@@ -59,7 +59,7 @@ fn dot_leader_count(svg: &str) -> usize {
 }
 
 fn render_toc_page(bytes: &[u8], label: &str) -> String {
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(bytes)
         .unwrap_or_else(|e| panic!("{label} 파싱 실패: {e:?}"));
     doc.render_page_svg_native(TOC_PAGE)
         .unwrap_or_else(|e| panic!("{label} {TOC_PAGE}쪽 렌더 실패: {e:?}"))

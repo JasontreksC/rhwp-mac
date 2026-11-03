@@ -2,6 +2,7 @@
 //! Hancom PARA_HEADER: trailing merged-track UINT16 since 5.0.3.2.
 //! https://tech.hancom.com/python-hwp-parsing-2/
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::document::{Document, HwpVersion, Section};
 use rhwp::model::header_footer::{Footer, Header};
@@ -10,7 +11,6 @@ use rhwp::parser::cfb_reader::CfbReader;
 use rhwp::parser::record::Record;
 use rhwp::parser::tags;
 use rhwp::serializer::serialize_hwp;
-use rhwp::wasm_api::HwpDocument;
 
 fn document(version: [u8; 4]) -> Document {
     let [major, minor, build, revision] = version;

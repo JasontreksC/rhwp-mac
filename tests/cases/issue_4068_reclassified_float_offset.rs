@@ -24,8 +24,6 @@
 //! ⚠ 표 틀 자체가 `om`(283HU = 3.77px) 만큼 왼쪽·위로 밀려 있는 것은 **별개 축**이다.
 //! 그래서 이 시험은 절대 x 가 아니라 **표 왼쪽 괘선으로부터의 상대 x** 를 잰다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

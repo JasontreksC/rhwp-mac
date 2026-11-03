@@ -16,8 +16,6 @@
 //! 한/글 2024 실측(제목 표): 표 상단 170.57pt, 제목 1행 글자 상단 188.25pt.
 //! 종전 rhwp 186.03(−2.22pt = lead 6.67px 의 절반), 교정 후 188.53(+0.28).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 
@@ -78,7 +76,7 @@ fn issue_6630_contract_still_holds_when_stack_excludes_lead() {
     let Ok(bytes) = std::fs::read(&path) else {
         return;
     };
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse exam_eng");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse exam_eng");
     let svg = doc.render_page_svg(1).expect("exam_eng 2쪽 SVG");
 
     // 148.7px 폭 제목 그림의 y — 한/글 149.2(셀 상단 132.3 + 16.9). 종전 결함은 145.5.

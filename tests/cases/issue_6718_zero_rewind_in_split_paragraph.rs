@@ -33,13 +33,12 @@
 //! 이 시험은 **`issue5966`** 을 쓴다. `27469` 는 주축 시험이 이미 잡고 있고, 이쪽은
 //! 같은 결함이 **다른 문서에서 용지 밖 출력으로 나타나는 것**을 잠근다 — 143쪽 문서의
 //! 60쪽에서 본문 세 줄이 용지(1122.5px) 아래 1216.8px 에 그려져 인쇄에서 사라졌다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue5966/1130000-202100008_franchise_review_report.hwp";
 /// 0-based — 되감김 문단이 놓이는 물리 60쪽.

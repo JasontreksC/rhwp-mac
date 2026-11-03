@@ -1,7 +1,6 @@
 //! #7491: 실제 셀 높이가 선언 높이보다 클 때 글줄과 표의 점유 영역을 공유한다.
 //! 독립 한컴 Print PDF에서 같은 줄의 본문 기준선은 셀 글자 기준선 아래에 있다.
 //! Native/fresh WASM Visual Sweep 100%인 공개 편집 입력을 사용한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

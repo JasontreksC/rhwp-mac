@@ -1,7 +1,5 @@
 //! HWP3 PageNumberPos는 본문 marker를 만들지 않는다는 실제 fixture 회귀.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::{Path, PathBuf};
 
 use rhwp::model::control::Control;

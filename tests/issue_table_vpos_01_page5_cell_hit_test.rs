@@ -26,7 +26,7 @@
 
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use serde_json::Value;
 
 fn load_doc() -> HwpDocument {

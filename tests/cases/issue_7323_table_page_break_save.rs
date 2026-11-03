@@ -12,14 +12,13 @@
 //!   ④ 무편집 표의 attr 는 원본과 같다(raw 보존 경로 무회귀)
 //!
 //! fixture: `samples/2010-01-06.hwp` s0 p4 c0 — #3552 와 같은 9행 표.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::document::Document;
 use rhwp::model::table::{Table, TablePageBreak};
 use rhwp::parser::parse_document;
 use rhwp::serializer::serialize_document;
-use rhwp::wasm_api::HwpDocument;
 use std::path::Path;
 
 const SAMPLE: &str = "samples/2010-01-06.hwp";

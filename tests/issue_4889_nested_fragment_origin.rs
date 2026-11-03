@@ -14,13 +14,12 @@
 //! 이 축은 어떤 게이트도 못 본다 — 쪽수는 한/글과 같고(3/3, 10k 쪽수 게이트에서도
 //! 바뀐 문서 0), 글자는 트리에 남아 있어 텍스트 추출도 통과한다. 그래서 좌표를
 //! 직접 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue4889/18098267_nested_fragment_origin.hwp";
 const PAGE_INDEX: u32 = 1; // 0-based — 55×3 표 조각이 처음 놓이는 p2

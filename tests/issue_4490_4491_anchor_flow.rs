@@ -2,7 +2,6 @@
 //!
 //! 판정자는 저장 사다리다 — 두 단언 모두 폰트 메트릭이 아니라 저장 lineseg 가 정하는
 //! 흐름 관계라 환경에 강건하다(절대좌표 단언 금지 — #3458 의 교훈).
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::DocumentCore;
 

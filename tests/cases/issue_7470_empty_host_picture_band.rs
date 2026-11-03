@@ -9,7 +9,6 @@
 //!    host 줄이 들어가는 쪽에 그림까지 남겨 본문을 넘겼다.
 //!
 //! 기대값은 구현과 독립이다 — 원본 저장 줄 사다리와 한/글 2024 PDF(memo_field 40쪽, 27쪽 맨 위 그림).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

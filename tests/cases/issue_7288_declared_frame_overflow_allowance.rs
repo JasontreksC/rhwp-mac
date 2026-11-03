@@ -35,8 +35,6 @@
 //! 편집 중 만든 것이지 한/글 저장본이 아니다 — 이 시험이 잠그는 계약이 바로 "그런 줄
 //! 정보가 준 프레임을 초과 수용의 근거로 쓰지 않는다"이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

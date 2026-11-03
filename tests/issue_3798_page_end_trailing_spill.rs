@@ -38,7 +38,6 @@
 //!
 //! 그래서 이 표본은 한도 18px 이하만 시험한다. 한글 정답지 테스트가 요구하는 하한이
 //! 12px 이므로 시험 가능한 창은 12~18px 이고, 그 안에서 이득이 사라진다.
-#![cfg(not(target_arch = "wasm32"))]
 
 const SAMPLE: &str = "samples/issue3798/page_end_trailing_spill.hwpx";
 /// 표본 경계 문단의 말미 줄간격(px). 한도보다 훨씬 커야 계약을 시험한다.
@@ -52,7 +51,7 @@ fn sample_path() -> std::path::PathBuf {
 
 /// 그 쪽의 글자를 이어 붙인다. SVG 는 글자마다 `<text>` 를 내므로 통째로 훑으면
 /// 여러 글자짜리 글월을 찾지 못한다.
-fn page_text(doc: &rhwp::wasm_api::HwpDocument, page: u32) -> String {
+fn page_text(doc: &rhwp::document_api::HwpDocument, page: u32) -> String {
     let svg = doc.render_page_svg(page).expect("SVG 렌더");
     let mut out = String::new();
     for chunk in svg.split("<text").skip(1) {
@@ -67,7 +66,7 @@ fn page_text(doc: &rhwp::wasm_api::HwpDocument, page: u32) -> String {
 }
 
 /// 그 쪽에 이 글월이 있는가.
-fn page_contains(doc: &rhwp::wasm_api::HwpDocument, page: u32, needle: &str) -> bool {
+fn page_contains(doc: &rhwp::document_api::HwpDocument, page: u32, needle: &str) -> bool {
     page_text(doc, page).contains(needle)
 }
 
@@ -85,7 +84,7 @@ fn page_contains(doc: &rhwp::wasm_api::HwpDocument, page: u32, needle: &str) -> 
 #[test]
 fn a_paragraph_whose_trailing_spacing_exceeds_the_spill_limit_moves_to_the_next_page() {
     let bytes = std::fs::read(sample_path()).expect("표본 읽기");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("파싱");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("파싱");
     assert!(doc.page_count() >= 2, "쪽이 {}개다", doc.page_count());
 
     assert!(

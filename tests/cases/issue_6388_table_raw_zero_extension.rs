@@ -9,7 +9,6 @@
 //! 발동 집합은 raw 가 빈 표다 — `samples/**/*.hwp` 529개 표 6719개의 길이 분포는
 //! `{0: 11, 40: 541, 42: 4716, 44: 1449, 48: 2}` 로 1~39바이트가 없고, HWPX 파서는 표
 //! `raw_ctrl_data` 를 채우지 않으므로 HWPX 파스본 표는 전부 해당한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

@@ -28,8 +28,6 @@
 //! (`#677` 골든)는 leading 5.13px + 표 642.5 로 단폭을 **5.1px 만** 넘는데, 그 축은
 //! `#1195` 한컴 실측으로 보정된 별도 축이다. 여유 없이 자르면 그 골든이 깨진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

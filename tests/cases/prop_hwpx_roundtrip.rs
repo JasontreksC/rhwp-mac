@@ -7,7 +7,6 @@
 //! 비교는 기존 [`diff_documents`] 이다. HWP5 왕복은 M04-3.
 //!
 //! CI 는 싼 기본값(`CI_CASES`). 전체 화력은 `PROPTEST_CASES` (proptest 표준).
-#![cfg(not(target_arch = "wasm32"))]
 
 use proptest::prelude::*;
 

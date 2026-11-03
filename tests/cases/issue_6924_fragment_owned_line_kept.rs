@@ -12,12 +12,10 @@
 //! 픽스처는 저장소 표본이다. `1490000-200800034_vietnam_labor_report.hwp` 114쪽의
 //! `⑦ 물류 ⑧ 기타 ( )` 줄이 종전에는 **어느 쪽에도** 그려지지 않았다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue5714/1490000-200800034_vietnam_labor_report.hwp";
 /// 조각이 소유하지만 종전에 소실되던 줄 (공백 제거 비교).

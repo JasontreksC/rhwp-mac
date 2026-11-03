@@ -8,7 +8,6 @@
 //! 수정(compute_table_x_position depth>0): 양의 horzOffset + LEFT 정렬 + 그 자리로
 //! 셀 안에 온전히 들어가는 표는 저장 오프셋을 그대로 쓴다. 오프셋 0 표는 종전
 //! 가운데 계약(#3308) 불변.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

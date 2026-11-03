@@ -26,10 +26,10 @@
 use std::fs;
 use std::path::Path;
 
-fn load(rel: &str) -> rhwp::wasm_api::HwpDocument {
+fn load(rel: &str) -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", rel, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse")
 }
 
 /// CFB stream BodyText/Section0 의 LIST_HEADER 레코드 모두 추출 (tag=72).

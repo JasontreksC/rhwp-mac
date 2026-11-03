@@ -19,7 +19,6 @@
 //! 1. HWP3 파싱에서 자동번호 컨트롤은 8 코드유닛을 차지한다 — 뒤따르는 문자의
 //!    `char_offsets` 가 8 이상 뛴다.
 //! 2. HWP3 → HWP5 변환이 **텍스트-안정**이다 — 미주 문단 본문이 그대로다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::Paragraph;

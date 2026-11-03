@@ -6,8 +6,6 @@
 //! Table bbox 를 HWP 경로에 고정한다. 배치 cherry-pick 이 원 PR 을 닫아도
 //! 테스트 이름과 이슈 번호가 계약을 남긴다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use serde_json::Value;
 use std::path::Path;

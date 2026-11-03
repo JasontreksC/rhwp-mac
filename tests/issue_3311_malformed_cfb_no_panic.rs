@@ -15,7 +15,7 @@
 //! 패닉은 라이브러리 소비자(WASM 모듈 포함)를 통째로 죽이므로, 신뢰 경계에서 파싱하는
 //! 이용자에게는 DoS 다. 열기 실패(`Err`)로 끝나는 것이 언제나 낫다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 /// 리포터가 보고한 실측 값 — 이 조합이 구 커밋에서 패닉을 냈다.
 const REPORTED_FAT_ENTRIES: u32 = 824;

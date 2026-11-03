@@ -78,7 +78,7 @@ fn issue_1785_effective_padding_rule() {
     assert_eq!(cell.effective_padding(&pad(140)).top, 140);
 }
 
-fn table_bboxes(doc: &rhwp::wasm_api::HwpDocument) -> Vec<(f64, f64)> {
+fn table_bboxes(doc: &rhwp::document_api::HwpDocument) -> Vec<(f64, f64)> {
     let tree = doc
         .build_page_render_tree(0)
         .unwrap_or_else(|e| panic!("render tree: {:?}", e));
@@ -112,14 +112,14 @@ fn table_bboxes(doc: &rhwp::wasm_api::HwpDocument) -> Vec<(f64, f64)> {
 fn issue_1785_roundtrip_preserves_microgrid_table_geometry() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    let mut doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let mut doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", SAMPLE, e));
     let original = table_bboxes(&doc);
 
     let hwp_bytes = doc
         .export_hwp_with_adapter()
         .unwrap_or_else(|e| panic!("adapter export: {:?}", e));
-    let rt_doc = rhwp::wasm_api::HwpDocument::from_bytes(&hwp_bytes)
+    let rt_doc = rhwp::document_api::HwpDocument::from_bytes(&hwp_bytes)
         .unwrap_or_else(|e| panic!("reparse hwp: {:?}", e));
     let roundtrip = table_bboxes(&rt_doc);
 

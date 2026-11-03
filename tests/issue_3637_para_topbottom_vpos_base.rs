@@ -29,7 +29,6 @@
 //! 합성 문서로는 재현되지 않아 실제 문서를 표본으로 쓴다 — 결함이 저장 vpos 사다리와
 //! 개체 기하의 특정 조합에서만 발동해서, 손으로 만든 `LINE_SEG` 로는 그 조합을
 //! 맞추지 못했다 (음성 대조에서 수정 없이도 통과했다).
-#![cfg(not(target_arch = "wasm32"))]
 
 /// 해양수산부 보도자료. 1쪽 pi=17 이 자리차지 도형을 앵커한 문단이다.
 ///
@@ -74,7 +73,7 @@ fn out_of_page_glyphs(svg: &str) -> (f64, Vec<(f64, String)>) {
 #[test]
 fn no_glyph_is_drawn_outside_the_page() {
     let bytes = std::fs::read(sample_path()).expect("표본 읽기");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("파싱");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("파싱");
     let page_count = doc.page_count();
     assert!(
         page_count >= 2,

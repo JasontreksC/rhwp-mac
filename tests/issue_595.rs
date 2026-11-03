@@ -13,11 +13,11 @@
 use std::fs;
 use std::path::Path;
 
-fn load_exam_math() -> rhwp::wasm_api::HwpDocument {
+fn load_exam_math() -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = Path::new(repo_root).join("samples/exam_math.hwp");
     let bytes = fs::read(&hwp_path).expect("read exam_math.hwp");
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse exam_math.hwp")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse exam_math.hwp")
 }
 
 /// page 0 (1-based 1) 의 본문 좌표 (514, 200) 는 머리말 hit 이 아니어야 한다.

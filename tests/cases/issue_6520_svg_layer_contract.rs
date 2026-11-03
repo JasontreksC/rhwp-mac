@@ -1,5 +1,6 @@
 //! Issue #6520: production SVG consumes the canonical `PageLayerTree` paint contract.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::shape::TextWrap;
 use rhwp::paint::{
     text_visual_replay_role, CacheHint, FontFaceKey, FontFallbackPolicyId, FontInstanceKey,
@@ -20,7 +21,6 @@ use rhwp::renderer::render_tree::{
 use rhwp::renderer::svg::FontEmbedMode;
 use rhwp::renderer::svg_layer::SvgLayerRenderer;
 use rhwp::renderer::{ShapeStyle, TextStyle};
-use rhwp::wasm_api::HwpDocument;
 use std::path::PathBuf;
 use std::process::Command;
 
@@ -113,41 +113,6 @@ fn body_clip(node: &LayerNode) -> Option<BoundingBox> {
         LayerNodeKind::ClipRect { child, .. } => body_clip(child),
         LayerNodeKind::Group { children, .. } => children.iter().find_map(body_clip),
         LayerNodeKind::Leaf { .. } => None,
-    }
-}
-
-#[cfg(feature = "native-skia")]
-fn remove_underline_visual(node: &mut LayerNode) {
-    match &mut node.kind {
-        LayerNodeKind::Group { children, .. } => {
-            for child in children {
-                remove_underline_visual(child);
-            }
-        }
-        LayerNodeKind::ClipRect { child, .. } => remove_underline_visual(child),
-        LayerNodeKind::Leaf { ops } => {
-            ops.retain(|op| {
-                !matches!(
-                    op,
-                    PaintOp::TextDecoration {
-                        kind: TextDecorationKind::Underline,
-                        ..
-                    }
-                )
-            });
-            for op in ops {
-                match op {
-                    PaintOp::TextRun { run, .. }
-                    | PaintOp::CharOverlap { run, .. }
-                    | PaintOp::TextControlMark { run, .. }
-                    | PaintOp::TabLeader { run, .. }
-                    | PaintOp::TextDecoration { run, .. } => {
-                        run.style.underline = rhwp::model::style::UnderlineType::None;
-                    }
-                    _ => {}
-                }
-            }
-        }
     }
 }
 
@@ -322,33 +287,6 @@ fn layer_profile_owns_visibility_and_text_marks() {
             "SVG must translate tree presence without another profile decision"
         );
     }
-
-    #[cfg(feature = "native-skia")]
-    {
-        use rhwp::renderer::layer_renderer::LayerRasterRenderer;
-        use rhwp::renderer::skia::SkiaLayerRenderer;
-
-        let mut missing_only = PageRenderTree::new(0, 100.0, 80.0);
-        missing_only.root.node_type = RenderNodeType::Page(PageNode {
-            page_index: 0,
-            width: 100.0,
-            height: 80.0,
-            section_index: 0,
-        });
-        missing_only.root.children.push(RenderNode::new(
-            43,
-            RenderNodeType::Placeholder(PlaceholderNode::missing_picture(None, None, None, None)),
-            BoundingBox::new(60.0, 40.0, 20.0, 20.0),
-        ));
-        let screen = LayerBuilder::new(RenderProfile::Screen).build(&missing_only);
-        let print = LayerBuilder::new(RenderProfile::Print).build(&missing_only);
-        let screen = SkiaLayerRenderer::new().render_png(&screen).unwrap();
-        let print = SkiaLayerRenderer::new().render_png(&print).unwrap();
-        assert_ne!(
-            screen, print,
-            "Skia must translate profile-owned tree presence"
-        );
-    }
 }
 
 #[test]
@@ -428,30 +366,6 @@ fn rotated_text_replays_glyph_once_and_rotates_explicit_visuals() {
         output.matches("transform=\"rotate(30").count() >= 3,
         "glyph and both explicit visuals must share the rotation: {output}"
     );
-
-    #[cfg(feature = "native-skia")]
-    {
-        use rhwp::renderer::layer_renderer::LayerRasterRenderer;
-        use rhwp::renderer::skia::SkiaLayerRenderer;
-
-        let decorated = SkiaLayerRenderer::new().render_png(&layer_tree).unwrap();
-        let mut undecorated_tree = layer_tree.clone();
-        remove_underline_visual(&mut undecorated_tree.root);
-        undecorated_tree.text_sources =
-            rhwp::paint::TextSourceTable::from_layer_node(&undecorated_tree.root);
-        let undecorated = SkiaLayerRenderer::new()
-            .render_png(&undecorated_tree)
-            .unwrap();
-        let decorated = image::load_from_memory(&decorated).unwrap().to_rgba8();
-        let undecorated = image::load_from_memory(&undecorated).unwrap().to_rgba8();
-        assert!(
-            decorated
-                .pixels()
-                .zip(undecorated.pixels())
-                .any(|(left, right)| left != right),
-            "native Skia must replay the rotated underline sidecar"
-        );
-    }
 }
 
 #[test]
@@ -803,16 +717,6 @@ fn image_and_equation_control_labels_replay_as_canonical_ops() {
         .unwrap()
         .iter()
         .any(|value| value == "paint.controlLabel"));
-
-    #[cfg(feature = "native-skia")]
-    {
-        use rhwp::renderer::layer_renderer::LayerRasterRenderer;
-        use rhwp::renderer::skia::SkiaLayerRenderer;
-
-        let png = SkiaLayerRenderer::new().render_png(&tree).unwrap();
-        let image = image::load_from_memory(&png).unwrap().to_rgba8();
-        assert!(image.pixels().any(|pixel| pixel[3] > 0));
-    }
 
     let escaped = PageLayerTree::new(
         80.0,
@@ -1266,42 +1170,6 @@ fn soft_wrap_decoration_trim_does_not_depend_on_source_node_id() {
         underline_x2(&first),
         10.0 + decoration_end(&json).expect("serialized decoration endpoint")
     );
-
-    #[cfg(feature = "native-skia")]
-    {
-        use rhwp::renderer::layer_renderer::LayerRasterRenderer;
-        use rhwp::renderer::skia::SkiaLayerRenderer;
-
-        let trimmed = SkiaLayerRenderer::new().render_png(&tree).unwrap();
-        let mut untrimmed = tree.clone();
-        fn clear_trim(node: &mut LayerNode) {
-            match &mut node.kind {
-                LayerNodeKind::Group { children, .. } => {
-                    for child in children {
-                        clear_trim(child);
-                    }
-                }
-                LayerNodeKind::ClipRect { child, .. } => clear_trim(child),
-                LayerNodeKind::Leaf { ops } => {
-                    for op in ops {
-                        if let PaintOp::TextDecoration {
-                            trim_trailing_spaces,
-                            ..
-                        } = op
-                        {
-                            *trim_trailing_spaces = 0;
-                        }
-                    }
-                }
-            }
-        }
-        clear_trim(&mut untrimmed.root);
-        let untrimmed = SkiaLayerRenderer::new().render_png(&untrimmed).unwrap();
-        assert_ne!(
-            trimmed, untrimmed,
-            "native Skia must consume the published trim"
-        );
-    }
 }
 
 #[test]
@@ -1324,19 +1192,6 @@ fn clip_enabled_is_consumed_from_layer_output_options() {
 
     assert!(!renderer.output().contains("clipPath"));
     assert!(renderer.output().contains("#332211"));
-
-    #[cfg(feature = "native-skia")]
-    {
-        use rhwp::renderer::layer_renderer::LayerRasterRenderer;
-        use rhwp::renderer::skia::SkiaLayerRenderer;
-
-        let png = SkiaLayerRenderer::new().render_png(&tree).unwrap();
-        let image = image::load_from_memory(&png).unwrap().to_rgba8();
-        assert!(
-            image.get_pixel(30, 20)[3] > 0,
-            "disabled canonical clip must expose the full control"
-        );
-    }
 }
 
 #[test]
@@ -1385,30 +1240,6 @@ fn out_of_body_control_is_replayed_only_inside_the_canonical_clip() {
     let mut marked_svg = SvgLayerRenderer::new();
     marked_svg.render_page(&marked_tree).unwrap();
     assert!(marked_svg.output().contains("width=\"88\""));
-
-    #[cfg(feature = "native-skia")]
-    {
-        use rhwp::renderer::layer_renderer::LayerRasterRenderer;
-        use rhwp::renderer::skia::SkiaLayerRenderer;
-
-        let png = SkiaLayerRenderer::new().render_png(&layer_tree).unwrap();
-        let image = image::load_from_memory(&png).unwrap().to_rgba8();
-        assert!(
-            image.get_pixel(47, 20)[3] > 0,
-            "in-clip control portion must paint"
-        );
-        assert_eq!(
-            image.get_pixel(60, 20)[3],
-            0,
-            "declared body clip must suppress out-of-body paint"
-        );
-        let marked_png = SkiaLayerRenderer::new().render_png(&marked_tree).unwrap();
-        let marked_image = image::load_from_memory(&marked_png).unwrap().to_rgba8();
-        assert!(
-            marked_image.get_pixel(60, 20)[3] > 0,
-            "producer-published mark allowance must expose right-edge paint"
-        );
-    }
 }
 
 #[test]
@@ -1429,15 +1260,4 @@ fn table_cell_uses_published_clip_instead_of_node_bounds() {
     let mut svg = SvgLayerRenderer::new();
     svg.render_page(&tree).unwrap();
     assert!(svg.output().contains("width=\"20\""));
-
-    #[cfg(feature = "native-skia")]
-    {
-        use rhwp::renderer::layer_renderer::LayerRasterRenderer;
-        use rhwp::renderer::skia::SkiaLayerRenderer;
-
-        let png = SkiaLayerRenderer::new().render_png(&tree).unwrap();
-        let image = image::load_from_memory(&png).unwrap().to_rgba8();
-        assert!(image.get_pixel(10, 15)[3] > 0);
-        assert_eq!(image.get_pixel(30, 15)[3], 0);
-    }
 }

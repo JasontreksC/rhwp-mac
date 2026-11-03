@@ -1,7 +1,5 @@
 //! HWP3/HWPX 공통 암호 모듈의 실제 fixture 저장 계약.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::io::Read;
 use std::path::Path;
 

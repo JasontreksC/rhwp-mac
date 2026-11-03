@@ -29,8 +29,6 @@
 //! 전각이다(216회 전건 0.8 em 이상). 다만 `#2070` 이 본 것은 같은 문서번호의 **개정안
 //! 첨부**이고 그것은 저장소에 없다 — 그 관측 자체를 반증한 것은 아니라고 기록해 둔다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

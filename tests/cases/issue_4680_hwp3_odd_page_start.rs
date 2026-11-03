@@ -44,8 +44,6 @@
 //!
 //! 합성 문서 골격은 `issue_5557_hwp3_cell_margin` 과 동형이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::control::{Control, PageStartsOn};
 use rhwp::parser::cfb_reader::CfbReader;
 use rhwp::parser::record::Record;

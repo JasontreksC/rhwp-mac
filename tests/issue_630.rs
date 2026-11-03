@@ -84,7 +84,7 @@ fn test_630_aift_p4_toc_paren_alignment() {
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse aift.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse aift.hwp");
 
     // 페이지 4 (0-indexed page=3) — 목차 페이지
     let svg = doc

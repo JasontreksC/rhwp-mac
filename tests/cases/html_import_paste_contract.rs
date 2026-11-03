@@ -1,5 +1,4 @@
 //! HTML clipboard input is observed through the public native paste API.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::style::UnderlineType;

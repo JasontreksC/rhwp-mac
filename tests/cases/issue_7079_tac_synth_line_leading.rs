@@ -20,7 +20,6 @@
 //!
 //! 반례: 저장 LINE_SEG 가 있는 문단, 비-TAC 개체, 그리고 글자모양·문단모양을 못 찾는
 //! 문단은 leading 0 으로 종전 경로 그대로다(`renderer::mod` 단위 시험이 그 축을 맡는다).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

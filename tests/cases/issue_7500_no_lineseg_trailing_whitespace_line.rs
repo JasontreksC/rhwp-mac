@@ -27,8 +27,6 @@
 //! 쪽 수, 큰 표의 쪽 소속과 host 표 줄과의 앞뒤 순서, host 표의 줄 안 위치(단 가운데 기준),
 //! 그림 3장의 1쪽 소속·표 조각 포함·같은 띠 여부.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

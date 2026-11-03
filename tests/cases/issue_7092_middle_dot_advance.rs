@@ -22,7 +22,6 @@
 //!   이다. 26점이 150.6px 칸에 들어가니(전각이면 381px) 좁은 값이 옳다.
 //!
 //! 대체 안 된 HFT 가 전각이라는 정본은 아직 없어 그 경우는 종전대로 좁힌다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::paint::RenderProfile;
 use rhwp::DocumentCore;

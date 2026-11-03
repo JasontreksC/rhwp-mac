@@ -1549,15 +1549,6 @@ fn test_render_empty_page_svg() {
 }
 
 #[test]
-fn test_render_empty_page_html() {
-    let doc = HwpDocument::create_empty();
-    let html = doc.render_page_html_native(0);
-    assert!(html.is_ok());
-    let html = html.unwrap();
-    assert!(html.contains("hwp-page"));
-}
-
-#[test]
 fn test_page_out_of_range() {
     let doc = HwpDocument::create_empty();
     let result = doc.render_page_svg_native(999);
@@ -1652,71 +1643,6 @@ fn test_page_layer_tree_export_preserves_output_options() {
         parsed["outputOptions"]["debugOverlay"].as_bool(),
         Some(true)
     );
-}
-
-#[test]
-fn test_canvaskit_replay_plan_export_uses_mode_policy() {
-    let doc = HwpDocument::create_empty();
-
-    let default_json = doc
-        .get_canvaskit_replay_plan_native(0, "default")
-        .expect("empty document CanvasKit plan should export");
-    assert!(default_json.contains("\"mode\":\"default\""));
-    assert!(default_json.contains("\"hiddenCanvas2dOverlayAllowed\":false"));
-    assert!(default_json.contains("\"directReplayRequired\":true"));
-    assert!(default_json.contains("\"requiredFontFamilies\""));
-    assert!(default_json.contains("\"requiredFontFamiliesComplete\":true"));
-
-    let compat_json = doc
-        .get_canvaskit_replay_plan_native(0, "compat")
-        .expect("compat CanvasKit plan should export");
-    assert!(compat_json.contains("\"mode\":\"compat\""));
-    assert!(compat_json.contains("\"hiddenCanvas2dOverlayAllowed\":false"));
-    assert!(compat_json.contains("\"directReplayRequired\":true"));
-
-    let invalid = doc.get_canvaskit_replay_plan_native(0, "canvas2d");
-    let error = invalid.expect_err("unsupported CanvasKit replay mode should fail");
-    let message = error.to_string();
-    assert!(message.contains("canvas2d"));
-    assert!(message.contains("allowed modes: default, compat"));
-}
-
-#[test]
-fn test_empty_document_canvaskit_preflight_api_schema() {
-    let doc = HwpDocument::create_empty();
-
-    let json = doc
-        .get_canvaskit_document_preflight("default", "screen")
-        .expect("empty document CanvasKit preflight should export");
-    let parsed: Value = serde_json::from_str(&json).expect("CanvasKit preflight JSON");
-
-    assert_eq!(parsed["schemaVersion"].as_u64(), Some(1));
-    assert_eq!(parsed["mode"].as_str(), Some("default"));
-    assert_eq!(parsed["profile"].as_str(), Some("screen"));
-    assert!(matches!(
-        parsed["status"].as_str(),
-        Some("eligible" | "ineligible" | "incomplete")
-    ));
-    assert!(parsed["eligible"].is_boolean());
-    assert!(parsed["complete"].is_boolean());
-    assert_eq!(parsed["pageCount"].as_u64(), Some(1));
-    assert!(parsed["scannedPages"].is_u64());
-    assert!(parsed["scannedWorkUnits"].is_u64());
-    assert_eq!(parsed["limits"]["maxPages"].as_u64(), Some(128));
-    assert_eq!(parsed["limits"]["maxWorkUnits"].as_u64(), Some(50_000));
-    assert_eq!(parsed["limits"]["maxBlockers"].as_u64(), Some(32));
-    assert_eq!(
-        parsed["limits"]["maxRequiredFontFamilies"].as_u64(),
-        Some(256)
-    );
-    assert!(parsed["summary"]["totalItems"].is_u64());
-    assert!(parsed["blockers"].is_array());
-    assert!(parsed["requiredFontFamilies"].is_array());
-    assert!(parsed["capabilityDigest"]
-        .as_str()
-        .is_some_and(|digest| digest.len() == 71 && digest.starts_with("blake3:")));
-    assert!(parsed.get("root").is_none());
-    assert!(parsed.get("resources").is_none());
 }
 
 #[test]
@@ -1832,23 +1758,6 @@ fn test_fallback_font() {
     assert_eq!(doc.get_fallback_font(), DEFAULT_FALLBACK_FONT);
     doc.set_fallback_font("/custom/font.ttf");
     assert_eq!(doc.get_fallback_font(), "/custom/font.ttf");
-}
-
-#[test]
-fn test_viewer_creation() {
-    let doc = HwpDocument::create_empty();
-    let viewer = HwpViewer::new(doc);
-    assert_eq!(viewer.page_count(), 1);
-    assert_eq!(viewer.pending_task_count(), 0);
-}
-
-#[test]
-fn test_viewer_viewport_update() {
-    let doc = HwpDocument::create_empty();
-    let mut viewer = HwpViewer::new(doc);
-    viewer.update_viewport(0.0, 0.0, 800.0, 600.0);
-    let visible = viewer.visible_pages();
-    assert!(!visible.is_empty());
 }
 
 #[test]
@@ -19864,7 +19773,7 @@ fn test_get_table_bbox_at_page_for_giant_multi_page_cell() {
     }
 }
 
-/// 표 컨트롤 삭제 테스트 (wasm_api 내부 접근)
+/// 표 컨트롤 삭제 테스트 (document_api 내부 접근)
 #[test]
 fn test_delete_table_control() {
     use std::path::Path;

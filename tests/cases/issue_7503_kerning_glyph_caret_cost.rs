@@ -5,8 +5,6 @@
 //! 26pt(34.67px)에서 `A`의 advance는 24.47px이고 `AV` 커닝은 -2.77px이다.
 //! 같은 문서를 글꼴 등록 없이 그린 결과를 커닝 전 기준으로 쓴다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 

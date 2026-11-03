@@ -18,7 +18,7 @@ fn issue_1017_baked_watermark_is_raw_ordered_after_text_but_marked_behind_text()
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = std::path::Path::new(repo_root).join("samples/복학원서.hwp");
     let bytes = std::fs::read(&hwp_path).expect("read 복학원서.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
 
     let json = doc
         .get_page_layer_tree_native(0)
@@ -58,50 +58,6 @@ fn issue_1017_baked_watermark_is_raw_ordered_after_text_but_marked_behind_text()
     assert_eq!(watermark.op["wrap"], "behindText");
     assert_eq!(watermark.op["mime"], "image/png");
     assert_eq!(watermark.op["bakedWatermark"], true);
-}
-
-#[test]
-fn issue_1017_canvaskit_replay_plan_exposes_baked_watermark_plane() {
-    let repo_root = env!("CARGO_MANIFEST_DIR");
-    let hwp_path = std::path::Path::new(repo_root).join("samples/복학원서.hwp");
-    let bytes = std::fs::read(&hwp_path).expect("read 복학원서.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
-
-    let json = doc
-        .get_canvaskit_replay_plan_native(0, "default")
-        .expect("CanvasKit replay plan page 1");
-    let plan: Value = serde_json::from_str(&json).expect("CanvasKit replay plan JSON");
-    let items = plan["items"]
-        .as_array()
-        .expect("CanvasKit replay plan items");
-
-    let page_background = items
-        .iter()
-        .find(|item| item["opType"].as_str() == Some("pageBackground"))
-        .expect("pageBackground replay item");
-    let text_run = items
-        .iter()
-        .find(|item| item["opType"].as_str() == Some("textRun"))
-        .expect("textRun replay item");
-    let baked_watermark = items
-        .iter()
-        .find(|item| {
-            item["opType"].as_str() == Some("image")
-                && item["detail"]
-                    .as_str()
-                    .is_some_and(|detail| detail.contains("resolved=bakedWatermark"))
-        })
-        .expect("baked watermark replay item");
-
-    assert_eq!(page_background["replayPlane"].as_str(), Some("background"));
-    assert_eq!(text_run["replayPlane"].as_str(), Some("flow"));
-    assert_eq!(baked_watermark["replayPlane"].as_str(), Some("behindText"));
-    assert!(
-        baked_watermark["detail"]
-            .as_str()
-            .is_some_and(|detail| detail.contains("wrap=behindText")),
-        "baked watermark item should keep wrap detail: {baked_watermark:?}"
-    );
 }
 
 fn collect_ops_in_tree_order<'a>(node: &'a Value, path: String, out: &mut Vec<OrderedOp<'a>>) {

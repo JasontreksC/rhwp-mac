@@ -4,14 +4,13 @@
 //! (왼쪽 정렬, 안쪽 왼끝 79.4). 한/글 2022 PDF 실측: 그림 x 89.3, '서' origin x 116.8
 //! = 79.4 + 빈칸 10 + 그림 17.5 + 빈칸 10. 종전 rhwp 는 첫 run 이 79.4 + 17.4 에서 시작해
 //! '서' 가 134.3 이었다(그림은 89.4 로 맞았음).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
 fn page_svg(rel: &str, page: u32) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {rel}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel}: {e:?}"));
     doc.render_page_svg(page)
         .unwrap_or_else(|e| panic!("render {rel} p{}: {e:?}", page + 1))

@@ -2,7 +2,6 @@
 //!
 //! 상태 표시줄이 보여야 할 숫자는 물리 순번(pageIndex + 1)이 아니라 문서가 매기는 쪽번호다.
 //! 둘은 NewNumber 컨트롤이 있을 때 갈라진다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

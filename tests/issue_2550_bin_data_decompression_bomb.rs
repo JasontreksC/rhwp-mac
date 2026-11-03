@@ -13,7 +13,6 @@
 //!
 //! 공격 문서는 저장소에 커밋하지 않고 **시험 시점에 합성한다**
 //! (`tests/security_corpus_regression.rs` 와 같은 방침).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::{Cursor, Read, Write};
 use std::path::{Path, PathBuf};

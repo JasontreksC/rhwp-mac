@@ -109,7 +109,7 @@ fn issue_938_svg_watermark_is_hancom_baked_png() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = std::path::Path::new(repo_root).join("samples/복학원서.hwp");
     let bytes = std::fs::read(&hwp_path).expect("read 복학원서.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
 
     let svg = doc
         .render_page_svg_native(0)
@@ -175,7 +175,7 @@ fn issue_938_overlay_watermark_is_hancom_baked_png() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = std::path::Path::new(repo_root).join("samples/복학원서.hwp");
     let bytes = std::fs::read(&hwp_path).expect("read 복학원서.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
 
     let json = doc
         .get_page_overlay_images_native(0)

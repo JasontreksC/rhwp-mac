@@ -49,8 +49,6 @@
 //! 기준: 한/글 2020(저장 버전) — `pdf/2769535-records-inspection-plan-2020.pdf`
 //! (`hwp2024Convert` engine 2020, 2쪽).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

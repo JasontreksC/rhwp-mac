@@ -21,6 +21,7 @@
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::document::Document;
 use rhwp::model::table::{Cell, Table, TablePageBreak};
@@ -29,7 +30,6 @@ use rhwp::renderer::composer::compose_paragraph;
 use rhwp::renderer::height_measurer::{HeightMeasurer, MeasuredTable};
 use rhwp::renderer::style_resolver::resolve_styles_with_variant;
 use rhwp::renderer::{hwpunit_to_px, DEFAULT_DPI};
-use rhwp::wasm_api::HwpDocument;
 use serde_json::Value;
 
 const FIXTURE: &str = "samples/2025 행정업무운영 편람(최종).hwp";

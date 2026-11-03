@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [#5769] Stage 1 게이트 — 선택 삭제 조각(fragment) 복원의 저장 바이트 왕복 동일성.
 //!
 //! capture → delete → restore 뒤 `export_hwp` 결과가 삭제 전과 **완전히 같아야** 하고,

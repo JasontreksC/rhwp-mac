@@ -27,10 +27,10 @@ const SPLIT_FIRST_PAGE: u32 = 64;
 /// 그 표가 이어지는 다음 쪽.
 const SPLIT_CONT_PAGE: u32 = SPLIT_FIRST_PAGE + 1;
 
-fn load_doc(rel: &str) -> rhwp::wasm_api::HwpDocument {
+fn load_doc(rel: &str) -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", rel, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse")
 }
 
 fn svg_height(svg: &str) -> f64 {

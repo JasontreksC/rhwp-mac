@@ -18,8 +18,6 @@
 //! 표를 끝내는 마지막 행의 경계(이어질 행이 없어 빈 밴드가 쪽 경계에서 끝남)는 corpus
 //! 표본(156660604, 한글 5쪽)에서 확인했고 저장소 fixture 가 없어 여기서는 잠그지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 use serde_json::Value;

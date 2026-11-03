@@ -20,8 +20,6 @@
 //! 이 검사는 줄 소속(어느 줄이 어느 글자로 끝나고 시작하는지)만 본다. 위치·모양은
 //! 같은 쪽의 Visual Sweep 으로 따로 확인한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::collections::BTreeMap;
 use std::path::Path;
 

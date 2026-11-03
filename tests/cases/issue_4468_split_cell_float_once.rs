@@ -8,7 +8,6 @@
 //! 픽스처 `samples/issue5734/cell_float_stack_stored_vpos.hwpx` 는 #6045 와
 //! 같은 156684746 표 8 축소본이다. 오른쪽 칸 서울경제TV 캡처(h=289.2px)가
 //! 쪽을 건넌다. 결함 시 같은 control 이 1쪽·2쪽에 모두 나타난다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::collections::HashMap;
 use std::path::Path;

@@ -1,8 +1,6 @@
 //! #2097 원본 행 소유와 수동으로 짧게 만든 마지막 셀의 물리 예산을 구분한다.
 //! 독립 한컴 PDF의 쪽별 내용과 원본 본문 여백이 기대값의 근거다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 use std::collections::BTreeSet;

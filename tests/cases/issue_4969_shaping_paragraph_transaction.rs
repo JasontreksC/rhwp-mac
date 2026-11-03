@@ -29,8 +29,6 @@ use shaping_paragraph::{
     MAX_HORIZONTAL_SHAPING_LINE_ATTEMPTS, MAX_HORIZONTAL_SHAPING_LINE_CANDIDATES,
     MAX_HORIZONTAL_SHAPING_LINE_RETRIES, MAX_HORIZONTAL_SHAPING_PARAGRAPH_SEGMENTS,
 };
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen_test::wasm_bindgen_test;
 
 const SOURCE_HAN: &[u8] =
     include_bytes!("../../ttfs/opensource/SourceHanSerifK-OldHangul-subset.otf");
@@ -103,7 +101,6 @@ fn assert_reason(
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_c0_activation_is_feature_detected_and_fail_closed() {
     assert_eq!(MAX_HORIZONTAL_SHAPING_PARAGRAPH_SEGMENTS, 4_096);
     assert_eq!(MAX_HORIZONTAL_SHAPING_LINE_CANDIDATES, 4_097);
@@ -179,7 +176,6 @@ fn issue_4969_q2_c0_activation_is_feature_detected_and_fail_closed() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_c0_style_and_paragraph_boundaries_cannot_be_crossed() {
     let text = "ᄒᆞᆫ글";
     let positions = [0.0, 4.0, 8.0, 12.0, 16.0];
@@ -228,7 +224,6 @@ fn issue_4969_q2_c0_style_and_paragraph_boundaries_cannot_be_crossed() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_c1_paragraph_width_has_one_cluster_owner() {
     let text = "ᄒᆞᆫ글";
     let positions = [0.0, 4.0, 8.0, 12.0, 16.0];
@@ -255,7 +250,6 @@ fn issue_4969_q2_c1_paragraph_width_has_one_cluster_owner() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_c1_mixed_text_keeps_fallback_width_outside_target() {
     let text = "Aᄒᆞᆫ글B";
     let positions = [0.0, 5.0, 9.0, 13.0, 17.0, 21.0, 26.0];
@@ -277,7 +271,6 @@ fn issue_4969_q2_c1_mixed_text_keeps_fallback_width_outside_target() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_c2_filters_fake_breaks_and_keeps_final_runs_dormant() {
     let text = "ᄒᆞᆫ글";
     let positions = [0.0, 4.0, 8.0, 12.0, 16.0];
@@ -322,7 +315,6 @@ fn issue_4969_q2_c2_filters_fake_breaks_and_keeps_final_runs_dormant() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_c2_rolls_back_to_original_owner_on_rejection() {
     let text = "ᄒᆞᆫ글";
     let positions = [0.0, 4.0, 8.0, 12.0, 16.0];
@@ -364,7 +356,6 @@ fn issue_4969_q2_c2_rolls_back_to_original_owner_on_rejection() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_c2_discards_earlier_success_when_a_later_segment_fails() {
     let text = "ᄒᆞᆫAᄒᆞᆫ";
     let positions = [0.0, 4.0, 8.0, 12.0, 17.0, 21.0, 25.0, 29.0];
@@ -408,7 +399,6 @@ fn issue_4969_q2_c2_discards_earlier_success_when_a_later_segment_fails() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_c2_limits_are_deterministic_and_do_not_publish() {
     let text = "ᄒᆞᆫ글";
     let positions = [0.0, 4.0, 8.0, 12.0, 16.0];

@@ -2,7 +2,6 @@
 //!
 //! 같은 문서 native 클립보드는 스타일을 보존하지만, 새 문서는 HTML 경로로 넘어가
 //! `table.zones` 유효 BorderFill 과 CSS 로 만든 `para_shape_id` 가 빠졌다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

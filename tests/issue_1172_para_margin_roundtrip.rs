@@ -15,14 +15,14 @@
 use std::fs;
 use std::path::Path;
 
-fn load(rel: &str) -> rhwp::wasm_api::HwpDocument {
+fn load(rel: &str) -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", rel, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse")
 }
 
 fn para_prop_number(
-    doc: &rhwp::wasm_api::HwpDocument,
+    doc: &rhwp::document_api::HwpDocument,
     sec: usize,
     para: usize,
     key_name: &str,
@@ -40,7 +40,7 @@ fn para_prop_number(
         .unwrap_or_else(|_| panic!("parse {key_name}"))
 }
 
-fn margin_left_px(doc: &rhwp::wasm_api::HwpDocument, sec: usize, para: usize) -> f64 {
+fn margin_left_px(doc: &rhwp::document_api::HwpDocument, sec: usize, para: usize) -> f64 {
     para_prop_number(doc, sec, para, "marginLeft")
 }
 
@@ -88,7 +88,7 @@ fn para_unit_hanging_indent_does_not_bind_to_left_margin() {
     }
 }
 
-fn fill_type(doc: &rhwp::wasm_api::HwpDocument, sec: usize, para: usize) -> String {
+fn fill_type(doc: &rhwp::document_api::HwpDocument, sec: usize, para: usize) -> String {
     let json = doc.get_para_properties_at_native(sec, para).expect("props");
     let key = "\"fillType\":\"";
     let s = json.find(key).expect("fillType") + key.len();

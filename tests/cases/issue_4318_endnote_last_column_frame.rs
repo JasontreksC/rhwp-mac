@@ -7,7 +7,6 @@
 //!
 //! `ENDNOTE_PAGE_OFFCANVAS_GUARD_PX`(56) 는 건드리지 않는다 — 낮추면 한글
 //! 23쪽이 22쪽으로 줄어 #5886 이 열린다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

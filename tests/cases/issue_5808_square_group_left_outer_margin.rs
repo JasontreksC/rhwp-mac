@@ -7,7 +7,6 @@
 //! 가산하고 Center/Right 는 종전 유지.
 //!
 //! 픽스처는 원본 HWPX 의 구역0 문단 7(묶음 앵커) 절단 + BinData 1×1 스텁 축소본.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

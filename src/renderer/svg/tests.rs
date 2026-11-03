@@ -144,7 +144,6 @@ fn legacy_hanyang_faces_have_portable_local_aliases() {
     );
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn font_file_candidates_are_single_path_components() {
     assert!(FontFileName::from_document_candidate("NotoSansKR-Regular.ttf".to_string()).is_some());
@@ -163,7 +162,6 @@ fn font_file_candidates_are_single_path_components() {
     .is_none());
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn planned_font_lookup_does_not_descend_below_search_roots() {
     let root = std::env::temp_dir().join(format!("rhwp-svg-font-candidate-{}", std::process::id()));
@@ -213,7 +211,6 @@ fn planned_font_lookup_does_not_descend_below_search_roots() {
     std::fs::remove_dir_all(root).expect("remove temporary font directory");
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn style_font_face_css_orders_broken_bitmap_faces_after_outline_fallbacks() {
     let mut renderer = SvgRenderer::new();
@@ -299,7 +296,6 @@ fn style_font_face_css_orders_broken_bitmap_faces_after_outline_fallbacks() {
     );
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn full_font_embed_uses_real_bold_face_when_document_uses_bold() {
     // 기존 임베드 검사에서 종료 비문자만 보정하고 정상 문자 매핑은 보존하는지 확인한다.

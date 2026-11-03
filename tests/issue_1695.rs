@@ -1,7 +1,7 @@
 //! Issue #1695: HWP3 LINE_SEG vpos reset/rewind를 문단 내부 페이지 경계로 반영한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{BoundingBox, RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/SO-SUEOP.hwp";
 const EXPECTED_PAGE_COUNT: u32 = 46;

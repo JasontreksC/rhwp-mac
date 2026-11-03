@@ -13,7 +13,6 @@
 //! 수정: LINK 마다 기존 키와 겹치지 않는 새 manifest id 를 배정해 외부 참조 엔트리로 등록하고
 //! 순번을 사상한다. 계약: 같은 문단에 LINK 그림과 내장 그림이 섞여도 서로 다른 이미지로
 //! 해결돼야 하며, LINK 가 내장 이미지 id 로 충돌하거나 드롭되면 안 된다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::bin_data::{BinData, BinDataContent, BinDataType};
 use rhwp::model::document::Document;

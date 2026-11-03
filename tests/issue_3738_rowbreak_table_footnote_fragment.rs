@@ -8,9 +8,9 @@
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{BoundingBox, RenderNode, RenderNodeType};
 use rhwp::renderer::{hwpunit_to_px, DEFAULT_DPI};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str =
     "samples/정책연구용역사업 중간진도보고서(살아있는 간장 기증자의 의학적 선별기준 연구).hwp";

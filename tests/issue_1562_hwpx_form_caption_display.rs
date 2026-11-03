@@ -7,7 +7,7 @@
 
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const SAMPLE: &str = "samples/hwpx/form-002.hwpx";
 

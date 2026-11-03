@@ -18,8 +18,6 @@
 //!
 //! studio 쪽 배선(hover 가 경로를 넘기는지)과 최소 셀 크기 정책은 범위 밖이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::document::{Document, Section};

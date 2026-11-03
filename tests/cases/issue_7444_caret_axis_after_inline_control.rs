@@ -1,8 +1,7 @@
 //! [#7444] 각주 뒤 캐럿 위치(논리 오프셋)에서 입력·복사하면 각주 앞뒤가 뒤바뀌지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
-use rhwp::wasm_api::HwpDocument;
 
 /// 본문 첫 문단을 `text` 로 채우고 `footnote_at` 글자 자리에 각주를 넣는다.
 fn doc_with_footnote(text: &str, footnote_at: usize) -> HwpDocument {

@@ -30,8 +30,6 @@
 //! ⚠ 렌더 트리의 텍스트 노드 `y + h` 로는 이 축을 **못 본다** — 넘친 줄이 클립돼
 //! 수정 전후 모두 1065.00px 로 같다. 그래서 파서 층에서 직접 잠근다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::Paragraph;
 use rhwp::parser::parse_document;

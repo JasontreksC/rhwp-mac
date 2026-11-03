@@ -16,10 +16,10 @@
 use std::fs;
 use std::path::Path;
 
-fn load_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_doc() -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/table-in-tbox.hwp");
     let bytes = fs::read(&path).expect("read table-in-tbox.hwp");
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse")
 }
 
 /// 글상자 안 텍스트 위 클릭 (위치: 표 셀 안) → isTextBox=true + cellPath.
@@ -80,11 +80,11 @@ fn issue_919_textbox_outside_hit_returns_body() {
 }
 
 /// getShapeBBox API — 글상자 (sec=0, ppi=0, ci=2) bbox 정합.
-/// wasm_api 의 `get_shape_bbox` 공개 API 사용 (native 는 pub(crate)).
+/// document_api 의 `get_shape_bbox` 공개 API 사용 (native 는 pub(crate)).
 #[test]
 fn issue_919_get_shape_bbox_returns_correct_dimensions() {
     let doc = load_doc();
-    // wasm_api.get_shape_bbox 는 JsValue 반환 — native build 에서는 Result<String, HwpError>
+    // document_api.get_shape_bbox 는 JsValue 반환 — native build 에서는 Result<String, HwpError>
     // 직접 호출이 불가하므로 hit_test_native 가 글상자 ci=2 인식하는지로 간접 검증.
     // (Stage 1 진단의 D 케이스: x=400 y=500 → controlIndex=2 반환 → 글상자 인식됨)
     let json = doc

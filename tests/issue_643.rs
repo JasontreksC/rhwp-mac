@@ -20,7 +20,7 @@ fn page6_pi80_last_line_stays_on_page6() {
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse 2022년 국립국어원 업무계획.hwp");
 
     // 전체 덤프에서 pi=80 항목 찾기 (페이지 번호는 다른 정정으로 변동 가능)

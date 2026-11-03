@@ -30,7 +30,6 @@
 //! 수정 전  도형 전진 416.0px   쪽 밖 글자 117   최대 초과 178.0px
 //! 수정 후  도형 전진  96.0px   쪽 밖 글자   0   최대 초과   0.0px
 //! ```
-#![cfg(not(target_arch = "wasm32"))]
 
 /// 손으로 지은 최소 표본. 호스트 문단 하나에 자리차지 표(30600 HU 줄) + 자리차지
 /// 글상자(6600 HU 줄), 그 뒤에 본문 18줄. 수정 전에는 본문이 쪽 아래로 밀린다.
@@ -72,7 +71,7 @@ fn out_of_page_glyphs(svg: &str) -> (f64, Vec<(f64, String)>) {
 
 fn render_pages() -> Vec<String> {
     let bytes = std::fs::read(sample_path()).expect("표본 읽기");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("파싱");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("파싱");
     (0..doc.page_count())
         .map(|p| doc.render_page_svg(p).expect("SVG 렌더"))
         .collect()

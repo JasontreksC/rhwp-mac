@@ -17,7 +17,7 @@ fn issue_546_exam_science_p2_pagination_restored() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = Path::new(repo_root).join("samples/exam_science.hwp");
     let bytes = fs::read(&hwp_path).expect("read exam_science.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse exam_science.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse exam_science.hwp");
 
     // v0.7.9 정답지: 4 페이지
     // 회귀 시: 6 페이지 (p2 본문 누락으로 paragraph 들이 다른 페이지로 분산)

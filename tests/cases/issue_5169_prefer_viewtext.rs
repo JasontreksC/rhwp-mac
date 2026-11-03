@@ -12,7 +12,6 @@
 //!
 //! 계약: `ViewText` 가 존재하고 정상 복호되면 rhwp 도 그것을 읽어야 한다 — 표 개수가
 //! `ViewText`(10) 쪽이어야 하고 `BodyText`(4) 여선 안 된다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::Paragraph;

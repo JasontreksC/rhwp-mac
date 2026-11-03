@@ -8,13 +8,13 @@
 use std::fs;
 use std::path::Path;
 
-fn load_doc(rel: &str) -> rhwp::wasm_api::HwpDocument {
+fn load_doc(rel: &str) -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", rel, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse")
 }
 
-fn page_tree(doc: &rhwp::wasm_api::HwpDocument, page: u32) -> serde_json::Value {
+fn page_tree(doc: &rhwp::document_api::HwpDocument, page: u32) -> serde_json::Value {
     serde_json::from_str(&doc.get_page_render_tree(page).expect("쪽 렌더 트리"))
         .expect("렌더 트리 JSON")
 }

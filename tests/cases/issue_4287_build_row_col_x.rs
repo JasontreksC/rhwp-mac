@@ -5,8 +5,6 @@
 //! 가드가 사라지면 2100×2100 `Option<f64>` ≈ 70MB 를 예약한다. 65535×65535
 //! 는 회귀 시 CI 러너가 OOM 으로 죽으므로 쓰지 않는다 (#2722 보정과 동일).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::control::Control;
 use rhwp::model::table::MAX_TABLE_GRID_CELLS;
 use rhwp::parser::hml::parse_hml;

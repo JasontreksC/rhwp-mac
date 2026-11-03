@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 

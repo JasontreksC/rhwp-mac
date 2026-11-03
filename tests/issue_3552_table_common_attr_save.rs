@@ -27,8 +27,8 @@
 //! fixture: `samples/2010-01-06.hwp` s0 p4 c0 — 9행 표, raw_ctrl_data 40B 보유
 //! (attr=0x082A2311 → treat_as_char=true). raw 가 채워진 평범한 HWP5 파스본이라
 //! raw/IR 결합이 그대로 드러나는 조건이다.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::document::Document;
 use rhwp::model::shape::CommonObjAttr;
@@ -36,7 +36,6 @@ use rhwp::parser::hwpx::parse_hwpx;
 use rhwp::parser::parse_document;
 use rhwp::serializer::hwpx::serialize_hwpx;
 use rhwp::serializer::serialize_document;
-use rhwp::wasm_api::HwpDocument;
 use std::fs;
 use std::path::{Path, PathBuf};
 

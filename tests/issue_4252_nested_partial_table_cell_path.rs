@@ -214,7 +214,7 @@ fn issue_4252_page5_child_table_keeps_full_path_and_bbox_lookup_succeeds() {
     resolve_table_path(core.document(), 0, context.parent_para_index, &context.path)
         .expect("physical page 5 child table path resolves to Table");
 
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse HwpDocument");
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse HwpDocument");
     let bboxes = document
         .get_table_cell_bboxes_by_path(
             0,
@@ -322,7 +322,7 @@ fn issue_4252_hit_test_does_not_replace_valid_equal_depth_text_path() {
             })
         })
         .collect::<Vec<_>>();
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&fixture_bytes())
+    let document = rhwp::document_api::HwpDocument::from_bytes(&fixture_bytes())
         .expect("parse HwpDocument for paragraph[99] parent caret");
     document
         .get_cursor_rect_by_path(

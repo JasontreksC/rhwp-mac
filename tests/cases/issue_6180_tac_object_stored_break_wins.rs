@@ -20,13 +20,12 @@
 //!
 //! 한/글 2022 오라클과 7쪽이 줄 단위로 일치한다(세 문단 모두 2줄, 런 상단 간격 32.8px —
 //! 줄 상자 전진 36.85px 에서 첫 줄 baseline 이 상자 안에서 내려앉은 만큼 작다).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6180/156745974_tac_object_line_spacing.hwpx";
 const PAGE_INDEX: u32 = 6; // 0-based — 7쪽

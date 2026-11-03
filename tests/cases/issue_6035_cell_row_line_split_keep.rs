@@ -17,7 +17,6 @@
 //!
 //! 결함 상태에서는 12쪽 + 5쪽 말미가 '하는가?'(직전 행 꼬리, baseline
 //! 1039.1px)로 끝나 세 어서션이 실패한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

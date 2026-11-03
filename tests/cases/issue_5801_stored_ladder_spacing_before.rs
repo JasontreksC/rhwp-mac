@@ -8,11 +8,10 @@
 //!
 //! `samples/2025 행정업무운영 편람(최종).hwpx` 272쪽(section 9)이 그 형태다. 저장 좌표가
 //! 말하는 쪽 채움은 748.2px 인데 트림이 걸리면 729.2px 로 18.9px 짧게 센다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 /// 저장 사다리가 문단 위 간격을 담지 않은 쪽 (0-기반 인덱스).
 const LADDER_WITHOUT_SPACING_PAGE: usize = 271;

@@ -18,13 +18,13 @@
 use std::fs;
 use std::path::Path;
 
-fn load_hwpspec() -> rhwp::wasm_api::HwpDocument {
+fn load_hwpspec() -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = Path::new(repo_root).join("samples/hwpspec.hwp");
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
 
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse hwpspec.hwp")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse hwpspec.hwp")
 }
 
 #[test]

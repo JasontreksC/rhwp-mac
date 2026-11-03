@@ -14,7 +14,7 @@
 //! 검증은 **실제로 그려지는 글자**로 한다. 두 머리말에 서로 다른 표식을 넣고 쪽 렌더 트리에
 //! 어느 쪽 글자가 나오는지 본다 — 사용자가 겪는 증상 그대로다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const ODD_MARK: &str = "홀수머리말";
 const BOTH_MARK: &str = "양쪽머리말";

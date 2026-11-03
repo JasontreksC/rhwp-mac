@@ -28,7 +28,6 @@
 //! 정답지: 문서 작성 버전 `7.5.12.754` → engine 2020 버킷으로 새로 생성한 PDF 가
 //! 로고 전체를 그린다. `layout-anomaly` 는 이 쪽에 아무 신호도 내지 않는다 —
 //! 기하가 아니라 그림 자르기 축이기 때문이다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

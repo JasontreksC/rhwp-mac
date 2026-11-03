@@ -36,10 +36,8 @@
 //! ② 그 프로필 차이가 실제로 안내문을 지운다 — 안내문에만 나오는 글자(`홍`·`길`·`동`)가
 //!    `Screen` SVG 에는 있고 `Print` SVG 에는 하나도 없다. PDF 는 자소를 서브셋 글꼴로
 //!    싣기 때문에 바이트에서 글자를 찾을 수 없어, 같은 layer SVG 를 글자 단위로 센다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::paint::RenderProfile;
-use rhwp::renderer::pdf::PdfExportOptions;
 use rhwp::DocumentCore;
 
 const FIXTURE: &[u8] = include_bytes!("../fixtures/issue_7076/ship-collision-analysis-form.hwp");
@@ -74,36 +72,6 @@ fn glyph_count(svg: &str, needle: char) -> usize {
         .iter()
         .filter(|g| g.chars().eq(std::iter::once(needle)))
         .count()
-}
-
-#[test]
-fn profileless_pdf_export_renders_with_the_print_profile() {
-    let core = open();
-    let pages = [0u32];
-    let options = PdfExportOptions::default();
-
-    let default_pdf = core
-        .render_pages_pdf_native_with_options(&pages, &options)
-        .expect("기본 PDF");
-    let print_pdf = core
-        .render_pages_pdf_native_with_profile_and_options(&pages, RenderProfile::Print, &options)
-        .expect("Print PDF");
-    let screen_pdf = core
-        .render_pages_pdf_native_with_profile_and_options(&pages, RenderProfile::Screen, &options)
-        .expect("Screen PDF");
-
-    assert!(default_pdf.starts_with(b"%PDF-"), "PDF 헤더가 없다");
-    assert_eq!(
-        default_pdf,
-        print_pdf,
-        "프로필 없는 PDF 는 Print 산출과 같아야 한다 (기본 {} B · Print {} B)",
-        default_pdf.len(),
-        print_pdf.len()
-    );
-    assert_ne!(
-        default_pdf, screen_pdf,
-        "Screen 산출과 같다면 스위치가 여전히 꺼져 있다"
-    );
 }
 
 #[test]

@@ -149,7 +149,6 @@ mod tests {
     /// 정책 문서 경로가 실물과 이어져 있다 — 문서가 이사하면 여기서 끊긴 것이
     /// 드러나야 소비자에게 죽은 경로를 광고하지 않는다.
     #[test]
-    #[cfg(not(target_arch = "wasm32"))]
     fn policy_path_points_to_existing_document() {
         const POLICY_PATH: &str = "mydocs/tech/agent_runtime/version_policy.md";
         const POLICY_DOCUMENT: &str = include_str!(concat!(

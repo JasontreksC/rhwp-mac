@@ -3,7 +3,6 @@
 //!
 //! 저장 사다리는 한 글줄을 그림 좌·우로 쪼개도 **같은 vertpos** 를 적는다.
 //! 높이 회계는 그 짝을 한 줄로 센다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

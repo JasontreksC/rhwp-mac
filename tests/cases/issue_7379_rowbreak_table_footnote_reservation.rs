@@ -20,8 +20,6 @@
 //!
 //! 각주 없는 표 대조군은 수정 전에도 통과하며 결함 검출 증거가 아니다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 

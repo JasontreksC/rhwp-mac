@@ -34,10 +34,8 @@
 //! 규칙을 쓰기 때문이다. 대신 **산식이 성립하는 조건**으로 좁혔다: 문단 기준
 //! `vertical_offset` 이 걸린 개체는 윗변이 `앵커 + 오프셋` 이라 흐름 배치에 맡긴다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/hwpctl_API_v2.4.hwp";
 /// `vertical_offset` 이 걸린 자리차지 표가 있는 문서 — 저장 앵커를 쓰면 안 되는 갈래.

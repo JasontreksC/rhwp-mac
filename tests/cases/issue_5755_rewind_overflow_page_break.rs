@@ -11,7 +11,6 @@
 //!
 //! 픽스처 `samples/issue5755/rewind_overflow_page_break.hwpx` 는 원본에서 대형 이미지
 //! 3장을 1×1 스텁으로 바꾼 축소본(26KB) — 원본과 같은 쪽 기하를 재현한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

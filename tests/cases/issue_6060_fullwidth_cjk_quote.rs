@@ -6,12 +6,10 @@
 //! `가)「국가를당사자로하는계약에관한법률시행령」` (휴먼명조 13pt) 에서 낫표→다음
 //! 한글 간격이 전각(~13px) 이어야 한다. 반각 강제면 ~6.5px 로 붙는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::collections::BTreeMap;
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const SAMPLE: &str = "samples/hwp3-sample16-hwp5.hwpx";
 const PAGE: u32 = 4; // 5쪽

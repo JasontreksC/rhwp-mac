@@ -5,9 +5,9 @@
 //! 찾아야 한다. 파서·토크나이저의 내부 AST 형상 대신 사용자가 실제로 관찰하는
 //! 계산 결과를 검증한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::table_calc::{evaluate_formula, TableContext};
 use rhwp::model::control::Control;
-use rhwp::wasm_api::HwpDocument;
 use serde_json::Value;
 
 fn wide_table_context() -> TableContext {

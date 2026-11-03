@@ -12,14 +12,13 @@
 //!
 //! 수정 전 실측: 3쪽 조각이 rows 22..25(55.1px)만 남고 rows 25..42 소실,
 //! `Ⅱ. 곤충이용`(y=75.6)·`1. 설치기준`(y=103.3)이 조각(75.6..130.7)과 완전 겹침.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue5792/2700727_animal_facility_standards.hwpx";
 /// 쪽을 넘어 이어지는 42행 overlay 표의 host 문단.

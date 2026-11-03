@@ -4,10 +4,10 @@
 //! 루트 `<svg>` 에 `data-rhwp-metric-fonts`(쉼표 목록)가 붙는다. 기본값(꺼짐)의
 //! 출력은 종전과 바이트 단위로 같아야 한다 — 골든/스냅샷 불변 계약.
 
-fn load(path: &str) -> rhwp::wasm_api::HwpDocument {
+fn load(path: &str) -> rhwp::document_api::HwpDocument {
     let full = format!("{}/{}", env!("CARGO_MANIFEST_DIR"), path);
     let bytes = std::fs::read(&full).expect("fixture 읽기");
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("fixture 파싱")
+    rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("fixture 파싱")
 }
 
 #[test]

@@ -15,7 +15,6 @@
 //! 두었듯 **위험은 목록이 아니라 "비어 있음"** 에 있다(`issue_1329_bullet_caret`:
 //! 같은 저장 기록인데 빈 줄만 캐럿이 26.6px 어긋난다). `HeadType::None` 인 빈 본문
 //! 문단은 차단에서 빠져 있어 이 경로가 열려 있었다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

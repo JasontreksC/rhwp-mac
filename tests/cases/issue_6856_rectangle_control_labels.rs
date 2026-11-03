@@ -4,7 +4,6 @@ use rhwp::document_core::DocumentCore;
 use rhwp::paint::builder::LayerBuilder;
 use rhwp::paint::layer_tree::LayerOutputOptions;
 use rhwp::paint::profile::RenderProfile;
-use rhwp::renderer::html::HtmlRenderer;
 use rhwp::renderer::svg::SvgRenderer;
 
 fn core_with_rectangle_and_empty_textbox() -> DocumentCore {
@@ -50,17 +49,6 @@ fn svg_labels_distinguish_the_source_controls() {
         .build_page_render_tree(0)
         .unwrap();
     let mut renderer = SvgRenderer::new();
-    renderer.show_control_codes = true;
-    renderer.render_tree(&tree);
-    assert_labels(renderer.output());
-}
-
-#[test]
-fn html_labels_distinguish_the_source_controls() {
-    let tree = core_with_rectangle_and_empty_textbox()
-        .build_page_render_tree(0)
-        .unwrap();
-    let mut renderer = HtmlRenderer::new();
     renderer.show_control_codes = true;
     renderer.render_tree(&tree);
     assert_labels(renderer.output());

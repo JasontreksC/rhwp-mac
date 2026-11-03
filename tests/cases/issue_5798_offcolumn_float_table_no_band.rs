@@ -10,7 +10,6 @@
 //! kevin9327 의 PR #5826 이 다룬다.
 //!
 //! 픽스처는 원본 HWP5 구역0 문단 0..8 절단 + BinData 스텁(8.7KB, 1쪽).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

@@ -34,7 +34,6 @@
 //! - 한컴 정본 `pdf/1480000-201900042-chemical-product-labeling-study-2020.pdf` 의
 //!   해당 쪽을 96dpi 로 래스터해 가로 괘선을 찾은 실측 행 높이 **127px**
 //! - 같은 정본의 패널 쪽에서 그림 세 장은 세로로 쌓여 있다(쪽을 넘어 이어진다)
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

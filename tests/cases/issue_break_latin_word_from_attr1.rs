@@ -7,7 +7,6 @@
 //!
 //! 수정: breakNonLatinWord(bit7)와 같은 축으로 attr1 bits5-6 에서 역매핑한다
 //! (0=KEEP_WORD·1=HYPHENATION·2=BREAK_WORD). 렉시컬 값이 있으면(HWPX 소스) 그것을 우선한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 

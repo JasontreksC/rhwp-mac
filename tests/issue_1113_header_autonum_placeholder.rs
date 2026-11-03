@@ -29,7 +29,7 @@ const PARA_TEXT_AUTONUM_MARKER: u16 = 0x0012;
 fn save_hwp_section0(hwpx_rel: &str) -> Vec<Record> {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(hwpx_rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", hwpx_rel, e));
-    let mut doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse hwpx");
+    let mut doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse hwpx");
     let hwp = doc.export_hwp_with_adapter().expect("export hwp");
 
     let mut cfb = CfbReader::open(&hwp).expect("cfb open");

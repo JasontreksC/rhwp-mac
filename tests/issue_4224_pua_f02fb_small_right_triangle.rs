@@ -3,8 +3,8 @@
 //! 원문 `U+F02FB`는 IR에 보존하되, 한컴 문자표와 같은 작은 오른쪽 방향
 //! 삼각형 `U+25B8`로 paint-time 투영해 공개 글꼴 환경의 tofu를 막는다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::composer::{expand_pua_render_text, pua_to_display_text, pua_to_text_surface};
-use rhwp::wasm_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

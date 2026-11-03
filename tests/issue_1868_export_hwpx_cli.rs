@@ -7,7 +7,7 @@
 use std::fs;
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 fn convert_and_verify(sample: &str) -> (u32, u32) {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(sample);

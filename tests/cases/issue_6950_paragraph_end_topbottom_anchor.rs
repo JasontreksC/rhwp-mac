@@ -1,6 +1,5 @@
 //! 실제 한컴 fixture의 배치와 공통 앵커 계약을 분리해서 검증한다.
 //! 직접 바꾼 IR은 알고리즘 경계 검사용이지 한컴 저장 문서/정답지가 아니다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::{control::Control, paragraph::LineSeg, shape::TextWrap};

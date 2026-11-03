@@ -5,8 +5,6 @@
 //! 그룹 자식이라 해서 가용 폭으로 재래핑하면 2글자 줄이 되어 제목이 깨진다.
 //! 저장 분할을 유지해야 한 글자씩 세로로 쌓인다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 

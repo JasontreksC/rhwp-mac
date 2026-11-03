@@ -5,7 +5,6 @@
 //! 검정, 라벨 10pt 검정, 격자·축선 #8c8c8c 1px, 계열 선 2.25pt. 배치는 글꼴 배수(제목
 //! baseline 1.9T, 플롯 상단 3.26T, 플롯 하단 3.1L, 원형은 왼쪽 여백 0·아래 1.1L).
 //! 이 파일은 표본 문서의 1쪽 SVG 에서 그 서식이 실제로 나오는지 본다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
@@ -18,7 +17,7 @@ use rhwp::ooxml_chart::{
 fn page0_svg(rel: &str) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {rel}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel}: {e:?}"));
     doc.render_page_svg(0)
         .unwrap_or_else(|e| panic!("render {rel}: {e:?}"))

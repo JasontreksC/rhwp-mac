@@ -3,8 +3,8 @@
 //! 첨부/참조 문서는 하나의 이슈 범위에서 다룬다. 이 테스트는 자동 판정 가능한
 //! 페이지 수와 FSC HWP/HWPX 흐름 동기화를 먼저 고정한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{BoundingBox, RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;

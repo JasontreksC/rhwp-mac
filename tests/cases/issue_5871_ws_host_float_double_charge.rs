@@ -15,7 +15,6 @@
 //! (한글 667.7~983.6). 10k 쪽수 A/B better 1 / worse 0.
 //!
 //! 픽스처는 원본 HWP5 구역0 문단 99..108([별표 3] 네 항목) 절단(12KB).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

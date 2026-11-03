@@ -3,7 +3,6 @@
 //! 이것은 현재 구현의 양방향 특성화다. 양수 자간에서 줄 끝 잉크가 한컴 정답지와
 //! 일치한다는 판정은 포함하지 않으며, 그 오라클 과제와 per-character allocation은
 //! #5678에 남긴다. 내부 helper를 공개하지 않고 `DocumentCore`의 실제 조판 결과만 본다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::paragraph::{CharShapeRef, Paragraph};

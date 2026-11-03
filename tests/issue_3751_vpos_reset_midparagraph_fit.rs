@@ -39,7 +39,6 @@
 //!
 //! 잔여 9.6px 은 이 기전과 별개다(분할 경계 걸침). 0 을 요구하면 다른 축의 결함까지
 //! 이 테스트가 지므로 두 상태 사이의 값으로 계약한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 const SAMPLE: &str = "samples/issue3751/vpos_reset_midparagraph_fit.hwpx";
 
@@ -77,7 +76,7 @@ fn out_of_page(svg: &str) -> (f64, Vec<f64>) {
 #[test]
 fn paragraph_with_midway_vpos_reset_is_split_at_the_page_boundary() {
     let bytes = std::fs::read(sample_path()).expect("표본 읽기");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("파싱");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("파싱");
     let pages = doc.page_count();
     assert!(
         pages >= 2,

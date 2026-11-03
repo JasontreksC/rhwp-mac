@@ -8,7 +8,6 @@
 //! 다행 `RowBreak` 표는 저장된 첫 조각과 object frame의 쪽 소유권도 보존해야 한다.
 //! 단, source top과 현재 flow가 사실상 같은 표를 과거 anchor로 되감으면 일반 표가
 //! 여러 쪽씩 압축되므로 실제 host-spacing drift와 page-tail 여유를 함께 요구한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

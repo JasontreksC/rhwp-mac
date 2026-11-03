@@ -19,8 +19,6 @@
 //! ⚠ `vertical_offset` 은 `u32` 에 담긴 **부호 있는** 값이다(`4294944683` = −22613HU).
 //! `signed_hwpunit` 으로 풀지 않으면 음수가 양수로 통과해 표가 위로 튄다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::document::{Document, Section};

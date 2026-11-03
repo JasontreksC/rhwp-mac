@@ -27,8 +27,6 @@
 //! 따로 파야 한다. 이 시험은 그 상태를 **명시적으로 고정**해, 나중에 그 축을 건드리면 소리가
 //! 나게 한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

@@ -20,8 +20,6 @@
 //! 뿐이었다(`horz_rel` 57 · `vert_rel` 57). 계산식은 `Column`/`Para` 와 **같고 기준점만**
 //! 용지 원점으로 바뀐다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

@@ -10,7 +10,6 @@
 //!   `BodyText/Section0` =  6,974 B
 //!
 //! 계약: 두 경로는 서로 **다른** 스트림으로 풀려야 하고, 각각 제 스토리지 아래의 것이어야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::parser::cfb_reader::LenientCfbReader;
 use std::io::{Cursor, Write};

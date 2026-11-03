@@ -658,7 +658,6 @@ impl Document {
     /// 영역 (svg / web_canvas / skia) 영역 영역 영역 image 영역 표시 영역.
     ///
     /// 반환: load 영역 image 영역.
-    #[cfg(not(target_arch = "wasm32"))]
     pub fn populate_external_images_from_dir(&mut self, base_dir: &std::path::Path) -> usize {
         use crate::model::control::Control;
         use crate::model::shape::ShapeObject;

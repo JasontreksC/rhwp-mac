@@ -19,11 +19,11 @@ const GWANAK: &str =
 const PC_SHUTDOWN: &str =
     "samples/hwpx/opengov/36398366_결재문서본문_PC 셧다운 제외 및 초과근무 인정 요청(데이터전략과).hwpx";
 
-fn load_doc(sample: &str) -> rhwp::wasm_api::HwpDocument {
+fn load_doc(sample: &str) -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let path = Path::new(repo_root).join(sample);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {sample}: {e}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {sample}: {e:?}"))
 }
 

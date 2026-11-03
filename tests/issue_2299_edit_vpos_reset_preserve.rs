@@ -11,8 +11,8 @@
 //! 단/쪽 경계 인코딩으로 보고 next_vpos 를 저장 first 로 되돌려 보존.
 //! 근거·임계 불요 사유는 `recalculate_section_vpos` doc comment 참조.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 fn load_shortcut() -> HwpDocument {
     let bytes = std::fs::read("samples/basic/shortcut.hwp").expect("read shortcut.hwp");

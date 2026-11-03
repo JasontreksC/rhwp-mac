@@ -72,10 +72,9 @@
 //! - `page_count` 104 → **103** — 한컴 정본 쪽수와 같다.
 //! - `PAGE_INDEX` 77 → **76**. 없어진 쪽이 이 쪽 **앞**(`<표 3-4>` 구간)이다.
 //! - 그 쪽의 칸 안 그림은 12장 그대로다(정본 55쪽도 12장).
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6782/1480000-201900042-chemical-labeling-standards.hwp";
 

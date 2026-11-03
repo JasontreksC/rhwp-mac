@@ -37,7 +37,6 @@
 //! **되감기 기준값이 0 이 아니라 400 HU 인 것이 중요하다** — 정확히 0 이면 rhwp 의
 //! vpos-reset 가드가 정상 발동해 쪽을 끊어 버려 이 경로를 아예 타지 않는다(실제 문서
 //! pi=202 도 400 이다).
-#![cfg(not(target_arch = "wasm32"))]
 
 const SAMPLE: &str = "samples/issue3765/zone_switch_ladder_understates_page.hwpx";
 
@@ -72,7 +71,7 @@ fn out_of_page(svg: &str) -> (f64, Vec<f64>) {
 #[test]
 fn zone_switch_starts_a_new_page_when_the_current_one_is_full() {
     let bytes = std::fs::read(sample_path()).expect("표본 읽기");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("파싱");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("파싱");
     let pages = doc.page_count();
     assert!(
         pages >= 2,

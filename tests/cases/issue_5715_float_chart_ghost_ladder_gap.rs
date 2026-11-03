@@ -14,7 +14,6 @@
 //! 잔여(별개 축): p72 같은 앵커 두 차트 겹침, p73 음수 offset 차트 41px 부분 겹침.
 //!
 //! 픽스처는 원본 HWP5 구역1 문단 914..926 절단 + BinData 1×1 스텁(21.5KB, 2쪽).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

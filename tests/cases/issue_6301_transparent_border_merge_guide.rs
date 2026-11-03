@@ -7,8 +7,8 @@
 //! 구분되지 않아 병합 후에도 안내선이 그려졌다. `mark_cell_span_interior_covered`가
 //! 이 두 경우를 구분해 병합된 span 내부를 커버리지로 표시한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 fn table_for_paragraph(node: &RenderNode, para_index: usize) -> Option<&RenderNode> {
     if matches!(

@@ -1,8 +1,7 @@
 //! #6950: 표 속성창은 raw 바이너리가 아닌 공통 IR의 기하를 조회해야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
-use rhwp::wasm_api::HwpDocument;
 use serde_json::Value;
 
 const SAMPLE: &str = "samples/issue6025/3232693_employment_support_criteria.hwpx";

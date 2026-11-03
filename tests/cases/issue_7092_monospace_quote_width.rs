@@ -33,8 +33,6 @@
 //! 갈리고(휴먼명조 `‘` 정본 1.010 ↔ 0.24) 기호 슬롯 선택 축이 따로 있다. 아래 둘째 시험이
 //! 그 face 의 종전 폭 유지를 잠근다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

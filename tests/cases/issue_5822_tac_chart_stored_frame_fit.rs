@@ -13,7 +13,6 @@
 //! 156673604 는 40쪽=한글 그대로(회귀 0).
 //!
 //! 픽스처는 원본 HWPX 구역0 문단 29..40(p6 전체 시퀀스) 절단 + BinData 스텁(98KB).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

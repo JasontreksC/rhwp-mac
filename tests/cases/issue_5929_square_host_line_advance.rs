@@ -12,7 +12,6 @@
 //!
 //! 수정: 사다리가 **아예 없는** 문서에서는 조판을 따른다 — typeset 은 이 문단을
 //! `sb + lines + sa`(형제 빈 문단과 같은 54.1px)로 계상한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

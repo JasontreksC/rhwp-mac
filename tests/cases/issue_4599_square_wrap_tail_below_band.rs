@@ -20,8 +20,6 @@
 //! 검사는 절대 좌표가 아니라 관계로 한다: 꼬리 줄은 표·접두 줄보다 아래, 다음 문단은
 //! 꼬리보다 아래, 줄 수 보존(접두 7 · 꼬리 2).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
@@ -74,7 +72,7 @@ fn collect(node: &serde_json::Value, kind: &str, pi: u64, out: &mut Vec<Bbox>) {
 fn square_wrap_full_width_tail_is_drawn_below_table_and_prefix_lines() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
     let json = document
         .get_page_render_tree(0)
@@ -141,7 +139,7 @@ fn square_wrap_full_width_tail_is_drawn_below_table_and_prefix_lines() {
 fn single_stored_line_with_negative_spacing_advances_by_stored_line() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
     let json = document
         .get_page_render_tree(0)

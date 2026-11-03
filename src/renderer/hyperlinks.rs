@@ -63,7 +63,6 @@ pub(crate) fn clipped_rect(rect: BoundingBox, clip: BoundingBox) -> Option<Bound
 }
 
 /// 외부 호출자가 주는 annotation도 페이지 경계와 실행 scheme을 검사한다.
-#[cfg(not(target_arch = "wasm32"))]
 pub(crate) fn page_links(links: &[PdfLink], width: f64, height: f64) -> Vec<PdfLink> {
     let page = BoundingBox {
         x: 0.0,

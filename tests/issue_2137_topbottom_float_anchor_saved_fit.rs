@@ -15,10 +15,10 @@ use std::path::Path;
 
 const SAMPLE: &str = "samples/task2137/156618554_petfood_press.hwp";
 
-fn load_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_doc() -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", SAMPLE, e))
 }
 
@@ -50,7 +50,7 @@ fn issue_2137_small_tac_topbottom_shape_spills_on_page_1() {
     const SAMPLE2: &str = "samples/task2137/156637323_unification_lecture.hwpx";
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE2);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", SAMPLE2, e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", SAMPLE2, e));
     assert_eq!(
         doc.page_count(),

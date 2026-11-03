@@ -29,7 +29,6 @@
 //! 글자 위치 투영으로 되돌아가면 소유 줄이 `1` 이 되고, 그 줄은 **현재 조각**(`current_items`)
 //! 에 있으므로 `find_inline_control_target_page` 는 `None`(= 현재 쪽에 둔다)을 돌려준다.
 //! 곧 `Some((0, 0))` 이라는 단언 하나가 기하 판정이 살아 있음을 증명한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::control::Control;
 use rhwp::model::image::Picture;

@@ -15,7 +15,6 @@
 //! 통일 축으로 이슈에 남긴다.
 //!
 //! 픽스처는 원본 HWPX 구역0 문단 0..3 절단 + 스텁(14KB).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

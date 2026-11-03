@@ -8,11 +8,11 @@ use std::fs;
 use std::path::Path;
 use std::time::Instant;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::Paragraph;
 use rhwp::parser::{detect_format, FileFormat};
-use rhwp::wasm_api::HwpDocument;
 
 const HWP_SAMPLE: &str = "samples/issue1949_giant_cell_nested_tables_perf.hwp";
 const HWPX_SAMPLE: &str = "samples/issue1949_giant_cell_nested_tables_perf.hwpx";

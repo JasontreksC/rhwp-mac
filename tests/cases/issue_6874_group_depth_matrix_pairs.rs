@@ -32,8 +32,6 @@
 //! 제외하지 않고, 같은 입력의 독립 한컴 HWP5 저장본과 모든 깊이별 개수까지 대조한다.
 //! 스트림/레코드 해석 실패와 표본 누락은 실패다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::parser::cfb_reader::CfbReader;
 use rhwp::parser::record::Record;
 use rhwp::parser::tags;

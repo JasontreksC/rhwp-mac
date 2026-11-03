@@ -5,8 +5,6 @@
 //! (`pdf/36385445_결재문서본문_화재발생종합보고서(제2026-189호, 2026. 5. 14.)-2024.pdf`)
 //! 는 2쪽. 첫 줄을 잔여 칸에 끼워 넣으면 used=964.3px 로 넘치고 rhwp 는 1쪽이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use std::path::Path;
 

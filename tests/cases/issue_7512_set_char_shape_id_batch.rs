@@ -4,7 +4,6 @@
 //! 재구성·재페이지네이션을 `end_batch` 의 paginate() 1회로 미룬다(깊이 2 이상 셀의
 //! `ByPath` 경로와 같다, #4118). 같은 편집을 호출마다 rebuild 한 결과와 배치로 묶은
 //! 결과는 쪽 수·모든 쪽의 지오메트리와 SVG·저장 바이트까지 같아야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use serde_json::Value;

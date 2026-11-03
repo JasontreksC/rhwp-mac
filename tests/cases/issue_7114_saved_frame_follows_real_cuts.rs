@@ -48,8 +48,6 @@
 //! 그 자리는 원래 저장 rewind 가 만들던 경계이기도 해서 지우면 읽는 쪽이 23유닛 더 채운다.
 //! 중첩 표 **자신의** 사다리에 경계를 적는 것이 답이며 이 변경의 범위가 아니다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 
 const SAMPLE: &str = "samples/issue1949_giant_cell_nested_tables_perf.hwp";

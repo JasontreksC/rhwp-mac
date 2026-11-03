@@ -17,12 +17,11 @@
 //!
 //! 이 문서는 `git bisect` 로 `f8c784235`(#4763) 를 재확인할 때 쓴 판정자이고, 후속 수정
 //! (#6033·#6038·#6058)으로도 남아 있던 잔여다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue5941/1130000-200900012_anchor_delay_ulp.hwp";
 

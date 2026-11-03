@@ -31,8 +31,6 @@
 //! 같은 빌드 안에서 `start_cut_is_block` 만 뒤집어 두 동작을 직접 대조한다.
 //! `true` 는 종전의 합쳐진 값이고, `false` 가 이 조각의 사실이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::Paragraph;
 use rhwp::model::table::{Cell, Table, TablePageBreak};

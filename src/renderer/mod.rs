@@ -9,9 +9,7 @@ use crate::model::control::Control;
 use crate::model::paragraph::LineSeg;
 use crate::model::style::{LineSpacingType, UnderlineType};
 
-pub mod canvas;
 pub mod canvas_text_font;
-pub mod canvaskit_policy;
 pub mod composer;
 pub mod equation;
 pub(crate) mod equation_tac_flow;
@@ -19,7 +17,6 @@ pub mod float_placement;
 pub(crate) mod font_decision;
 pub mod font_environment;
 pub mod font_metrics_data;
-#[cfg(not(target_arch = "wasm32"))]
 pub mod font_paths;
 #[path = "font_rule_projections/layout_metric.rs"]
 pub(crate) mod font_rule_layout_metric_projection;
@@ -30,13 +27,10 @@ pub(crate) mod form_caption;
 pub mod hyperlinks;
 // [gym_gpu_raster] GPU 가속 SVG 래스터화(vello/wgpu). 네이티브 + gpu feature 전용 —
 // native-skia 와 같은 방식으로 선택적 게이팅해 CI는 GPU 없이도 컴파일된다.
-#[cfg(all(not(target_arch = "wasm32"), feature = "gpu"))]
-pub mod gpu;
 pub(crate) mod hancom_pua;
 pub mod height_cursor;
 pub mod height_measurer;
 pub(crate) mod hft_ascii_evidence;
-pub mod html;
 pub(crate) mod image_header;
 pub mod image_resolver;
 pub mod inline_flow;
@@ -47,16 +41,11 @@ pub(crate) mod layout_frame;
 pub mod page_layout;
 pub mod page_number;
 pub mod pagination;
-#[cfg(any(target_arch = "wasm32", test))]
+#[cfg(test)]
 pub(crate) mod partial_replay;
-#[cfg(not(target_arch = "wasm32"))]
-pub mod pdf;
-#[cfg(not(target_arch = "wasm32"))]
-pub mod pdf_raster_fidelity;
 pub mod pua_oldhangul;
 pub mod render_normalization;
 pub mod render_tree;
-pub mod scheduler;
 pub(crate) mod shaping;
 pub(crate) mod shaping_composition;
 pub(crate) mod shaping_context;
@@ -66,8 +55,6 @@ pub(crate) mod shaping_publication;
 // layout/publication callers remain closed until their own approved slices.
 #[allow(dead_code)]
 pub(crate) mod shaping_vertical;
-#[cfg(all(not(target_arch = "wasm32"), feature = "native-skia"))]
-pub mod skia;
 pub(crate) mod static_svg;
 pub(crate) mod stored_float_anchor;
 pub mod style_resolver;
@@ -77,8 +64,6 @@ pub mod svg_fragment;
 pub mod svg_layer;
 pub(crate) mod text_decoration;
 pub mod typeset;
-#[cfg(target_arch = "wasm32")]
-pub mod web_canvas;
 
 use crate::model::ColorRef;
 

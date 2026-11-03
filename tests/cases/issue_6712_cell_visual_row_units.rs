@@ -1,5 +1,4 @@
 //! Stored left/right fragments are one indivisible physical row during cell splitting.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

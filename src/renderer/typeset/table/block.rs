@@ -76,11 +76,8 @@ impl TypesetEngine {
         paragraphs_all: &[Paragraph],
         composed_all: &[ComposedParagraph],
     ) {
-        #[cfg(not(target_arch = "wasm32"))]
         let issue2424_profile_enabled =
             std::env::var("RHWP_2424_PROFILE").is_ok_and(|value| !value.is_empty() && value != "0");
-        #[cfg(target_arch = "wasm32")]
-        let issue2424_profile_enabled = false;
         let issue2424_started = issue2424_profile_enabled.then(std::time::Instant::now);
         let issue2424_pages_before = st.pages.len();
 

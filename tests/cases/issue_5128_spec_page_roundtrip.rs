@@ -13,9 +13,9 @@
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::DocumentCore;
 use rhwp::model::document::HWP5_ORIGIN_HWPX_MARKER_PATH;
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/한글문서파일형식_5.0_revision1.3.hwp";
 // 69 was the pre-fix rhwp pagination, not an independent Hancom oracle.

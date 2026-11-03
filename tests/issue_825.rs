@@ -50,7 +50,7 @@ fn issue_825_sample11_has_header_picture() {
 fn issue_825_header_picture_lookup_via_existing_api_fails() {
     // 현행 get_picture_properties_native 는 본문 lookup 만 지원 →
     // 머리말 그림 path 로는 결과 부정확/실패. 회귀 가드 (직접 호출 시 여전히 error).
-    use rhwp::wasm_api::HwpDocument;
+    use rhwp::document_api::HwpDocument;
 
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let p = Path::new(repo_root).join("samples/hwp3-sample11.hwp");
@@ -71,7 +71,7 @@ fn issue_825_header_picture_lookup_via_existing_api_fails() {
 #[test]
 fn issue_825_header_picture_lookup_via_new_api_succeeds() {
     // GREEN: 신규 get_header_footer_picture_properties_native 로 머리말 그림 도달.
-    use rhwp::wasm_api::HwpDocument;
+    use rhwp::document_api::HwpDocument;
 
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let p = Path::new(repo_root).join("samples/hwp3-sample11.hwp");

@@ -49,8 +49,6 @@
 //!
 //! 저장 줄을 믿는 경로는 바뀌지 않는다. 쪽 수(rhwp 7 / 한/글 6)는 줄 높이 축이라 보지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 
 const NO_CACHE: &str = "samples/issue7418/condense_break_synthetic.hwpx";

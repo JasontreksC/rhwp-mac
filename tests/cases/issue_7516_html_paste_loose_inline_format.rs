@@ -1,5 +1,4 @@
 //! `<p>` 밖 인라인 서식(Chrome 이 문단 중간부터 고른 글)을 붙이면 서식과 한 문단이 남는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

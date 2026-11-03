@@ -21,7 +21,7 @@ fn mel001_pi22_row0_height_matches_ir() {
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse mel-001.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse mel-001.hwp");
 
     // 페이지 2 = index 1
     let svg = doc

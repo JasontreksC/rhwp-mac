@@ -31,7 +31,6 @@
 //! `&=&` 정렬과 `\RTN` 이 함께 오는 eqalign 형태(원본 4개 스크립트)는 다루지 않는다.
 //! `\RTN` 은 행 구분자로만 옮기고 eqalign 로 감싸지 않는다 — 감싸는 규칙의 독립 근거가 없다.
 //! 신고의 증상 ②(개체 편집·속성·삭제 불가)도 별개 축이라 이 검사 밖이다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::renderer::equation::ast::EqNode;
 use rhwp::renderer::equation::parser::EqParser;

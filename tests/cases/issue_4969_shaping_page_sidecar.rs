@@ -27,8 +27,6 @@ use shaping_publication::{
     HorizontalShapingPageSidecars, HorizontalShapingRunDecision, HorizontalShapingRunRange,
     HorizontalShapingSidecarRejectReason, MAX_HORIZONTAL_SHAPING_PAGE_SIDECARS,
 };
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen_test::wasm_bindgen_test;
 
 const SOURCE_HAN: &[u8] =
     include_bytes!("../../ttfs/opensource/SourceHanSerifK-OldHangul-subset.otf");
@@ -93,7 +91,6 @@ fn applied_decision() -> Arc<HorizontalShapingRunDecision> {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d0_attach_and_clone_share_the_owned_measurement() {
     let decision = applied_decision();
     let measurement = Arc::clone(decision.measurement().expect("applied measurement"));
@@ -127,7 +124,6 @@ fn issue_4969_q2_d0_attach_and_clone_share_the_owned_measurement() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d0_range_duplicate_and_generation_mismatches_fail_closed() {
     let decision = applied_decision();
     let generation = decision.registry_generation();
@@ -189,7 +185,6 @@ fn issue_4969_q2_d0_range_duplicate_and_generation_mismatches_fail_closed() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d0_page_table_enforces_the_hard_entry_limit() {
     assert_eq!(MAX_HORIZONTAL_SHAPING_PAGE_SIDECARS, 4_096);
     let decision = applied_decision();
@@ -211,7 +206,6 @@ fn issue_4969_q2_d0_page_table_enforces_the_hard_entry_limit() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d0_default_render_tree_json_contract_is_unchanged() {
     let tree = PageRenderTree::new(7, 793.7, 1122.5);
     let cloned = tree.clone();

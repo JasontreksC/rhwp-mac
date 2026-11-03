@@ -11,7 +11,6 @@
 //! 잔여: 9쪽 표8(rowspan 조각 + 자리차지 제한 OFF)은 별개 좌표 축으로 추적.
 //!
 //! 픽스처는 원본 HWP5 구역0 문단 63..65 절단 + BinData 1×1 스텁 축소본(20KB).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

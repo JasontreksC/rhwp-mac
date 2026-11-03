@@ -332,7 +332,7 @@ fn test_serialize_after_edit() {
     }
 
     let data = std::fs::read(path).unwrap();
-    let mut doc = crate::wasm_api::HwpDocument::from_bytes(&data).unwrap();
+    let mut doc = crate::document_api::HwpDocument::from_bytes(&data).unwrap();
 
     // 첫 번째 문단에 텍스트 삽입
     let result = doc.insert_text_native(0, 0, 0, "테스트");
@@ -370,7 +370,7 @@ fn test_serialize_after_edit_roundtrip() {
         }
 
         let data = std::fs::read(path).unwrap();
-        let mut doc = crate::wasm_api::HwpDocument::from_bytes(&data).unwrap();
+        let mut doc = crate::document_api::HwpDocument::from_bytes(&data).unwrap();
 
         // rhwp-studio와 동일하게 convertToEditable 호출
         let _ = doc.convert_to_editable_native();
@@ -475,7 +475,7 @@ fn test_table_structure_change_roundtrip() {
 
     // 행 추가 라운드트립
     {
-        let mut doc = crate::wasm_api::HwpDocument::from_bytes(&data).unwrap();
+        let mut doc = crate::document_api::HwpDocument::from_bytes(&data).unwrap();
         let _ = doc.convert_to_editable_native();
         doc.insert_table_row_native(0, 3, 0, 0, true).unwrap();
         let bytes = doc.export_hwp_native().unwrap();
@@ -490,7 +490,7 @@ fn test_table_structure_change_roundtrip() {
 
     // 열 추가 라운드트립
     {
-        let mut doc = crate::wasm_api::HwpDocument::from_bytes(&data).unwrap();
+        let mut doc = crate::document_api::HwpDocument::from_bytes(&data).unwrap();
         let _ = doc.convert_to_editable_native();
         doc.insert_table_column_native(0, 3, 0, 0, true).unwrap();
         let bytes = doc.export_hwp_native().unwrap();
@@ -505,7 +505,7 @@ fn test_table_structure_change_roundtrip() {
 
     // 행 삭제 라운드트립
     {
-        let mut doc = crate::wasm_api::HwpDocument::from_bytes(&data).unwrap();
+        let mut doc = crate::document_api::HwpDocument::from_bytes(&data).unwrap();
         let _ = doc.convert_to_editable_native();
         doc.delete_table_row_native(0, 3, 0, 0).unwrap();
         let bytes = doc.export_hwp_native().unwrap();
@@ -520,7 +520,7 @@ fn test_table_structure_change_roundtrip() {
 
     // 열 삭제 라운드트립
     {
-        let mut doc = crate::wasm_api::HwpDocument::from_bytes(&data).unwrap();
+        let mut doc = crate::document_api::HwpDocument::from_bytes(&data).unwrap();
         let _ = doc.convert_to_editable_native();
         doc.delete_table_column_native(0, 3, 0, 0).unwrap();
         let bytes = doc.export_hwp_native().unwrap();
@@ -546,7 +546,7 @@ fn test_delete_table_control_roundtrip() {
     }
 
     let data = std::fs::read(path).unwrap();
-    let mut doc = crate::wasm_api::HwpDocument::from_bytes(&data).unwrap();
+    let mut doc = crate::document_api::HwpDocument::from_bytes(&data).unwrap();
     let _ = doc.convert_to_editable_native();
 
     // 표 삭제

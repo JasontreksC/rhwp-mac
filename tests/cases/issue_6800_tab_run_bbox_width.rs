@@ -46,8 +46,6 @@
 //! 이다(초판은 2024 로 적었다 — PR #6801 지적). 다만 이 축은 출력 불변이라 기준 PDF
 //! 대조가 판정을 주지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

@@ -7,7 +7,6 @@
 //!
 //! 표·그림뿐 아니라 gso 도형(사각형·OLE 등)에도 같은 계약이 적용된다 — 파일 뒤쪽의
 //! gso 확장 테스트 참고.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::control::Control;
 use rhwp::model::document::Section;

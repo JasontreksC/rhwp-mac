@@ -4,7 +4,7 @@
 //! PR #2627)에 이어 셀 저장-ls1 재래핑 임계 ×1.8 완화(#2430, PR #2714)가 잔여
 //! +2쪽을 해소해 **한글 정답 92쪽 정합**에 도달 — 이를 고정한다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

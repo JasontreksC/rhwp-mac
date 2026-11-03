@@ -1,7 +1,6 @@
 //! Saved picture bottom and successor LINESEG independently own the same boundary.
 //! Hancom 2020 PDF physical 16: body baselines 974.72 and 1020.32 px at 96 dpi.
 //! The reduced fixture retains layout; the full original also verifies the image.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::float_placement::stored_picture_successor_placement;

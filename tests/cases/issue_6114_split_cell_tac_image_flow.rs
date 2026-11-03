@@ -3,7 +3,6 @@
 //!
 //! 저장 LINE_SEG 가 글줄 높이(1950HU≈26px)만 담고, 그림 본체는 23430HU≈312px
 //! 인 칸 — 한글은 그림 높이만큼 칸을 밀고, 칸이 제자리에서 쪽을 나눈다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::bin_data::BinDataContent;

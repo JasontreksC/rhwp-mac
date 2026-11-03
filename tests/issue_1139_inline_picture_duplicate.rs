@@ -1,7 +1,7 @@
 //! Task #1139: 문27 inline TAC Picture가 다음 줄까지 미리 렌더되어 중복 출력되던 회귀 방지.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{BoundingBox, RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 use serde_json::Value;
 
 fn hwpunit_to_mm(hu: i32) -> f64 {

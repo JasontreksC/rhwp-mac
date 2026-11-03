@@ -28,8 +28,6 @@
 //! 합성 문서다. 신고자의 재현(`HwpDocument.createEmpty()` + 앞 빈 문단 28개 + 2행 1열 표)
 //! 을 네이티브 경로로 옮긴 것이며, 문단 줄 정보는 rhwp 가 만든 것이지 한/글 저장본이 아니다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

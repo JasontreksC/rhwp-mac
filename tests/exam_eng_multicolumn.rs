@@ -19,7 +19,7 @@ fn exam_eng_page_count_after_359_fix() {
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse exam_eng.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse exam_eng.hwp");
 
     let pages = doc.page_count();
     assert_eq!(

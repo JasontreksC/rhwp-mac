@@ -53,7 +53,7 @@ fn task290_exam_math_p7_item18_not_right_aligned() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let bytes = fs::read(Path::new(repo_root).join("samples/exam_math.hwp"))
         .expect("samples/exam_math.hwp present");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     // Page 7 → 0-based index 6
     let svg = doc.render_page_svg_native(6).expect("render page 7");
 

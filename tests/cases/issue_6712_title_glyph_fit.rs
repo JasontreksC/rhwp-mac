@@ -1,5 +1,4 @@
 //! Narrow Hangul metrics must not overlap when SVG paints a fallback face.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::{svg::SvgRenderer, Renderer, TextStyle};

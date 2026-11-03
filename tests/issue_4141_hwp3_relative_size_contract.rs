@@ -31,7 +31,6 @@
 //! 그래서 **저장 바이트/XML 에서** 직접 검사한다. 이 테스트가 CI 의 유일한 방어선이다.
 //!
 //! [#3676]: https://github.com/edwardkim/rhwp/issues/3676
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 use std::path::{Path, PathBuf};

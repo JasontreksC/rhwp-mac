@@ -1,5 +1,4 @@
 //! The password package prepass runs before HwpxReader's XML budget.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::{parse_document_with_password, password_crypto, DocumentCore};
 use std::io::{Cursor, Read, Write};

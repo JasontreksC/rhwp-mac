@@ -978,14 +978,11 @@ impl TypesetEngine {
             self.pre_emit_visible_rowbreak_host_text(st, para_idx, para, composed_all, styles);
         }
 
-        #[cfg(not(target_arch = "wasm32"))]
         let continuation_fragment_budget = std::env::var("RHWP_2424_FRAGMENT_BUDGET")
             .ok()
             .and_then(|value| value.parse::<usize>().ok())
             .filter(|budget| *budget > 0)
             .unwrap_or(usize::MAX);
-        #[cfg(target_arch = "wasm32")]
-        let continuation_fragment_budget = usize::MAX;
         let terminal_host_spacing = native_terminal_child_host_line_spacing(
             self.profile.get().hwp5_stored_pagination_layout(),
             table,

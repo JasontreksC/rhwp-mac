@@ -30,8 +30,6 @@ use shaping_vertical::{
     MAX_VERTICAL_SHAPING_PAGE_SIDECARS, NOTO_SANS_KR_REGULAR_SHA256,
 };
 use std::sync::Arc;
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen_test::wasm_bindgen_test;
 
 const NOTO: &[u8] = include_bytes!("../../ttfs/opensource/NotoSansKR-Regular.ttf");
 const SOURCE_HAN: &[u8] =
@@ -1126,7 +1124,6 @@ fn assert_vertical_rect(actual: VerticalRect, expected: VerticalRect) {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q4_c_old_hangul_geometry_has_one_owner_and_exact_origins() {
     let transaction = prepare_dormant_vertical_shaping_transaction(dormant_vertical_request(
         SOURCE_HAN,
@@ -1241,7 +1238,6 @@ fn issue_4969_q4_c_old_hangul_geometry_has_one_owner_and_exact_origins() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q4_c_latin_orientation_changes_transform_not_shaping_output() {
     let sideways = prepare_dormant_vertical_shaping_transaction(dormant_vertical_request(
         NOTO,
@@ -1306,7 +1302,6 @@ fn issue_4969_q4_c_latin_orientation_changes_transform_not_shaping_output() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q4_c_punctuation_and_column_progression_are_explicit() {
     let rl = prepare_dormant_vertical_shaping_transaction(dormant_vertical_request(
         NOTO,
@@ -1370,7 +1365,6 @@ fn issue_4969_q4_c_punctuation_and_column_progression_are_explicit() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q4_c_mixed_and_missing_vertical_source_return_pristine_fallback() {
     let mixed = prepare_dormant_vertical_shaping_transaction(dormant_vertical_request(
         NOTO,
@@ -1408,7 +1402,6 @@ fn issue_4969_q4_c_mixed_and_missing_vertical_source_return_pristine_fallback() 
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q4_c_intent_and_geometry_inputs_fail_before_publication() {
     let mut horizontal = dormant_vertical_request(
         NOTO,

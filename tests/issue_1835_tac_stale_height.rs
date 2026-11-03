@@ -16,7 +16,7 @@ const SAMPLE: &str = "samples/issue1835_tac_stale_height.hwp";
 fn load_trees() -> Vec<rhwp::renderer::render_tree::PageRenderTree> {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("{SAMPLE} 읽기: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("{SAMPLE} 해석: {e:?}"));
     assert_eq!(doc.page_count(), 3, "독립 한컴 정본은3쪽이다");
     (0..doc.page_count())

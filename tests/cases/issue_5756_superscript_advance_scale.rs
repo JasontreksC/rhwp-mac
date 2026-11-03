@@ -4,7 +4,6 @@
 //! 40글자 줄이 rhwp 에서는 382.9px 를 써 칸 오른쪽 괘선(x≈713.6)을 54.9px 넘었다.
 //! 초과분 55.5px = 위첨자 run 전진 합(185.0px) × (1 − 0.7). 수정: 첨자 run 의
 //! 측정 글꼴 크기를 그리기 배율(0.7)로 통일(`style_params`), fit 배율은 항등으로.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

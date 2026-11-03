@@ -45,8 +45,6 @@
 //!
 //! 허용치의 값(1600 HU)과 HWP3 **원본** 경로(파서가 직접 세운다)는 범위 밖이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::parser::parse_document;
 use std::path::Path;
 

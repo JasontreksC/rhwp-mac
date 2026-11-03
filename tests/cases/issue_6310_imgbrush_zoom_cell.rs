@@ -2,7 +2,6 @@
 //!
 //! 종전엔 ZOOM 이 매핑되지 않아 TILE 로 붕괴했고, 원본 픽셀을 96dpi 로 환산한
 //! 크기로 그려 칸 clip 안에 흰 여백만 남았다 (156745900 로고 8.33배).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::{Cursor, Read, Write};
 use std::path::Path;

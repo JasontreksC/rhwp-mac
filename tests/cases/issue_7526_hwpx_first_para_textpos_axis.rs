@@ -1,6 +1,5 @@
 //! [#7526] HWP/HWP3 원본에서 만든 HWPX는 저장 전의 줄 나눔을 보존한다.
 //! 재저장과 다시 연 문단의 편집도 같은 왕복 계약을 따른다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

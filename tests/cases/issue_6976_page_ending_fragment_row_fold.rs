@@ -34,8 +34,6 @@
 //! 상자를 정한 조각(`#7095`·`#7063` 레인②)은 **접지 않는다**(비적용 경로). 셋 중 하나만
 //! 되돌려도 깨진다 — ③의 가드를 빼면 `hwpx_sample2` 19쪽 조각이 정본보다 2.87px 짧아진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

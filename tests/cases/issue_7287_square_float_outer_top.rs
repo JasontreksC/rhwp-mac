@@ -38,8 +38,6 @@
 //! `samples/hwp_table_test-m.hwp` 1쪽 표가 그 대조군으로, 정본 250.77 에 대해 251.0 으로
 //! **이미 맞다**. 여백을 더하면 벗어나므로 이 변경은 빈 host 로 한정한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::{Path, PathBuf};
 
 use rhwp::document_core::DocumentCore;

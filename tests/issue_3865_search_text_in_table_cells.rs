@@ -11,7 +11,6 @@
 //! - 끄면 종전대로 본문만 — 셀 이동을 못 하는 호출자가 무회귀로 남는다.
 //! - 켜면 셀 매치를 돌려주고, 셀 안 위치를 `cellContext` 로 함께 싣는다. 이게 없으면
 //!   호출자가 "찾았다"는 결과를 받고도 어디로 가야 할지 모른다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 

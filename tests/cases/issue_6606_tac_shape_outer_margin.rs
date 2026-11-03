@@ -11,8 +11,6 @@
 //! 가장 왼쪽 자식       x 113.8         → 125.85
 //! ```
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
@@ -47,7 +45,7 @@ fn collect_group_images(node: &serde_json::Value, in_group: bool, out: &mut Vec<
 fn tac_group_children_sit_inside_the_group_outer_margin_box() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
     let json = document
         .get_page_render_tree(0)

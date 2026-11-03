@@ -39,8 +39,6 @@
 //! 편차는 1.7 / 1.3 / 0.9px 로 일정하지 않고 그 상한 안에서 흩어지므로, 아래 시험은
 //! 상수 일치가 아니라 **부호와 상한**만 잠근다(후속 과제).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

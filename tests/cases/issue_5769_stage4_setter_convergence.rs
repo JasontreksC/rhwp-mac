@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [#5769] Stage 4 선결 실증 — 페이지/구역 설정 setter 의 속성쌍 역연산 수렴성.
 //!
 //! set_section_def / set_page_def 는 적용 시 `section.raw_stream = None` 으로

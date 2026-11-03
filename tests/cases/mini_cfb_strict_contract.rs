@@ -1,5 +1,4 @@
 //! `mini_cfb` strict MS-CFB container contracts.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::serializer::mini_cfb;
 

@@ -6,7 +6,6 @@
 //! 다음 그림과 표가 밀린다. 일반 측정과 TAC 축소 뒤 복원은 같은 하한을 쓴다.
 //! 정상 PDF 전체4쪽 비교와 그림 위치 계약은 별도 증거이며,
 //! common.height만 수동 변경한 두 대조군은 정상 생성본으로 간주하지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::control::Control;
 use rhwp::model::table::{Table, VerticalAlign};

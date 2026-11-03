@@ -630,7 +630,7 @@ impl DocumentCore {
 mod tests {
     use super::*;
 
-    /// [#3413] CLI `rhwp search` 는 `DocumentCore::grep` 을 호출한다(`wasm_api::HwpDocument::grep`
+    /// [#3413] CLI `rhwp search` 는 `DocumentCore::grep` 을 호출한다(`document_api::HwpDocument::grep`
     /// 경유). 이 경로가 본문/표 셀/글상자만 순회하고 수식(Equation) 컨트롤의 script 텍스트를
     /// 빠뜨려 `search exam_math.hwp "lim" --json` 이 matchCount=0 을 반환하던 버그의 회귀 테스트.
     #[test]

@@ -17,8 +17,6 @@
 //!
 //! 70833 의 쪽 수·본문 없는 쪽은 `issue_6854_empty_para_orphan_page` 가 본다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

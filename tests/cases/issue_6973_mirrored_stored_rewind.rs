@@ -41,8 +41,6 @@
 //! 기준: 한/글 2020(저장 버전) **9쪽** — `pdf/83818-appraisal-rules-amendment-2020.pdf`
 //! (`hwp2024Convert` engine 2020, `pdf_page_count=9`)와 한/글 2020 COM 두 경로가 일치한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

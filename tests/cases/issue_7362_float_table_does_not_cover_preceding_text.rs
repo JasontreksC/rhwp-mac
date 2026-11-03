@@ -40,8 +40,6 @@
 //! 놓인 본문 줄의 아래끝 이상이어야 하고, 표 상자가 본문 영역을 넘지 않아야 한다.
 //! 쪽수 핀(`issue_2006_1790387_prep_pagination_pin`)이 140쪽을 따로 잠근다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

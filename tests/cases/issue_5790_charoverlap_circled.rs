@@ -13,14 +13,12 @@
 //! (`<hp:compose circleType="CHAR" charSz="-4" composeType="OVERLAP" composeText="③">`
 //! 와 `④` 두 건)
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::parser::parse_document;
 use rhwp::renderer::composer::char_overlap_display_text;
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue1880_takeplace_oracle_p13.hwpx";
 

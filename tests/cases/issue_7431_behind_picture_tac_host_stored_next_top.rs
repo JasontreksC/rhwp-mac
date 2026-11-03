@@ -15,7 +15,6 @@
 //!
 //! 비해당 경계(자리차지·어울림·글자처럼 개체가 앞에 있는 TAC host, #4622)는 이 판정에서
 //! 제외되며 기존 `#4622`·`#7333` 시험이 지킨다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

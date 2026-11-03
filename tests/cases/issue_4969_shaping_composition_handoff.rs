@@ -32,8 +32,6 @@ use shaping_paragraph::{
     HorizontalShapingLineDisposition, HorizontalShapingLineRequest,
     HorizontalShapingParagraphRequest, HorizontalShapingParagraphScalarStyle,
 };
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen_test::wasm_bindgen_test;
 
 const SOURCE_HAN: &[u8] =
     include_bytes!("../../ttfs/opensource/SourceHanSerifK-OldHangul-subset.otf");
@@ -103,7 +101,6 @@ fn qualified_outcome() -> Arc<shaping_paragraph::HorizontalShapingLineOutcome> {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d1_composition_owner_retains_the_exact_q2_c_arc() {
     let outcome = qualified_outcome();
     assert_eq!(
@@ -123,7 +120,6 @@ fn issue_4969_q2_d1_composition_owner_retains_the_exact_q2_c_arc() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d1_nonqualified_outcome_is_not_attached() {
     let mut outcome = Arc::try_unwrap(qualified_outcome()).expect("single outcome owner");
     outcome.trace.disposition = HorizontalShapingLineDisposition::RolledBack;
@@ -131,7 +127,6 @@ fn issue_4969_q2_d1_nonqualified_outcome_is_not_attached() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d1_paired_contexts_share_one_registry_generation() {
     let registry = registry();
     let kerning = KerningMeasurementContext::new(registry.clone());
@@ -141,7 +136,6 @@ fn issue_4969_q2_d1_paired_contexts_share_one_registry_generation() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q2_d1_candidate_gate_is_bounded_before_projection() {
     assert!(is_bounded_horizontal_shaping_candidate_text("ᄒᆞᆫ글"));
     assert!(!is_bounded_horizontal_shaping_candidate_text("가변"));
@@ -155,7 +149,6 @@ fn issue_4969_q2_d1_candidate_gate_is_bounded_before_projection() {
 }
 
 #[test]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn issue_4969_q3_e3_explicit_candidate_is_separate_and_bounded() {
     assert!(is_bounded_explicit_instance_candidate_text("가변"));
     assert!(is_bounded_explicit_instance_candidate_text("Typography"));

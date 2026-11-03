@@ -67,7 +67,7 @@ fn ktx_toc_page_numbers_aligned_to_cell_right_inner() {
     let hwp_path = Path::new(repo_root).join("samples/KTX.hwp");
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse KTX.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse KTX.hwp");
 
     // 페이지 2 (0-indexed page=1) — 목차. svg_snapshot::issue_267_ktx_toc_page 와 동일.
     let svg = doc

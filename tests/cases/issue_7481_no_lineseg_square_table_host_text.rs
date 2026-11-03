@@ -27,8 +27,6 @@
 //! 제목 글줄이 존재하는지, 띠가 있으면 표 옆에·없으면 표 아래에 놓이는지, 뒤 표가 같은
 //! 쪽에서 앞 표 아래에 시작하는지(최종 좌표)와 쪽 수.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{BoundingBox, RenderNode, RenderNodeType};
 

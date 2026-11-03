@@ -1,4 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
 use rhwp::document_core::DocumentCore;
 
 // 입력에는 목록 문단의 저장 LineSeg가 없다. MCP2024 Print의 전체4쪽에서

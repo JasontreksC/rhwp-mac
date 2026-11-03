@@ -23,7 +23,6 @@
 //! 표본은 한컴이 저작한 `samples/issue2439_zero_offset_coanchored_float_exclusion.hwp` 로,
 //! 첫 표의 raw TABLE attr 이 `0x0400_0002` 다 — 상위 비트를 달고 있어 **보존 계약**까지
 //! 같은 문서에서 잠글 수 있다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

@@ -77,7 +77,7 @@ fn issue_1772_body_first_line_respects_table_outer_margin_bottom() {
         .expect("헤더 표의 양의 아래 바깥여백");
     let source_margin =
         rhwp::renderer::hwpunit_to_px(source_margin_hu, rhwp::renderer::DEFAULT_DPI);
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", SAMPLE, e));
     let tree = doc
         .build_page_render_tree(0)

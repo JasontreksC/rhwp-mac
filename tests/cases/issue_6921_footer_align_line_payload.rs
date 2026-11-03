@@ -19,10 +19,9 @@
 //!
 //! ⚠ 정본과의 남은 `+4.2px` 는 꼬리말 문단 자체의 세로 위치라 다른 축이다 — 이 시험은
 //! **payload 좌표가 bbox 와 같은가**와 **본문 바닥 아래인가**만 잠근다.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6921/148733091-briefing-stenographic-record.hwp";
 /// 꼬리말 구분선이 있는 쪽 (0-based).

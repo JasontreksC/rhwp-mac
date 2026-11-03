@@ -35,8 +35,6 @@
 //! 가능한 문서들(`80168`·`2022 국립국어원`)에서 이 변경이 한/글에 가까워진다는 증거는
 //! 이슈 `#7413` 의 Visual Sweep 기록에 있다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

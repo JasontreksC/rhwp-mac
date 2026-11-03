@@ -5,8 +5,6 @@
 //! 비활성 보존값은 표 기본 0을 덮어쓰지 않으며 #1785 대조 검사가 확인한다.
 //! 사양과 #6101 정상 문서 전체 11쪽의 Native 시각 최저92.26525%가 독립 근거다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::table::Cell;
 use rhwp::model::Padding;
 

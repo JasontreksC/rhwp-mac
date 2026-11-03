@@ -14,7 +14,6 @@
 //!
 //! 이 테스트는 debug 프로파일에서 조판이 패닉 없이 완주하고 총 143쪽(release
 //! 실측과 동일)임을 고정한다. 결함 상태에서는 debug 에서 패닉으로 실패한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

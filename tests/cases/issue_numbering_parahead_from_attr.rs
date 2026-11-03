@@ -9,7 +9,6 @@
 //!
 //! 비트↔토큰은 한컴 저작 HWPX 쌍(samples/143E433F503322BD33.{hwp,hwpx})으로 직접 1:1
 //! 대응 확증: attr bit2→useInstWidth, bit3→autoIndent(같은 방향), bits0–1→align.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 

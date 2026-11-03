@@ -29,8 +29,6 @@
 //! (`+121.2px`)이 남는다. `#2070` 의 `pi=343`(1.48줄)·`pi=1088`(1.10줄) 과 **줄 단위로
 //! 뒤섞여** 있어 슬랙·시작위치·낙폭·직전 항목·문단 수·태그 어느 축으로도 못 갈랐다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

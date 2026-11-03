@@ -127,38 +127,6 @@ pub fn bundled_font_dirs() -> Vec<PathBuf> {
     vec![PathBuf::from(BUNDLED_OPENSOURCE_DIR)]
 }
 
-/// `fontdb` 에 조달 순서대로 폰트를 적재한다.
-///
-/// 시스템 폰트는 `load_system_fonts()` 가 담당하므로 여기서는 호출자 지정 →
-/// 환경변수 → 번들 순으로 디렉터리만 추가한다. 존재하지 않는 경로는 건너뛰되,
-/// `extra`(사용자가 명시한 경로)만 경고한다 — 환경변수·번들은 없을 수 있다.
-pub fn load_into_fontdb(fontdb: &mut usvg::fontdb::Database, extra: &[PathBuf]) {
-    for dir in extra {
-        if dir.exists() {
-            fontdb.load_fonts_dir(dir);
-        } else {
-            eprintln!(
-                "WARN: font path '{}' not found. 해당 경로의 폰트는 로드하지 않습니다.",
-                dir.display()
-            );
-        }
-    }
-    for dir in env_font_paths() {
-        if dir.exists() {
-            fontdb.load_fonts_dir(&dir);
-        } else {
-            eprintln!(
-                "WARN: {FONT_PATH_ENV} entry '{}' not found. 해당 경로의 폰트는 로드하지 않습니다.",
-                dir.display()
-            );
-        }
-    }
-    let bundled = Path::new(BUNDLED_OPENSOURCE_DIR);
-    if bundled.exists() {
-        fontdb.load_fonts_dir(bundled);
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

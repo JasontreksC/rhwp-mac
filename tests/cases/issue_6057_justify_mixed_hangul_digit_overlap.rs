@@ -6,7 +6,6 @@
 //! `map_pua_bullet_char` 로 전각 》 를 그린다. run bbox 가 ~0.5em 짧아
 //! 다음 라틴 run `10` 이 '제'(1em) 오른쪽 절반 위에 놓인다.
 //! 같은 쪽 통제군 `…특별조치법 제10조의2(` 는 PUA 가 없어 제→1 이 ~1em.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

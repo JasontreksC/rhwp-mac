@@ -12,7 +12,6 @@
 //! - 정답: `image3` 은 매니페스트 1번째 → 정규화 `image1` → 적재 id=1 =
 //!   `BinData/image3.png`(`MARK3`).
 //! - 종전 결함: 치환 연쇄(image3→image1→image2→image3)로 `image2.png`(`MARK2`)가 나왔다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

@@ -46,8 +46,6 @@
 //! 그 둘은 코퍼스 문서라 저장소에 넣지 않는다. 잔여 2px 대는 우리 공백·글자 폭이 한/글과
 //! 미세하게 다른 **별개 축**이다(② 는 5 × 5.2 대 5 × 6.008).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

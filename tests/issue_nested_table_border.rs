@@ -19,7 +19,7 @@ fn nested_table_border_exam_social_p1_q4_outline_present() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = Path::new(repo_root).join("samples/exam_social.hwp");
     let bytes = fs::read(&hwp_path).expect("read exam_social.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse exam_social.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse exam_social.hwp");
 
     // 4 페이지 (PDF 정합)
     assert_eq!(doc.page_count(), 4, "exam_social.hwp 는 4 페이지");
@@ -105,7 +105,7 @@ fn nested_table_border_kwater_rfp_outer_outline_preserves_padding() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let path = Path::new(repo_root).join("samples/k-water-rfp.hwp");
     let bytes = fs::read(&path).expect("read k-water-rfp.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse k-water-rfp.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse k-water-rfp.hwp");
 
     let mut matched_pages = Vec::new();
     for page_idx in 0..doc.page_count() {

@@ -22,7 +22,7 @@ fn page_count(rel_path: &str) -> usize {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let path = Path::new(repo_root).join(rel_path);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {rel_path}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel_path}: {e:?}"));
     doc.page_count() as usize
 }

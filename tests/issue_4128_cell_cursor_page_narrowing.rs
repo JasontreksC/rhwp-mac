@@ -26,7 +26,7 @@ fn deep_cell_cursor_queries_build_few_page_trees() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("samples/issue1949_giant_cell_nested_tables_perf.hwp");
     let bytes = fs::read(&path).expect("read sample");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     assert_eq!(doc.page_count(), 115, "issue1949 기준 쪽수 핀");
 
     // 거대 셀(cell_idx=2, 2507문단) 앞/중간/끝 위치의 콜드 캐럿 질의.

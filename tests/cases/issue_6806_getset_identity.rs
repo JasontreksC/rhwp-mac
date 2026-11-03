@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [#6806] objectProps get∘set 항등 — 게터가 낸 봉지를 그대로 되먹이면 IR·raw·렌더링이
 //! 바뀌지 않아야 한다.
 //!

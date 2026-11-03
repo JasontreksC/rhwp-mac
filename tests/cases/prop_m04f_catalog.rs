@@ -2,7 +2,6 @@
 //!
 //! `tests/fixtures/proptest_m04f/` 가 기존 run step 4종만 담고,
 //! DocumentCore mutation 을 발명하지 않았는지 확인한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::collections::BTreeSet;
 use std::fs;

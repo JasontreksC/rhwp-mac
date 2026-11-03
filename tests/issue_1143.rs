@@ -4,8 +4,8 @@
 //! must invalidate cached page trees when image bytes become available after the
 //! tree has already been built.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::bin_data::BinDataContent;
-use rhwp::wasm_api::HwpDocument;
 use serde::Deserialize;
 use serde_json::Value;
 use std::path::Path;
@@ -93,21 +93,6 @@ fn page_layer_image_payload_count(doc: &HwpDocument, page: u32) -> usize {
         .count()
 }
 
-fn canvaskit_image_items(doc: &HwpDocument, page: u32) -> Vec<Value> {
-    let json = doc
-        .get_canvaskit_replay_plan_native(page, "default")
-        .unwrap_or_else(|e| panic!("CanvasKit replay plan {page}: {e}"));
-    let parsed: Value =
-        serde_json::from_str(&json).unwrap_or_else(|e| panic!("CanvasKit plan JSON: {e}"));
-    parsed["items"]
-        .as_array()
-        .expect("CanvasKit plan items")
-        .iter()
-        .filter(|item| item["opType"].as_str() == Some("image"))
-        .cloned()
-        .collect()
-}
-
 fn item_detail_contains(item: &Value, needle: &str) -> bool {
     item["detail"]
         .as_str()
@@ -191,50 +176,6 @@ fn issue_1143_basename_injection_marks_reference_loaded() {
 }
 
 #[test]
-fn issue_1143_canvaskit_plan_distinguishes_missing_and_injected_external_images() {
-    let mut doc = load_doc("samples/hwp3-sample10.hwp");
-
-    let before_items = canvaskit_image_items(&doc, 0);
-    assert!(
-        before_items.iter().any(|item| {
-            item["status"].as_str() == Some("directRequired")
-                && item_detail_contains(item, "externalImage")
-                && item_detail_contains(item, "missingImageData")
-        }),
-        "external image without injected bytes should be reported as missing: {before_items:?}"
-    );
-
-    let oracle_ref = external_image_refs(&doc)
-        .into_iter()
-        .find(|reference| reference.bin_data_id == 1)
-        .expect("binDataId 1 ref");
-    let oracle = read_sample("samples/oracle.gif");
-    assert_eq!(
-        doc.inject_external_image_by_key(&oracle_ref.key, &oracle, "/tmp/oracle.gif"),
-        1
-    );
-
-    let after_items = canvaskit_image_items(&doc, 0);
-    assert!(
-        after_items.iter().any(|item| {
-            item["status"].as_str() == Some("direct")
-                && item_detail_contains(item, "externalImage")
-                && item_detail_contains(item, "injectedImageData")
-                && !item_detail_contains(item, "missingImageData")
-        }),
-        "injected external image should be directly replayable and not reported as missing: {after_items:?}"
-    );
-    assert!(
-        after_items.iter().any(|item| {
-            item["status"].as_str() == Some("directRequired")
-                && item_detail_contains(item, "externalImage")
-                && item_detail_contains(item, "missingImageData")
-        }),
-        "other external images on the page should remain missing until injected: {after_items:?}"
-    );
-}
-
-#[test]
 fn issue_1143_key_injection_uses_discovery_key_and_invalidates_cache() {
     let mut doc = load_doc("samples/hwp3-sample10.hwp");
 
@@ -292,87 +233,6 @@ fn issue_1143_key_injection_uses_discovery_key_and_invalidates_cache() {
         after_payloads > before_payloads,
         "key injection should invalidate cached PageLayerTrees"
     );
-}
-
-#[test]
-fn issue_1143_key_injection_works_across_hwp3_hwp5_and_hwpx_sample10() {
-    for (label, rel_path) in SAMPLE10_EXTERNAL_FORMATS {
-        let mut doc = load_doc(rel_path);
-        let refs = external_image_refs(&doc);
-        assert_sample10_external_refs(label, &refs, 0);
-        assert_eq!(
-            external_image_basenames(&doc),
-            expected_sample10_basenames_from(0),
-            "{label}: basename API should list missing images before injection"
-        );
-
-        let before_payloads = page_layer_image_payload_count(&doc, 0);
-        assert_eq!(
-            before_payloads, 0,
-            "{label}: sample10 page 1 external images should have no payload before injection"
-        );
-
-        let before_items = canvaskit_image_items(&doc, 0);
-        assert!(
-            before_items.iter().any(|item| {
-                item["status"].as_str() == Some("directRequired")
-                    && item_detail_contains(item, "externalImage")
-                    && item_detail_contains(item, "missingImageData")
-            }),
-            "{label}: CanvasKit should report missing external image bytes before injection: {before_items:?}"
-        );
-
-        for (image_index, (bin_id, basename, _extension, sample_path)) in
-            SAMPLE10_EXTERNAL_IMAGES.iter().enumerate()
-        {
-            let reference = refs
-                .iter()
-                .find(|reference| reference.bin_data_id == *bin_id)
-                .unwrap_or_else(|| panic!("{label}: binDataId {bin_id} ref"));
-            let data = read_sample(sample_path);
-            let display_path = format!("/tmp/{basename}");
-            assert_eq!(
-                doc.inject_external_image_by_key(&reference.key, &data, &display_path),
-                1,
-                "{label}: key injection should load {basename}"
-            );
-
-            let refs_after_step = external_image_refs(&doc);
-            assert_sample10_external_refs(label, &refs_after_step, image_index + 1);
-            assert_eq!(
-                external_image_basenames(&doc),
-                expected_sample10_basenames_from(image_index + 1),
-                "{label}: basename API should list only still-missing images after injecting {basename}"
-            );
-        }
-
-        let after_payloads = page_layer_image_payload_count(&doc, 0);
-        assert!(
-            after_payloads >= SAMPLE10_EXTERNAL_IMAGES.len(),
-            "{label}: PageLayerTree should include mime/base64 payloads after injection"
-        );
-
-        let after_items = canvaskit_image_items(&doc, 0);
-        let injected_direct = after_items
-            .iter()
-            .filter(|item| {
-                item["status"].as_str() == Some("direct")
-                    && item_detail_contains(item, "externalImage")
-                    && item_detail_contains(item, "injectedImageData")
-            })
-            .count();
-        assert!(
-            injected_direct >= SAMPLE10_EXTERNAL_IMAGES.len(),
-            "{label}: injected external images should be directly replayable: {after_items:?}"
-        );
-        assert!(
-            !after_items.iter().any(|item| {
-                item_detail_contains(item, "externalImage")
-                    && item_detail_contains(item, "missingImageData")
-            }),
-            "{label}: injected external images should not remain in missing-image state: {after_items:?}"
-        );
-    }
 }
 
 #[test]

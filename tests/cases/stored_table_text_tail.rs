@@ -1,5 +1,4 @@
 //! 내용에 따라 커진 TAC 표 다음 줄은 실제 표 흐름을 이어받는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{BoundingBox, RenderNode, RenderNodeType};
@@ -633,7 +632,7 @@ fn saved_whitespace_row_keeps_its_character_border_width() {
 fn whitespace_only_paragraph_keeps_its_pdf_underline_extent() {
     // Unlike the soft-wrapped separator row in FIXTURE, these spaces are a
     // complete paragraph used as a rule. Its line-fit contract still applies.
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(include_bytes!(
+    let doc = rhwp::document_api::HwpDocument::from_bytes(include_bytes!(
         "../../samples/hwpx/issue_157.hwpx"
     ))
     .expect("public whitespace underline fixture");

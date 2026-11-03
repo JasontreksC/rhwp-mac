@@ -9,11 +9,11 @@
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::paragraph::Paragraph;
 use rhwp::model::shape::{Caption, CaptionDirection};
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/hwpx/hy-001.hwpx";
 const CAPTION_CELL_SENTINEL: usize = 65534;

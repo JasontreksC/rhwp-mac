@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 use rhwp::model::control::Control;
 use rhwp::model::style::CenterLine;
-use rhwp::{parse_document, wasm_api::HwpDocument, DocumentCore};
+use rhwp::{document_api::HwpDocument, parse_document, DocumentCore};
 use serde_json::Value;
 
 fn sample_path(name: &str) -> PathBuf {

@@ -4,9 +4,9 @@
 //! 만들었다. 누름틀 같은 컨트롤과 필드 범위가 빠지고, 빈 문단과 컨트롤만 있는 문단은
 //! 통째로 사라졌다. 빈 셀(빈 문단 하나)만 건너뛴다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::table::Table;
-use rhwp::wasm_api::HwpDocument;
 
 fn table_of(doc: &HwpDocument, (para, ctrl): (usize, usize)) -> &Table {
     match &doc.document().sections[0].paragraphs[para].controls[ctrl] {

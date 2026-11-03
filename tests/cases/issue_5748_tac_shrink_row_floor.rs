@@ -11,7 +11,6 @@
 //!
 //! 픽스처 `samples/issue5748/tac_shrink_row_floor.hwpx` 는 원본에서 제목 표 문단까지만
 //! 남긴 축소본 — 원본과 같은 행 기하(123.81/57.93px)를 재현한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

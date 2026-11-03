@@ -32,7 +32,6 @@
 //! `convert --verify` 의 IR 비교도 깨지지 않는다. 대신 출처 마커(`/RhwpHwp3Origin`)를
 //! 남겨 재파싱이 렌더러 내부 허용치만 되돌린다. 계약은 **미주가 원본과 같은 쪽에 실리는
 //! 것**이다(한컴 정답지와 일치).
-#![cfg(not(target_arch = "wasm32"))]
 
 const SAMPLE: &str = "samples/SO-SUEOP.hwp";
 

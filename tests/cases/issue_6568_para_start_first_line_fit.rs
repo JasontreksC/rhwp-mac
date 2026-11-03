@@ -18,8 +18,6 @@
 //! 한/글 2024 배분: 6쪽 마지막 글줄 `준비된 보험사…`(734.50pt), 7쪽 첫 글줄
 //! `금융당국과 업계는…`(70.60pt). 쪽수는 7 로 불변이고 한 줄만 옮겨간다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 
 const SAMPLE: &str = "samples/issue6542/156678235_mid_para_vpos_rewind.hwp";

@@ -3,7 +3,6 @@
 //! 동일 입력의 독립 한컴 PDF는10쪽이다. 현재 Native/fresh WASM 전쪽 비교의 최저값은
 //! 95.09873%다. 과거 바이너리의 절대 좌표 대신 같은 셀의 줄·그림 포함관계와
 //! 안내 표의 순서,1쪽 제목·책임자의 머리 표 소속을 검사한다. 실제 배치는 TSV/PNG로 확인한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{BoundingBox, RenderNode, RenderNodeType};

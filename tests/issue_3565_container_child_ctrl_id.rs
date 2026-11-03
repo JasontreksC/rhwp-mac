@@ -22,7 +22,6 @@
 //! 저장 결과 바이트에서 모든 `$con` 레코드를 찾아, **선언한 자식 ctrl_id 목록**과
 //! **실제 자식 레코드의 ctrl_id** 가 일치하는지 본다. 한컴 개방 여부(COM)에 기대지
 //! 않고 계약 자체를 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::control::Control;
 use rhwp::model::document::{Document, Section};

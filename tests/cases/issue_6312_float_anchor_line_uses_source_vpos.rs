@@ -8,7 +8,6 @@
 //! 줄 정규화가 바꾼 vertical_pos가 아닌 source_line_seg_vertical_pos를 검사한다.
 //! 본문 간격은 과거 rhwp 출력 상수가 아니라 실제 마지막 표 하단에 대해 검사한다.
 //! 다른 셀의 큰 글줄은 로고 셀의 빈 앵커 줄을 별도로 쌓는 근거가 아니다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};

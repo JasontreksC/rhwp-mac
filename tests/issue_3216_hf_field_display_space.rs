@@ -12,7 +12,7 @@
 //! (`renderer/composer.rs`)가 세운 규약대로 `text` 는 모델 그대로 두고 `display_text`
 //! 에만 표시값을 담는다. 이 테스트는 머리말 필드도 그 규약을 지키는지 고정한다.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 /// 파일 이름이 여러 글자로 치환되는 문서 — 머리말에 파일명 필드 하나.
 fn doc_with_file_name_field() -> HwpDocument {

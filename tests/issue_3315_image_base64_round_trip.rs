@@ -34,7 +34,7 @@ fn issue_3315_layer_and_overlay_json_emit_identical_image_bytes() {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let path = std::path::Path::new(repo_root).join("samples/hwpx/issue_241.hwpx");
     let bytes = std::fs::read(&path).expect("read samples/hwpx/issue_241.hwpx");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse issue_241.hwpx");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse issue_241.hwpx");
 
     let overlay_json = doc
         .get_page_overlay_images_native(0)

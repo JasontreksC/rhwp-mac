@@ -2,10 +2,10 @@
 
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{
     REAL_PICTURE_WATERMARK_FILL_OPACITY, REAL_PICTURE_WATERMARK_PAGE_OPACITY,
 };
-use rhwp::wasm_api::HwpDocument;
 
 fn load_doc(rel_path: &str) -> HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel_path);

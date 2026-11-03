@@ -7,7 +7,6 @@
 //!
 //! 수정: Square 그림 페인트 bbox 를 `blocks_text=false` exclusion 으로 남기고,
 //! 후속 T&B 표만 그 하단으로 민다. 본문 텍스트는 옆 흐름을 유지한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

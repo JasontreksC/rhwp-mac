@@ -90,21 +90,6 @@ fn assert_masked(core: &DocumentCore, reference: &DocumentCore, raw: &str, mask:
         Some(mask),
         "CanvasKit/replay 표시 payload"
     );
-    #[cfg(feature = "native-skia")]
-    {
-        use rhwp::renderer::layer_renderer::LayerRasterRenderer;
-        use rhwp::renderer::skia::SkiaLayerRenderer;
-        let renderer = SkiaLayerRenderer::new();
-        assert_eq!(
-            renderer
-                .render_png(&core.build_page_layer_tree(0).unwrap())
-                .unwrap(),
-            renderer
-                .render_png(&reference.build_page_layer_tree(0).unwrap())
-                .unwrap(),
-            "Native Skia도 같은 마스킹 문자열을 그림",
-        );
-    }
 }
 
 fn check_placement(inline: bool, surrounding: bool) {

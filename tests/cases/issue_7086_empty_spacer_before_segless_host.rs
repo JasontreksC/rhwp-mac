@@ -26,7 +26,6 @@
 //!
 //! 반례: 앞 문단의 슬롯이 이 문단 vpos 에 닿지 않는 빈 문단(장식용 겹침 스페이서)과 다음
 //! 문단이 저장 seg 를 가진 경우는 종전 collapse 계약 그대로다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

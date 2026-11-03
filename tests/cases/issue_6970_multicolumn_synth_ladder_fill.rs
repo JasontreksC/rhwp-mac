@@ -38,11 +38,9 @@
 //! 저장 사다리가 **있는** 다단 문단은 종전대로 트림한다(`#391` 의 본래 의도). 저장소 표본
 //! 370개의 쪽수·off-canvas·overflow·overlap 이 수정 전후로 **전건 동일**하다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
+use rhwp::document_api::HwpDocument;
 use rhwp::model::document::{Document, Section};
 use rhwp::model::paragraph::Paragraph;
-use rhwp::wasm_api::HwpDocument;
 
 /// 본문 문단 수 — 한 단을 넘기기에 충분하고, 문단당 트림 손실이 합산되어 드러난다.
 const PARA_COUNT: usize = 90;

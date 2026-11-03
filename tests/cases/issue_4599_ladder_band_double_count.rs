@@ -30,8 +30,6 @@
 //! 소비한다. 그쪽은 표와 글자가 한 줄을 공유하는 #6298 / #6167 계열이라 여기서 닫지
 //! 않는다. 그래서 `붙임:` 은 아직 저장 사다리 값(1023.3)까지 내려오지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
@@ -62,7 +60,7 @@ fn collect_text_tops(node: &serde_json::Value, out: &mut Vec<(String, f64)>) {
 fn stored_ladder_delta_does_not_recharge_an_already_painted_float_band() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
 
     let json = document

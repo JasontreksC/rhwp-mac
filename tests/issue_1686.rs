@@ -5,8 +5,8 @@
 //! `[응시자격요건 고려사항]` 표가 함께 있다. 한컴 2020 PDF 기준 page 3은
 //! 직위별 요건 표 continuation 뒤에 0.28 `다. 우대요건...` 섹션이 와야 한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

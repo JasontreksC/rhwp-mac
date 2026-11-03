@@ -143,7 +143,6 @@ impl DocumentCore {
     /// 영역 영역 추출 → `base_dir` 영역 영역 영역 file 영역 load → renderer 영역 영역 표시.
     ///
     /// 반환: load 영역 image 영역.
-    #[cfg(not(target_arch = "wasm32"))]
     pub fn populate_external_images_from_dir(&mut self, base_dir: &std::path::Path) -> usize {
         let loaded = self.document.populate_external_images_from_dir(base_dir);
         if loaded > 0 {

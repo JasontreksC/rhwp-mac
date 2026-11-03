@@ -3,13 +3,12 @@
 //! HWP 2020 PDF p5는 `pi=44`의 non-TAC Square 표 왼쪽에 다음 `pi=45`의 앞 6줄을
 //! 배치하고, 마지막 줄만 표 아래 전폭으로 되돌린다. tail의 페이지 이동만 검사하면
 //! 앞 6줄이 render tree에서 소실되어도 놓친다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType, TableNode};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue4090/156492236_규제샌드박스_min.hwpx";
 

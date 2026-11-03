@@ -33,8 +33,6 @@
 //! 이 계약은 `samples/**/*.hwp` 3MB 이하 577문서 · 개체 989건(그림 434 · 도형 555)
 //! 전수에서 `get∘set∘get == get` 이 성립함을 확인하고 대표 둘을 고정한 것이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 
 fn load(rel: &str) -> DocumentCore {

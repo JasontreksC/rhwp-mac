@@ -7,14 +7,13 @@
 //! 첫 그림 (561.2, 343.3) = 상자 원점 + 여백 11.33 + 첫 행 5.1 + 셀 여백 1.9. 종전 rhwp 는
 //! 안쪽 표를 상자 원점(549.9, 324.9)에 그려 그림 5장이 (−11.3, −11.5), 상자 높이가 22.7px
 //! 짧았다(저장 줄 원장은 그림 줄 lh = 그림 높이라 줄 높이 문제가 아니다).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
 fn page0_svg() -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/exam_social.hwp");
     let bytes = std::fs::read(&path).expect("read exam_social.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse exam_social.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse exam_social.hwp");
     doc.render_page_svg(0).expect("render page 1")
 }
 

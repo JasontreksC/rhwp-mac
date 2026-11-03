@@ -5,11 +5,10 @@
 //! 바꿔 그린다. 저장은 마커를 컨트롤로 바꾸지 않아 HWP 에는 맨 코드 유닛이, HWPX 에는
 //! 아무것도 남지 않았다. 저장본에는 한컴이 만든 머리말과 같은 컨트롤 — 자동 번호와
 //! 파일 이름 필드(`%pat`, `$F`) — 이 들어가야 한다.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::{AutoNumberType, Control, FieldType};
 use rhwp::model::paragraph::Paragraph;
-use rhwp::wasm_api::HwpDocument;
 
 const FILE_NAME: &str = "보고서.hwp";
 

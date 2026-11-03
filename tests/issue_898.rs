@@ -18,7 +18,7 @@ fn master_page_table_includes_outer_margin_top() {
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse exam_math.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse exam_math.hwp");
 
     let svg = doc
         .render_page_svg_native(0)

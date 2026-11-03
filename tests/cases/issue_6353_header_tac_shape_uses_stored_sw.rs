@@ -5,7 +5,6 @@
 //! 152HU(≈2.03px @96dpi) 오른쪽에 놓였다. 쪽-Right 부동 폴백이 아니라
 //! 글자처럼 인라인 도형의 줄 폭 권위 문제다. 박스는 Header 노드가 아니라
 //! MasterPage 표 칸에 있다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::RenderNode;

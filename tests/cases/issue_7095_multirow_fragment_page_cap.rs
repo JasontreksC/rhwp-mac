@@ -38,8 +38,6 @@
 //! ① 상한을 넘는 다행 조각은 상한까지 접힌다. ② 상한 안에서 끝나는 조각은 **건드리지 않는다**
 //! (상한을 무조건 적용하면 짧은 조각이 늘어난다). 둘을 함께 잠근다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

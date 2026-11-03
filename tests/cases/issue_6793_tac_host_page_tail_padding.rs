@@ -50,8 +50,6 @@
 //! 정책상 기준 엔진은 **2020** 이다. 초판 manifest 의 `9.1.1.4072`·`2024` 는 틀렸다
 //! (PR #6794 지적) — 정정했다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

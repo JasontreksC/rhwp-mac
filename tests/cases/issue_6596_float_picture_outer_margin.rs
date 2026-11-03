@@ -18,8 +18,6 @@
 //! left 2mm·right 0·top 0 이라 잉크가 움직이지 않아야 한다 — 여백을 상자 크기로
 //! 정렬에 넣지 않고 원점에만 더하면 이 표본이 깨진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
@@ -84,7 +82,7 @@ fn float_picture_ink_sits_inside_its_outer_margin_box() {
     for case in CASES {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(case.sample);
         let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {e}", case.sample));
-        let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+        let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
             .unwrap_or_else(|e| panic!("parse {}: {e}", case.sample));
         let json = document
             .get_page_render_tree(case.page_index)

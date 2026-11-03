@@ -28,8 +28,6 @@
 //! ⚠ 이 시험은 **겹침 축만** 잠근다. 같은 이슈의 다른 축(한/글은 이어지는 조각을
 //! 본문 하한까지 늘리고 그 안에서 내용을 가운데에 둔다 — 40px)은 열려 있다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

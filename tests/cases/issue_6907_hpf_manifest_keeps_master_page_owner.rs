@@ -34,8 +34,6 @@
 //! 그래서 **수정 전 실패하는 것은 순서 검사 하나**다. 소속 개수 검사는 이 표본에서
 //! 균등 배분(9÷3=3)이 원래 소속과 같아 수정 전에도 통과한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::parser::hwpx::parse_hwpx;
 use rhwp::serializer::hwpx::serialize_hwpx;
 

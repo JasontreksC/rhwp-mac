@@ -7,7 +7,6 @@
 //!
 //! 정답지는 한컴 편집기 산출의 OOXML 모양이다(계획 §2 표) — 한컴을 부르지 않고 스캐너의
 //! 스타일 구간(`sp_pr_span`·`symbol_span`)으로 단언한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::{Path, PathBuf};
 

@@ -23,8 +23,6 @@
 //!
 //! 수정 후 3쪽 글자 491 → **510**(한/글 510), 전체 1447 → **1466**(한/글 1466).
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

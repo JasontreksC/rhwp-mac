@@ -2,7 +2,6 @@
 //! Hancom 2020's PDF of the same HWPX starts the border at y≈136 px at 96 dpi;
 //! the page body starts at y≈132.3 px. The edited cell text grows to two lines
 //! per paragraph, but that does not consume the table's outer margin.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

@@ -2,8 +2,6 @@
 //! 한컴 기준: pdf/ari-tutoring-application-2020.pdf (engine 2020).
 //! 단순 비겹침뿐 아니라 표 경계와 양수/음수 저장 간격을 독립 검증한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

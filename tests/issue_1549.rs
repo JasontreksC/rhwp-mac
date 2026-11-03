@@ -16,11 +16,11 @@ const TARGET_PI: usize = 0;
 const TITLE_NEEDLE: &str = "MULTI POSITIVE TITLE";
 const TARGET_TABLES: [usize; 3] = [2, 3, 4];
 
-fn load_doc(sample: &str) -> rhwp::wasm_api::HwpDocument {
+fn load_doc(sample: &str) -> rhwp::document_api::HwpDocument {
     let repo_root = env!("CARGO_MANIFEST_DIR");
     let hwp_path = Path::new(repo_root).join(sample);
     let bytes = fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", sample, e));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {}: {}", sample, e))
 }
 

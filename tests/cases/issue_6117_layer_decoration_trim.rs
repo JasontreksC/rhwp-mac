@@ -5,7 +5,6 @@
 //! 그 배선이 없어 밑줄이 표 칸 괘선을 넘었다. 이제 LayerBuilder가 최종
 //! TextDecoration에 트림을 발행하며, 이 테스트가 그 결정을 고정한다(캔버스 픽셀 검증은
 //! `rhwp-studio/e2e/issue-6117-cell-underline-canvas2d.test.mjs`).
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::paint::{LayerBuilder, LayerNode, LayerNodeKind, PaintOp, RenderProfile};
 use rhwp::renderer::render_tree::{

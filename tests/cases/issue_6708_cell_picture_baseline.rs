@@ -1,5 +1,4 @@
 //! A small fallback TAC picture aligns its own baseline within the stored line.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;

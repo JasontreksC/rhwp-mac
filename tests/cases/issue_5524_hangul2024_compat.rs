@@ -5,11 +5,10 @@
 //! lineseg 2개 vs 2024 재저장본 1개). 샘플은 그 차이가 쪽 경계를 가르는 실문서다:
 //! 레터헤드 TAC 표(pi0, 선행 세그 1600HU) 때문에 2022 는 pi13 을 2쪽 상단으로,
 //! 2024 는 1쪽 말미로 둔다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 fn sample_bytes() -> Vec<u8> {
     std::fs::read(

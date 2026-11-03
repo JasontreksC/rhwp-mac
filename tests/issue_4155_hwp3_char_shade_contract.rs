@@ -32,7 +32,6 @@
 //!    방향을 고정한다. 절상으로 구현하면 `0xd9d9d9`·`0xf0f0f0` 이 나와 red 가 된다.
 //!
 //! [#4141]: https://github.com/edwardkim/rhwp/issues/4141
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::Read;
 use std::path::{Path, PathBuf};

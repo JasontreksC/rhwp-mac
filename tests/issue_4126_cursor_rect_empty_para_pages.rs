@@ -25,7 +25,7 @@ fn empty_host_para_cursor_rect_builds_few_page_trees() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("samples/issue1949_giant_cell_nested_tables_perf.hwp");
     let bytes = fs::read(&path).expect("read sample");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     assert_eq!(doc.page_count(), 115, "issue1949 기준 쪽수 핀");
 
     // 콜드 캐럿 배치: 문서 열기 직후 (0,0,0) — 표 호스트 빈 문단.

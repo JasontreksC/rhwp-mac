@@ -11,7 +11,6 @@
 //! baseline(bl < th)은 그대로다.
 //!
 //! 픽스처는 원본 HWPX 구역2 문단 215..222(21행 통계표 2개) 절단 축소본.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

@@ -1,12 +1,11 @@
 //! [#3693] `export-structure --mode clause` marker·문맥 회귀 테스트.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::{Path, PathBuf};
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::queries::structure::{
     build_structure, StructureDoc, StructureMode, StructureNode,
 };
-use rhwp::wasm_api::HwpDocument;
 
 fn sample_path(relative: &str) -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join(relative)

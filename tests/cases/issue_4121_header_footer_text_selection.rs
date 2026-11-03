@@ -1,12 +1,11 @@
 //! [#4121] 머리말/꼬리말 텍스트 선택의 코어/WASM 계약.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
 use rhwp::model::header_footer::HeaderFooterApply;
 use rhwp::model::style::Alignment;
-use rhwp::wasm_api::HwpDocument;
 
 fn sample() -> Vec<u8> {
     std::fs::read(Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/field-01.hwp"))

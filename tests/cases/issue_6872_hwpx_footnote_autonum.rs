@@ -14,8 +14,6 @@
 //! 대상 함수(`note_numbering_str`·`render_auto_num_format`)는 private 이라 공개 경로
 //! `serialize_hwpx` 로 방출 XML 을 직접 확인한다 — 실제 저장 경로와 같은 축이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::io::Read;
 
 use rhwp::model::document::Document;

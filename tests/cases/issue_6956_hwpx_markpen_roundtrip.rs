@@ -1,6 +1,5 @@
 //! #6956: 텍스트와 표를 감싼 형광펜 3쌍을 HWPX/HWP5 왕복에서 보존한다.
 //! 한컴 2022 변환 대조: PARA_RANGE_TAG 종류 2, COLORREF BGR, 끝 위치 exclusive.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::model::document::Document;
 use std::io::{Cursor, Read};

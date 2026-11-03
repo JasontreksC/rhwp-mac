@@ -17,13 +17,12 @@
 //!
 //! `dump-pages` 는 이 되감김을 이미 `[vpos-rewind@line1]` 로 **검출해 찍고 있었지만**
 //! 그것은 진단 문자열일 뿐 조판 입력이 아니었다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6542/156678235_mid_para_vpos_rewind.hwp";
 /// 0-based — 되감김 문단이 놓이는 물리 6쪽.

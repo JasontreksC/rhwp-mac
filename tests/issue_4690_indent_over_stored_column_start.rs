@@ -8,13 +8,12 @@
 //!
 //! 쪽수·픽셀 평균·텍스트 추출 어느 지표도 이 이동을 보지 못하므로(가로 축 오라클로만
 //! 잡힌다) 좌표를 직접 고정한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue4690/30098_indent_over_stored_cs.hwp";
 const PAGE_INDEX: u32 = 2; // 0-based — 저장 사다리 실측이 있는 p3

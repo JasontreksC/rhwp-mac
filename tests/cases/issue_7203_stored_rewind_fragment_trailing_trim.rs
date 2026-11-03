@@ -45,8 +45,6 @@
 //! 메인터너 보정: 첫 조각의 상자 높이도 저장 4482 HU와 독립 PDF 높이로 검사한다.
 //! 컷에 적용한 끝 간격을 예약 높이/paint가 함께 소비해야 한다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

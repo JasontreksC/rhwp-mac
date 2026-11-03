@@ -29,8 +29,6 @@
 //! 아래 셋이 **양쪽을 잠근다** — 정렬을 못 받으면 ①이, 여유 없는 칸까지 밀면 ②가,
 //! 진짜 잘림 보호가 무너지면 ③이 깨진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::PathBuf;
 
 use rhwp::document_core::DocumentCore;

@@ -28,8 +28,6 @@
 //! 정본과 같고(이중 괄호 0건), 모양의 뒤 장식 문자를 채우려면 본문 글자를 동시에
 //! 지워야 해서 별도로 다룬다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::parser::parse_document;
 use std::path::Path;
 

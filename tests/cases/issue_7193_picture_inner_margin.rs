@@ -15,7 +15,6 @@
 //! - hwp:  x 562..632, y 108..133 — 틀 윗변 78.3 + 30.2 = 108.5 에서 시작.
 //!
 //! 수정 전 rhwp 는 틀 전체(72.0×56.7px)에 그림을 늘여 그려 세로가 2.1배였다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
@@ -29,10 +28,11 @@ fn px(hu: f64) -> f64 {
     hu * 96.0 / 7200.0
 }
 
-fn load(rel: &str) -> rhwp::wasm_api::HwpDocument {
+fn load(rel: &str) -> rhwp::document_api::HwpDocument {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {rel}: {e}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).unwrap_or_else(|e| panic!("parse {rel}: {e:?}"))
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
+        .unwrap_or_else(|e| panic!("parse {rel}: {e:?}"))
 }
 
 #[derive(Debug, Clone, Copy)]

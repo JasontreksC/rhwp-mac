@@ -13,7 +13,7 @@
 //! 문서의 두 포맷 쌍. 취소선 CharShape 4개(모양 SOLID 2, DOUBLE_SLIM 2)를 가진다.
 //! 수정 전: HWP5 파스 결과 취소선 0개 / HWPX 파스 결과 4개.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

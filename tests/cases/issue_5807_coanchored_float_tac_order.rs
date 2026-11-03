@@ -10,7 +10,6 @@
 //! (vpos 리셋)과 같이 정렬을 끄고 배열(저장) 순서를 보존한다.
 //!
 //! 픽스처는 원본 HWP5 의 구역0 문단 0..4 절단 + BinData 스텁 축소본(9KB).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

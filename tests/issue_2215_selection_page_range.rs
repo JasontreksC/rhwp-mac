@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 use std::path::Path;
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use serde_json::{json, Value};
 
 const CELL_CONTEXT: (u32, u32, u32, u32) = (0, 0, 2, 2);

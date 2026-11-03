@@ -8,8 +8,8 @@
 //! 1800 으로 무너졌다 (studio 실측: 병합 셀 279.7px → 24px, 잔여 폭은 마지막
 //! 열으로 쏠림). 결과가 실제로 갈라진 행만 종전대로 마킹한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
-use rhwp::wasm_api::HwpDocument;
 
 fn table_of(doc: &HwpDocument, para_idx: usize) -> &rhwp::model::table::Table {
     doc.document().sections[0].paragraphs[para_idx]

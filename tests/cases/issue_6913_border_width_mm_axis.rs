@@ -17,7 +17,6 @@
 //! 16/16 이 격자와 일치했다 (`samples/issue6913/README.md`). 종전 표
 //! (`mm × 96/25.4` 를 소수 첫째자리로 반올림)는 격자를 못 맞췄고, 가장 많이 쓰이는
 //! 0.1mm 를 0.4px 로 **25% 두껍게** 그렸다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
@@ -32,7 +31,7 @@ fn page_svg(page: u32) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes =
         std::fs::read(&path).unwrap_or_else(|e| panic!("fixture 읽기 ({}): {e}", path.display()));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("문서 로드: {e:?}"));
     doc.render_page_svg(page)
         .unwrap_or_else(|e| panic!("쪽 {page} SVG: {e:?}"))

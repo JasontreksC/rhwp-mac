@@ -40,8 +40,6 @@
 //! ①(상자가 쪽까지) · ②(줄이 늘지 않는다 = 다음 쪽 내용 중복 없음) · ③(정렬이 상자 기준)
 //! 셋을 같이 잠근다. 셋 중 하나만 되돌려도 깨진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
 

@@ -4,8 +4,6 @@
 //! `samples/issue7333/aaaaaa.hwp` 40쪽(`pi=523`)은 한컴 2020 PDF에서 616.5px
 //! 표 상자 안에 온전히 놓인다. 결함 시 rhwp는 이 표를 1194.6px로 측정했다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
@@ -211,7 +209,7 @@ fn rectangles(node: &serde_json::Value, out: &mut Vec<(f64, f64, f64, f64)>) {
 fn overlapping_picture_lines_occupy_one_declared_table_frame() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|error| panic!("read {SAMPLE}: {error}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|error| panic!("parse {SAMPLE}: {error}"));
 
     assert_eq!(document.page_count(), 50, "fixture page count");
@@ -236,7 +234,7 @@ fn overlapping_picture_lines_occupy_one_declared_table_frame() {
 fn auxiliary_cell_width_does_not_pull_following_table_over_screenshot() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|error| panic!("read {SAMPLE}: {error}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|error| panic!("parse {SAMPLE}: {error}"));
 
     let json = document
@@ -261,7 +259,7 @@ fn auxiliary_cell_width_does_not_pull_following_table_over_screenshot() {
 fn in_front_decoration_keeps_character_table_on_its_saved_line() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|error| panic!("read {SAMPLE}: {error}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|error| panic!("parse {SAMPLE}: {error}"));
 
     let json = document
@@ -296,7 +294,7 @@ fn in_front_decoration_keeps_character_table_on_its_saved_line() {
 fn full_band_empty_tac_tables_use_their_saved_line_top() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|error| panic!("read {SAMPLE}: {error}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|error| panic!("parse {SAMPLE}: {error}"));
 
     // 한컴 2020 PDF의 바깥 표선 상단. 세 표 모두 두 번째 LINE_SEG의 text_height가
@@ -322,7 +320,7 @@ fn full_band_empty_tac_tables_use_their_saved_line_top() {
 fn fixed_line_spacing_after_in_front_decoration_table_is_not_reserved_twice() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|error| panic!("read {SAMPLE}: {error}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|error| panic!("parse {SAMPLE}: {error}"));
 
     // 한컴 2020 PDF에서 측정한 표 뒤 첫 본문 줄: p13, p16~21.
@@ -353,7 +351,7 @@ fn fixed_line_spacing_after_in_front_decoration_table_is_not_reserved_twice() {
 fn full_band_tac_table_consumes_the_saved_following_line_spacing() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|error| panic!("read {SAMPLE}: {error}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|error| panic!("parse {SAMPLE}: {error}"));
 
     // PDF에서 측정한 표 뒤 첫 가시 본문 줄. 네 full-band carrier의 다음 저장
@@ -383,7 +381,7 @@ fn full_band_tac_table_consumes_the_saved_following_line_spacing() {
 fn cell_screenshot_uses_its_own_saved_line_after_callout_shapes() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|error| panic!("read {SAMPLE}: {error}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|error| panic!("parse {SAMPLE}: {error}"));
 
     // 각 셀은 InFrontOfText 주석 도형 뒤에 그림을 둔다. 그림의 empty-control
@@ -419,7 +417,7 @@ fn cell_screenshot_uses_its_own_saved_line_after_callout_shapes() {
 fn cell_callout_with_stale_negative_offset_stays_on_its_picture_line() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).expect("read fixture");
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
 
     // 27쪽 pi=383의 첫 번호 도형은 HWP5에 -1275HU offset으로 저장됐지만, 뒤의
     // inline screenshot이 지정하는 셀 줄에 붙어야 한다. 한컴 2020 PDF의 빨간
@@ -445,7 +443,7 @@ fn cell_callout_with_stale_negative_offset_stays_on_its_picture_line() {
 fn stored_multi_picture_rows_keep_their_middle_row_height() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).expect("read fixture");
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
 
     // p37/pi=495와 p38/pi=503의 세 번째 셀은 빈 문단에 TopAndBottom flow 그림 두 장을
     // 저장한다. 이를 가로 band의 max로만 재면 해당 행이 약 12px 줄고 마지막 행에
@@ -482,7 +480,7 @@ fn stored_multi_picture_rows_keep_their_middle_row_height() {
 fn bottom_aligned_mixed_footer_uses_the_saved_grid_leading() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|error| panic!("read {SAMPLE}: {error}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|error| panic!("parse {SAMPLE}: {error}"));
 
     for page_index in [1, 30] {
@@ -516,7 +514,7 @@ fn svg_numeric_attr(tag: &str, name: &str) -> Option<f64> {
 fn page_31_signed_line_transform_preserves_arrow_direction() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).expect("read fixture");
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
     let svg = document
         .render_page_svg_native(30)
         .expect("31쪽 SVG 렌더링");
@@ -559,7 +557,7 @@ fn page_31_signed_line_transform_preserves_arrow_direction() {
 fn connector_paths_preserve_saved_direction_and_endpoint_marker() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).expect("read fixture");
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
 
     // 19쪽의 빨간 연결선은 HWP5 renderingInfo에 y 음수 축척이 있고 끝 화살표를
     // 가진다. path로 그리는 연결선도 일반 LineNode처럼 그 축척과 끝 marker를
@@ -606,7 +604,7 @@ fn connector_paths_preserve_saved_direction_and_endpoint_marker() {
 fn screenshot_table_direction_lines_keep_their_arrow_markers() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).expect("read fixture");
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
 
     // 41·43쪽의 스크린샷 표에는 직선처럼 보이는 방향 연결선이 있다. 파서는 이를
     // 제어점 연결선으로 보존하므로 SVG도 경로 본문만 그리지 말고 marker를 내야 한다.
@@ -637,7 +635,7 @@ fn screenshot_table_direction_lines_keep_their_arrow_markers() {
 fn page_31_inline_screenshot_keeps_its_saved_frame_before_cell_clip() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).expect("read fixture");
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse fixture");
     let json = document.get_page_render_tree(30).expect("31쪽 render tree");
     let tree: serde_json::Value = serde_json::from_str(&json).expect("parse render tree json");
     let (_, image_y, width, height) =

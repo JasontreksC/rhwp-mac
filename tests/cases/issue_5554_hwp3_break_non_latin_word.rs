@@ -8,9 +8,9 @@
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::style::Alignment;
 use rhwp::parse_document;
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/hwp3-sample11.hwp";
 

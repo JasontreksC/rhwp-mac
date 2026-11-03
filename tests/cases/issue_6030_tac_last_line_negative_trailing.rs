@@ -14,7 +14,6 @@
 //! 클램프 (음수 한정 — 양수 trailing 포함 회계인 KTX TOC 핀은 불변).
 //!
 //! 결함 상태에서는 행 피치 81.6px(61.2pt)·표 1쪽 하단 978.5px 로 두 밴드가 실패.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

@@ -20,7 +20,7 @@ fn issue_1624_footer_overpush_matches_hangul_page_count() {
     let bytes =
         fs::read(&hwpx_path).unwrap_or_else(|e| panic!("read {}: {}", hwpx_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse 36395270_footer_overpush.hwpx");
 
     // 한글 정답지 2쪽 — footer 의 disconnected stored vpos 로 인한 spurious over-push 가 없어야 함.

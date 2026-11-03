@@ -57,7 +57,7 @@ fn issue_915_cell_text_not_rendered_microscopic() {
     let repo = env!("CARGO_MANIFEST_DIR");
     let path = Path::new(repo).join("samples/table-in-tbox.hwp");
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {}: {}", path.display(), e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse table-in-tbox.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse table-in-tbox.hwp");
 
     // 페이지 2 (0-indexed page=1) — 텍스트박스 안 표가 있는 페이지.
     let svg = doc

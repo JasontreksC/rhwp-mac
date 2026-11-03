@@ -821,14 +821,14 @@ fn issue4099_judgment_variants_carry_their_mutations() {
 /// CLI 는 저장 직후 종료하니 관측되지 않지만 브라우저 핸들은 저장 뒤에도 살아 있다.
 /// `export_hwp_with_adapter_snapshot` 이 바로 이 부류를 위해 이미 존재했고
 /// (누름틀 `field_ranges` 어긋남이 같은 원인의 다른 증상이다), CLI edit 경로만 이관돼
-/// 있었다. `wasm_api::exportHwp` 를 그쪽으로 옮겨 원인을 없앴다.
+/// 있었다. `document_api::exportHwp` 를 그쪽으로 옮겨 원인을 없앴다.
 ///
 /// 바이트 동일과 구조를 모두 단언한다 — 훗날 zip 타임스탬프 같은 것이 들어와 바이트
 /// 비교가 무뎌져도 구조 단언은 진짜 회귀를 계속 잡는다.
 #[test]
 fn issue4099_hwp_save_keeps_live_ir_intact_for_hwpx_reexport() {
     let bytes = base_hwpx();
-    let mut doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("HWPX 로드");
+    let mut doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("HWPX 로드");
 
     let before = doc.export_hwpx().expect("HWPX 저장(HWP 저장 전)");
     let hwp = doc.export_hwp().expect("HWP 저장");

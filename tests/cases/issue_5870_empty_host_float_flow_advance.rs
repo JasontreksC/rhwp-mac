@@ -12,8 +12,6 @@
 //! 같은 문서의 통제군: 구역2 문단 62 는 형상이 같지만 host 에 글자가 6자 있어
 //! `is_visible_para_float` 정상 경로를 탄다 — 45쪽 pi=63 표 상단 297.4px 불변.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

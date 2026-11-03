@@ -27,7 +27,7 @@ fn issue_2019_partial_mitigation_keeps_catastrophic_overpagination_from_returnin
     let bytes =
         fs::read(&hwpx_path).unwrap_or_else(|e| panic!("read {}: {}", hwpx_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse issue2019_floating_form_74312.hwpx");
 
     // 한글 2022 기준 페이지 수는 18쪽이다. 이 assert 는 페이지 수 폭증 재발만 막는다.

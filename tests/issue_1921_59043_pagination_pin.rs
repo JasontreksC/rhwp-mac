@@ -14,8 +14,8 @@
 use std::fs;
 use std::path::Path;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue1921/59043_regulatory_analysis.hwp";
 const PAGE_8: u32 = 7;

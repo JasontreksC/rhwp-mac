@@ -10,8 +10,6 @@
 //! 종전 rhwp                                       (3.3, 14.2)      = 용지 (0, 0) + 오프셋
 //! ```
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::fs;
 use std::path::Path;
 
@@ -46,7 +44,7 @@ fn collect_header_images(
 fn header_paper_relative_picture_measures_its_offset_from_the_header_frame() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let document = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {SAMPLE}: {e}"));
     for page_index in [0u32, 1, 2] {
         let json = document

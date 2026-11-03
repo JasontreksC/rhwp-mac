@@ -42,8 +42,6 @@
 //! 그 상자가 맞아야 이 검사의 기대값이 성립하므로 두 검사는 함께 읽는다. 표 높이·가로선
 //! 차이(#7407 의 B)는 여기서 다루지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 

@@ -7,10 +7,10 @@ use std::fs;
 use std::path::Path;
 use std::time::Instant;
 
+use rhwp::document_api::HwpDocument;
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 use serde_json::{json, Value};
 
 const HWP_SAMPLE: &str = "samples/issue1949_giant_cell_nested_tables_perf.hwp";

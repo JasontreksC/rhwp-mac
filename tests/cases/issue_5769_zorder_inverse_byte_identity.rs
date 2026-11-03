@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [#5769 후속] Shape z 순서 역연산의 저장 바이트 왕복 동일성.
 //!
 //! `change_shape_z_order_native` 은 실제 변경 시 자기기술 레코드 `moves`(대상+교환
@@ -12,8 +10,8 @@
 //! 무변경 경계("이미 맨 앞/뒤")는 moves 없이 조기 반환하며 passthrough 도 건드리지
 //! 않는다 — phantom 엔트리와 불필요한 raw 무효화가 없음을 함께 고정한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::model::control::Control;
-use rhwp::wasm_api::HwpDocument;
 use serde_json::Value;
 
 /// 도형 n개 문서 — 생성 순서대로 z_order 1..=n (max+1 규약).

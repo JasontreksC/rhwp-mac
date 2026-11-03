@@ -6,7 +6,6 @@
 //! 되감긴다. `internal_vpos_page_break_line` 은 이 경계를 찾지만, HWPX 필터가
 //! 흐름 앵커 불일치를 국소 cursor 로 오인해 버려 세 줄을 현재 쪽에 붙였다.
 //! 수정 전 실측: line0/1/2 가 col_bottom=1028.0 을 20.3/51.5/82.7px 넘김.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

@@ -19,7 +19,6 @@
 //!
 //! 잠금은 좌표 상수 대신 **불변식**을 건다 — 글상자 clip 은 자기 글줄을 세로로 자르지
 //! 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

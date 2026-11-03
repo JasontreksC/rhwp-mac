@@ -15,8 +15,6 @@
 //! `samples/hwp3-sample.hwp` 문단 0 의 해석된 문단 모양이 바뀐다. 이 정리와 **무관하게**
 //! 수정 전 기준선에서도 똑같이 바뀌는 것을 확인했으므로 별건이다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 use rhwp::model::document::Document;

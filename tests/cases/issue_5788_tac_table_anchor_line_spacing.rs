@@ -8,7 +8,6 @@
 //! 수정(layout_table_item): lineseg-부재 문단 한정으로 문단 스타일의 퍼센트
 //! 줄간격 × 앵커 글꼴 크기(+8.0px, 160%×13.3px)를 보충 — 표→다음 문단 간격
 //! 11.46 → 19.5px (한글 20.26~21.23, 잔여 ~1px 는 ascent 축).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

@@ -30,7 +30,6 @@
 //! ⚠ 인쇄·PDF 에는 원래 안 나온다. engine 2020 정본에 빨간 글씨가 하나도 없고 rhwp 도
 //! `RenderProfile::shows_editor_visuals()` 가 `Screen`·`FastPreview` 에서만 참이다 —
 //! 이것은 **편집 화면 정합** 축이다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

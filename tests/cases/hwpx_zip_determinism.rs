@@ -20,7 +20,7 @@ const LOCAL_FILE_SIGNATURE: [u8; 4] = [0x50, 0x4b, 0x03, 0x04];
 fn exported_sample() -> Vec<u8> {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("samples/hwpx/143E433F503322BD33.hwpx");
     let bytes = fs::read(&path).expect("read sample");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse sample");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse sample");
     doc.export_hwpx().expect("export_hwpx")
 }
 

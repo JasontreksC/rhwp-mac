@@ -12,7 +12,6 @@
 //! 재현: `samples/form-01.hwp` (HWP5 네이티브, ClickHere 필드 `myMsg01` 안내문
 //! "여기에 입력" 이 본문 run 으로 실재)를 로드 → 저장 → raw 파서(정규화를 거치지 않는
 //! `parser::parse_hwp`)로 재파싱하면, 수정 전에는 안내문 텍스트가 파일 어디에도 없다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
@@ -26,11 +25,11 @@ fn sample_bytes() -> Vec<u8> {
     std::fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"))
 }
 
-fn load(bytes: &[u8]) -> rhwp::wasm_api::HwpDocument {
-    rhwp::wasm_api::HwpDocument::from_bytes(bytes).expect("parse")
+fn load(bytes: &[u8]) -> rhwp::document_api::HwpDocument {
+    rhwp::document_api::HwpDocument::from_bytes(bytes).expect("parse")
 }
 
-fn field_value(doc: &rhwp::wasm_api::HwpDocument, name: &str) -> String {
+fn field_value(doc: &rhwp::document_api::HwpDocument, name: &str) -> String {
     let json = doc.get_field_list();
     let v: serde_json::Value = serde_json::from_str(&json).expect("field list JSON");
     let fields = v["fields"]
@@ -92,7 +91,7 @@ fn initial_guide_text_survives_hwp5_save_no_edit_raw_passthrough() {
 }
 
 /// 저장 축(핵심 재현): **다른** 필드를 채우는 편집이 `section.raw_stream` 을 무효화해
-/// (`wasm_api::set_field_value_by_name_api` 는 대상 필드를 찾을 때까지 훑는 모든 섹션의
+/// (`document_api::set_field_value_by_name_api` 는 대상 필드를 찾을 때까지 훑는 모든 섹션의
 /// `raw_stream` 을 지운다) `export_hwp` 가 `serialize_para_text` 로 진짜 재구성하게
 /// 강제한다 — 실물 서식(일부 필드는 채우고 일부는 비워 둔 채 저장)과 같은 조건이다.
 /// 대상 누름틀(회사명) 자신은 건드리지 않으므로 dirty 표식도 안 선다.

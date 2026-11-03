@@ -613,7 +613,7 @@ fn issue_2007_nested_table_right_outer_border_is_not_clipped() {
         Path::new(repo_root).join("samples/basic/issue2007_nested_cell_pagination_42065.hwp");
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse issue2007_nested_cell_pagination_42065.hwp");
 
     // p4의 outer 1×1 RowBreak 표(pi=6, ci=0) 안에는 stored width를 유지하는
@@ -652,7 +652,7 @@ fn issue_2007_wrapper_clip_keeps_completed_nested_table_right_borders() {
         Path::new(repo_root).join("samples/basic/issue2007_nested_cell_pagination_42065.hwp");
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse issue2007_nested_cell_pagination_42065.hwp");
 
     // p2의 4×2·9×2 표와 p3의 9×2 continuation은 모두 outer wrapper(pi=2,
@@ -706,7 +706,7 @@ fn issue_2007_continuation_ancestor_clip_keeps_deep_right_border() {
         Path::new(repo_root).join("samples/basic/issue2007_nested_cell_pagination_42065.hwp");
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse issue2007_nested_cell_pagination_42065.hwp");
 
     // p10's pi=7/ci=1 RowBreak wrapper contains the long 1x1 continuation.
@@ -738,7 +738,7 @@ fn issue_2007_cell_vpos_reset_does_not_overlap_following_paragraphs() {
         Path::new(repo_root).join("samples/basic/issue2007_nested_cell_pagination_42065.hwp");
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .expect("parse issue2007_nested_cell_pagination_42065.hwp");
 
     // p2(0-based 1)의 pi=2, ci=1에는 일반 nested 9×2 표의 우측 cell이 있다. 세 번째
@@ -828,7 +828,7 @@ fn issue_4159_svg_terminal_bottom_border_is_visible_inside_outer_cell_clip() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("samples/basic/issue2007_nested_cell_pagination_42065.hwp");
     let bytes = fs::read(&path).expect("fixture read");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("fixture parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("fixture parse");
     let svg = doc
         .render_page_svg_native(2)
         .expect("render physical page 3 SVG");

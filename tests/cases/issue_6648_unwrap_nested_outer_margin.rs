@@ -4,14 +4,13 @@
 //! 네 방향. 한/글 2022 PDF(같은 쪽 크기) 실측: 상자 실선 x 82.0/717.2 · y 583.2/1001.4, 안쪽 표
 //! 점선 x 90.6/712.0 · y 587.0/997.5 — 점선은 실선에서 (pad + om) = (8.7, 3.8) 안쪽이다.
 //! om 이 빠지면 점선이 (88.7, 585.2) 로 (−1.9, −1.8) 어긋난다(#6621/#6645 직후 상태).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
 fn page_svg(rel: &str, page: u32) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {rel}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {rel}: {e:?}"));
     doc.render_page_svg(page)
         .unwrap_or_else(|e| panic!("render {rel} p{}: {e:?}", page + 1))

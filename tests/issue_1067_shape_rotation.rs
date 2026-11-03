@@ -148,7 +148,7 @@ fn issue_1067_hwpx_polygon_flip_rotation_preserved() {
 #[test]
 fn issue_1067_svg_rotation_sign_negated_with_flip() {
     let bytes = read_sample("samples/shape-001.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     let svg = doc.render_page_svg_native(0).expect("svg");
 
     // 도형 1 (horz_flip=true, rotation=270): SVG transform 에 rotate(-270, ...) 표시
@@ -168,7 +168,7 @@ fn issue_1067_svg_rotation_sign_negated_with_flip() {
 #[test]
 fn issue_1067_svg_no_object_replacement_character() {
     let bytes = read_sample("samples/shape-001.hwp");
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     let svg = doc.render_page_svg_native(0).expect("svg");
     assert!(
         !svg.contains('\u{FFFC}'),
@@ -213,8 +213,8 @@ fn issue_1071_hwpx_secpr_materialized_in_control_stream() {
 fn issue_1071_hwpx_tac_shape_svg_centers_match_hwp() {
     let hwp_bytes = read_sample("samples/shape-001.hwp");
     let hwpx_bytes = read_sample("samples/hwpx/shape-001.hwpx");
-    let hwp_doc = rhwp::wasm_api::HwpDocument::from_bytes(&hwp_bytes).expect("parse hwp");
-    let hwpx_doc = rhwp::wasm_api::HwpDocument::from_bytes(&hwpx_bytes).expect("parse hwpx");
+    let hwp_doc = rhwp::document_api::HwpDocument::from_bytes(&hwp_bytes).expect("parse hwp");
+    let hwpx_doc = rhwp::document_api::HwpDocument::from_bytes(&hwpx_bytes).expect("parse hwpx");
     let hwp_svg = hwp_doc.render_page_svg_native(0).expect("hwp svg");
     let hwpx_svg = hwpx_doc.render_page_svg_native(0).expect("hwpx svg");
 

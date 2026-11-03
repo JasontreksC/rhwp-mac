@@ -1,5 +1,5 @@
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{BoundingBox, RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SEP2020_SAMPLE: &str = "samples/3-09월_교육_통합_2024-구분선아래20구분선위20.hwp";
 

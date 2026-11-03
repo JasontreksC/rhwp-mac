@@ -18,7 +18,6 @@
 //!
 //! `LineNode::ink_bbox()` 로 bbox 를 잉크 범위로 통일했으므로 잠금은 두 겹이다.
 //! (1) 선의 bbox 는 잉크 범위다. (2) body clip 은 자기 자식 선의 bbox 를 자르지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

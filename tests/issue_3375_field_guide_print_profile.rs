@@ -6,7 +6,6 @@
 //!
 //! 렌더 노드의 `editor_only` 표시는 paint LayerBuilder 가 이미 프로필로 걸러내지만, SVG
 //! 렌더러는 렌더 트리를 직접 순회해 그 계약 밖에 있었다 — 두 곳을 함께 맞춘다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use rhwp::paint::RenderProfile;
 use rhwp::renderer::svg::FontEmbedMode;
@@ -20,7 +19,7 @@ const GUIDE: &str = "여기에 입력";
 fn svg_text(profile: &str) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(SAMPLE);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {SAMPLE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse");
     let svg = doc
         .render_page_svg_with_profile(0, profile)
         .unwrap_or_else(|e| panic!("render {profile}: {e:?}"));

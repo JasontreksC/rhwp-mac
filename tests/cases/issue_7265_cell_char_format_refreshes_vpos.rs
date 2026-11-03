@@ -22,8 +22,6 @@
 //! 대조군으로 **글줄 흐름에 영향을 주지 않는 글자 서식**(글자 색)은 사다리를 전혀 움직이지
 //! 않아야 한다 — 표시를 넓게 세우면 여기서 깨진다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::document_core::DocumentCore;
 use rhwp::model::control::Control;
 

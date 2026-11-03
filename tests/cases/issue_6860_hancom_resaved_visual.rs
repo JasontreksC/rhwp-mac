@@ -1,11 +1,10 @@
 //! 한컴 재저장 비교본의 쪽 경계와 문단 간 저장 reset을 검증한다.
 //! 기존 절단 fixture는 원 저장 좌표의 결함 재현용으로 별도 보존한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::io::{Cursor, Read, Write};
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6860/3067979-road-lighting-photometric-hancom2020.hwpx";
 const FIRST_LINE: &str = "Tilt=<filename> 또는 INCLUDE 또는 NONE";

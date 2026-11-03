@@ -9,7 +9,7 @@
 //! 수정: 개요 문단이 유효한 numbering 정의에 도달하지 못하면
 //! `default_outline_numbering()`(전 수준 `^N`) 으로 fallback. NUMBER/BULLET 불변.
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 const FIXTURE: &str = "samples/task3307/issue3307_outline_number.hwpx";
 

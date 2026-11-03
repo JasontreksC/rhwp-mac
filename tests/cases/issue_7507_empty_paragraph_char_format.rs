@@ -2,9 +2,8 @@
 //!
 //! 빈 문단의 글자 모양 런(위치 0)은 이어 입력할 글자와 저장되는 문단 끝의 모양이다.
 //! 범위는 캐럿 위치(`0..0`)와 hwpctl `CharShape`의 문단 전체(`0..65535`)를 모두 본다.
-#![cfg(not(target_arch = "wasm32"))]
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 use serde_json::Value;
 
 const BOLD_20PT: &str = r#"{"bold":true,"fontSize":2000}"#;

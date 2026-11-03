@@ -29,10 +29,9 @@
 //! 7.4px 다른 별개 축이라, 판정은 칸 기준 상대 위치로 한다.
 //!
 //! fixture 유래와 정본 산출 근거는 `samples/issue6912/README.md`.
-#![cfg(not(target_arch = "wasm32"))]
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::render_tree::{RenderNode, RenderNodeType};
-use rhwp::wasm_api::HwpDocument;
 
 const SAMPLE: &str = "samples/issue6912/156564340-ip-dispute-mediation-poster-slice.hwpx";
 /// 개체가 있는 1×1 표의 쪽 (0-based).

@@ -49,7 +49,8 @@ fn issue_4272_path_api_returns_rects_for_page5_innermost_cell_text() {
     assert_eq!(context.parent_para_index, 7);
     assert_eq!(path, vec![(1, 0, 0), (2, 0, 12), (0, 50, 0)]);
 
-    let mut document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse HwpDocument");
+    let mut document =
+        rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse HwpDocument");
 
     let flat = document
         .get_selection_rects_in_cell(0, 7, 1, 0, 0, 0, 0, 6)
@@ -116,7 +117,8 @@ fn issue_4272_path_api_returns_rects_for_page5_innermost_cell_text() {
 #[test]
 fn issue_4272_page5_nested_table_control_copies_from_owner_path() {
     let bytes = fixture_bytes();
-    let mut document = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse HwpDocument");
+    let mut document =
+        rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse HwpDocument");
 
     let copied = document
         .copy_control_native(0, 7, PAGE5_SELECTED_TABLE_OWNER_PATH, 0)

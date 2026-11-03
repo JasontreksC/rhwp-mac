@@ -17,7 +17,6 @@
 //! 기대값은 구현과 무관하게 **한/글 2020 PDF**(`-2020.pdf`, MCP engine 2020)에서 읽은
 //! 같은 쪽 같은 줄의 y 다. 잔여 오차 ~4px 은 이슈 본문이 따로 적은 머리 표 오프셋
 //! (−3.0 ~ −4.5px) 축이며 이 검사는 그 범위를 허용한다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 
@@ -55,7 +54,7 @@ fn first_run_y(node: &RenderNode, prefix: &str, out: &mut Option<f64>) {
 fn empty_cell_paragraphs_keep_their_stored_slot_so_the_page_does_not_drift() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(FIXTURE);
     let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("read {FIXTURE}: {e}"));
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes)
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes)
         .unwrap_or_else(|e| panic!("parse {FIXTURE}: {e:?}"));
     let tree = doc
         .build_page_render_tree(0)

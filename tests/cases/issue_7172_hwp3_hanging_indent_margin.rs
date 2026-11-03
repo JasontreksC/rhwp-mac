@@ -30,8 +30,6 @@
 //!
 //! 이 시험은 저장소 표본만으로 그 계약을 잠근다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::parser::parse_document;
 use std::path::Path;
 

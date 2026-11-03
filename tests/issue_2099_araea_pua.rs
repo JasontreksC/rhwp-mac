@@ -4,8 +4,8 @@
 //! ``으로 보이는 PUA 코드포인트다. 공개 폰트 환경에서도 아래아가 보이도록
 //! 렌더 경로에서는 KS X 1026-1 자모 시퀀스 `ᄒᆞᆫ`으로 확장해야 한다.
 
+use rhwp::document_api::HwpDocument;
 use rhwp::renderer::composer::expand_pua_render_text;
-use rhwp::wasm_api::HwpDocument;
 use std::fs;
 use std::path::Path;
 

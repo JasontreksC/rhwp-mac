@@ -14,11 +14,12 @@ struct BodyArea {
     width: f64,
 }
 
-fn load_doc() -> rhwp::wasm_api::HwpDocument {
+fn load_doc() -> rhwp::document_api::HwpDocument {
     let rel = "samples/hwpx/[2027] 온새미로 1 본교재.hwpx";
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(rel);
     let bytes = fs::read(&path).unwrap_or_else(|e| panic!("read {rel}: {e}"));
-    rhwp::wasm_api::HwpDocument::from_bytes(&bytes).unwrap_or_else(|e| panic!("parse {rel}: {e:?}"))
+    rhwp::document_api::HwpDocument::from_bytes(&bytes)
+        .unwrap_or_else(|e| panic!("parse {rel}: {e:?}"))
 }
 
 fn parse_body_area(dump: &str) -> BodyArea {

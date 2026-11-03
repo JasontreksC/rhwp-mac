@@ -24,8 +24,6 @@
 //! 결과: 칸 `305.7..619.9`(한/글 `305.4..619.2` — **0.4px**), 넘침·용지밖 1·1 → 0·0,
 //! 공백 제거 글자 수 쪽별 `[87, 582]` → **`[448, 582]` = 한/글과 정확히 일치**.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use std::path::Path;
 
 use rhwp::document_core::DocumentCore;

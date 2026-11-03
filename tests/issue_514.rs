@@ -22,7 +22,7 @@ fn issue_514_pcx_logo_converted_to_png() {
     let bytes =
         fs::read(&hwp_path).unwrap_or_else(|e| panic!("read {}: {}", hwp_path.display(), e));
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
 
     let svg = doc
         .render_page_svg_native(0)
@@ -56,7 +56,7 @@ fn issue_514_watermark_jpeg_converted_by_issue_938() {
     let hwp_path = Path::new(repo_root).join("samples/복학원서.hwp");
     let bytes = fs::read(&hwp_path).expect("read 복학원서.hwp");
 
-    let doc = rhwp::wasm_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
+    let doc = rhwp::document_api::HwpDocument::from_bytes(&bytes).expect("parse 복학원서.hwp");
 
     let svg = doc
         .render_page_svg_native(0)

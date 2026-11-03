@@ -3,7 +3,6 @@
 //! 현재2쪽 발췌본과 독립 한컴 PDF의 Native/fresh WASM 전쪽 비교를 먼저 확인했다.
 //! 원4쪽의 절대 y를 발췌본에 적용했던 검사는 제거하고, 여섯 STEP의 본문→호스트→
 //! 인용문 순서와 그림의 인용문 포함관계를 검증한다. 실제 모양은 Visual Sweep 증적으로 남긴다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

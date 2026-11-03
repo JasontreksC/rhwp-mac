@@ -1,7 +1,6 @@
 //! [#6453] 머리말/꼬리말 편집 resolver와 원자 text event 계약.
-#![cfg(not(target_arch = "wasm32"))]
 
-use rhwp::wasm_api::HwpDocument;
+use rhwp::document_api::HwpDocument;
 
 fn header_with_text(text: &str) -> HwpDocument {
     let mut doc = HwpDocument::create_empty();

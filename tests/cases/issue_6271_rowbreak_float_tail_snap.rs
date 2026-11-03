@@ -1,5 +1,3 @@
-#![cfg(not(target_arch = "wasm32"))]
-
 //! [#6271] RowBreak 자리차지 표의 꼬리 줄 vpos snap 이 표 배치를 깨뜨리던 결함의
 //! 회귀 시험.
 //!

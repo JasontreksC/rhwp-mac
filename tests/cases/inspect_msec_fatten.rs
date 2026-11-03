@@ -3,7 +3,6 @@
 //! `tests/fixtures/inspect_msec/` 의 봉투·예외가 devel kind 집합과
 //! stdout-empty 실패 규약을 지키는지 본다. 판정 코어를 부르지 않는다.
 //! 새 탐지 규칙을 발명하지 않는다.
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::collections::{BTreeSet, HashMap};
 use std::fs;

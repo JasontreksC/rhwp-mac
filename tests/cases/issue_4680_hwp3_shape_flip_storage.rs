@@ -32,8 +32,6 @@
 //! 회전중심은 세우지 않는다. 사각형 arm 은 함께 세우지만, 이 결함에서는 그 구간만
 //! 한/글 값으로 바꿔도 여전히 거부였다(`open=False`) — 근거 없는 값은 쓰지 않는다.
 
-#![cfg(not(target_arch = "wasm32"))]
-
 use rhwp::model::control::Control;
 use rhwp::model::document::{Document, Section};
 use rhwp::model::paragraph::Paragraph;

@@ -12,7 +12,6 @@
 //! 픽스처 `cell_float_stack_stored_vpos.hwpx` 는 원본 9쪽을 extract-pages 로 떼고
 //! 대형 BinData 를 1×1 스텁으로 바꾼 marker-HWPX(43KB) — 원본 .hwp 와 같은 기하를
 //! 재현한다(hwp5_stored_pagination_layout 프로파일 유지).
-#![cfg(not(target_arch = "wasm32"))]
 
 use std::path::Path;
 

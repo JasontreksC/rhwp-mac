@@ -53,29 +53,6 @@ fn issue_1144_set_file_name_invalidates_cached_page_tree() {
 }
 
 #[test]
-fn issue_1144_canvas_kit_plan_entrypoint_does_not_freeze_filename_context() {
-    let mut doc = document_with_filename_footer();
-    doc.set_file_name("canvas-kit-old.hwp");
-
-    doc.get_canvaskit_replay_plan_native(0, "default")
-        .expect("CanvasKit replay plan should build through PageLayerTree");
-
-    doc.set_file_name("canvas-kit-new.hwp");
-    let texts = layer_tree_texts(&doc);
-
-    assert!(
-        texts.iter().any(|text| text.contains("canvas-kit-new.hwp")),
-        "CanvasKit replay plan entrypoint should not leave stale cached filename. texts={texts:?}"
-    );
-    assert!(
-        texts
-            .iter()
-            .all(|text| !text.contains("canvas-kit-old.hwp")),
-        "old filename from CanvasKit plan build should not remain cached. texts={texts:?}"
-    );
-}
-
-#[test]
 fn issue_1144_empty_filename_context_resolves_to_empty_string() {
     let mut doc = document_with_filename_footer();
     doc.set_file_name("");
