@@ -1,8 +1,8 @@
-//! Same-id PARA_CHAR_SHAPE 코퍼스 — HWPX 왕복이 접으면 안 되는 경계.
-//!
-//! `scripts/extract_char_shape_ir.py` 가 샘플에서 뽑았다. 연속 동일
-//! `char_shape_id` 인데 `start_pos` 가 다른 entry 가 1개 이상인 문단만 담는다.
-//! #3500 의 `[(0,0),(34,0),(53,0)]` 도 이 목록에 있다.
+// Same-id PARA_CHAR_SHAPE 코퍼스 — HWPX 왕복이 접으면 안 되는 경계.
+//
+// `scripts/extract_char_shape_ir.py` 가 샘플에서 뽑았다. 연속 동일
+// `char_shape_id` 인데 `start_pos` 가 다른 entry 가 1개 이상인 문단만 담는다.
+// #3500 의 `[(0,0),(34,0),(53,0)]` 도 이 목록에 있다.
 
 /// 연속 동일 id 글자모양 경계 한 건.
 #[derive(Debug, Clone, Copy)]

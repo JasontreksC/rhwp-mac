@@ -46,7 +46,8 @@ SwiftUI/AppKit 앱
 | #7 | 에이전트 표면(아래), `rhwp-contracts` 크레이트와 `schema_registry`, 미사용 의존성 |
 | #8 | 문서·지침: `mydocs` 23,657개 파일(작업 기록·PR 증적·번역·에이전트/웹 매뉴얼), 업스트림용 `scripts`, 웹 글꼴(`assets/fonts`), 다른 AI 도구 설정, 루트 문서를 지우고 `CLAUDE.md`·`AGENTS.md`·README·CONTRIBUTING·라이선스 목록을 다시 씀 |
 | #9 | 죽은 코드: 앱도 시험도 쓰지 않는 통째 항목 106개와 낡은 MCP·CLI 주석(아래 "죽은 코드 찾는 법") |
-| 남음 | 시험만 쓰는 죽은 덩어리(약 19,000줄)를 둘지, 필드·열거형 변형, 쓰이지 않는 `use` 줄 |
+| #10 | 시험 전용 덩어리 처분: 글자 모양 데이터 표 14,000줄을 시험 곁(`tests/fixtures/char_shape_tables`)으로 이동, 자기 단위 시험만 있던 죽은 도구(`lineseg_compare` 등)를 시험째 제거 |
+| 남음 | 정밀 글꼴 shaping·kerning·CanvasKit 스택(src 약 14,000줄, 시험 14개 파일 175건)을 둘지, 필드·열거형 변형, 쓰이지 않는 `use` 줄 |
 
 **에이전트 표면의 기준.** 앱의 편집기·뷰어가 쓰는지로 가른다. 지운 것은 LLM 에이전트가 문서를 읽고 검사하고
 채우는 데 쓰던 질의와 자동화다: 프롬프트 주입·위협·개인정보·은닉 문자 탐지(`injection_scan`, `threat_scan`,

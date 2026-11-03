@@ -32,10 +32,9 @@ pub use font::{
     ShapeKey, ShapingEngineId, TextDirection, VariationAxisValue, WritingMode,
 };
 pub use font_glyph::{
-    decode_font_bitmap_glyph_payload, decode_font_svg_glyph_payload,
-    lower_font_native_glyph_sidecars, resolve_embedded_font_face_index, EmbeddedFontFace,
-    FontBitmapGlyphDecodeError, FontBitmapGlyphDecodeOptions, FontGlyphLoweringReport,
-    FontSvgGlyphDecodeError, FontSvgGlyphDecodeOptions,
+    decode_font_bitmap_glyph_payload, lower_font_native_glyph_sidecars,
+    resolve_embedded_font_face_index, EmbeddedFontFace, FontBitmapGlyphDecodeError,
+    FontBitmapGlyphDecodeOptions, FontGlyphLoweringReport,
 };
 pub use json::LayerJsonOptions;
 pub use layer_tree::{
