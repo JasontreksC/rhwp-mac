@@ -18,11 +18,11 @@ WASM 출력을 모두 지우고 **macOS 앱이 동작하는 데 필요한 것만
 | 1 | 핸들 기반 C ABI와 XCFramework | 완료 |
 | 2 | `RhwpKit` Swift 패키지(actor 세션, 레이어 트리 모델) | 완료 |
 | 정리 | 웹·CLI·에이전트 표면·문서 정리 | 완료(죽은 코드 정리는 남음) |
-| 3 | 앱 셸(문서 열기, 썸네일 사이드바, 읽기 전용 뷰어) | 다음 |
+| 3 | 앱 셸(문서 열기, 썸네일 사이드바, 읽기 전용 뷰어) | 완료 |
 | 4~10 | 렌더러, 뷰어 기능, 텍스트 편집·IME, 서식, 개체, 저장, macOS 통합 | 예정 |
 
-전체 계획과 위험은 [macOS 네이티브 앱 아키텍처](mydocs/tech/macos_native_app_architecture.md)에 있다. 앱은 아직 없다.
-지금 동작하는 것은 엔진, C ABI, `RhwpKit`, 그리고 쪽을 PNG로 그리는 스파이크다.
+전체 계획과 위험은 [macOS 네이티브 앱 아키텍처](mydocs/tech/macos_native_app_architecture.md)에 있다. 지금은 HWP·HWPX 문서를 열어
+쪽 썸네일과 본문을 읽기만 하는 뷰어다(편집·저장은 이후 단계).
 
 ## 구조
 
@@ -38,7 +38,7 @@ SwiftUI/AppKit 앱
 | `src/` | 엔진: 모델, 파서, 직렬화, 편집·질의, 조판, 레이어 트리 |
 | `crates/` | OOXML 차트, 비밀번호 암호화 |
 | `bindings/Native/` | 앱이 부르는 C ABI. 정본 헤더 `include/rhwp_native.h` |
-| `macos/` | `RhwpKit`, XCFramework 빌드·시험 스크립트, 스파이크 |
+| `macos/` | RHWP 앱(`App/`), Swift 패키지 `RhwpKit`(엔진 래퍼·렌더러·뷰어 로직), 빌드·시험 스크립트 |
 | `samples/`, `pdf/` | 시험 문서와 같은 원본의 한컴 출력 PDF(렌더 충실도 기준) |
 | `mydocs/` | 기술 문서. 지도는 [mydocs/README.md](mydocs/README.md) |
 
@@ -62,6 +62,7 @@ Swift 쪽(Xcode와 Swift 6.2 이상이 필요하다):
 macos/scripts/build-xcframework.sh --smoke   # Rust FFI를 정적 XCFramework로 묶고 Swift로 왕복 실행
 macos/scripts/test-rhwpkit.sh                # RhwpKit 단위 시험
 macos/scripts/rhwp-render.sh samples/KTX.hwp 0 /tmp/ktx_p0.png   # 한 쪽을 PNG로 그리기
+macos/scripts/build-app.sh --run samples/KTX.hwp                 # RHWP 앱을 빌드하고 문서를 연다(XcodeGen 필요)
 ```
 
 PR 전에 돌리는 전체 검증 묶음(포맷, Clippy, 빌드, 시험 매니페스트)은 [AGENTS.md](AGENTS.md)에 있다.

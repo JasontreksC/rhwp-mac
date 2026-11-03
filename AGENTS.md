@@ -15,7 +15,8 @@ rhwp-mac은 [rhwp](https://github.com/edwardkim/rhwp)를 포크해 **macOS 전�
 - 결정과 단계별 계획: [macOS 네이티브 앱 아키텍처](mydocs/tech/macos_native_app_architecture.md)
 
 ```
-SwiftUI/AppKit 앱
+SwiftUI/AppKit 앱                                    macos/App (화면만)
+  └ RhwpViewer·RhwpRender (뷰어 로직·렌더러)           macos/RhwpKit
   └ RhwpKit (Swift 패키지, actor 기반 문서 세션)      macos/RhwpKit
       └ CRhwp (정적 XCFramework, C ABI)             bindings/Native → macos/scripts/build-xcframework.sh
           └ Rust 엔진 (DocumentCore)                 src/, crates/
@@ -28,7 +29,7 @@ SwiftUI/AppKit 앱
 | `src/` | 엔진: `model`, `parser`, `serializer`, `document_core`(편집·질의), `renderer`(조판), `paint`(레이어 트리), `document_api`(`HwpDocument` 파사드), `wmf`·`emf`·`eps`, `ole_chart` |
 | `crates/` | `rhwp-ooxml-chart`, `rhwp-password-crypto` |
 | `bindings/Native/` | 앱이 부르는 C ABI(`rhwp-native-ffi`). 정본 헤더 `include/rhwp_native.h` |
-| `macos/` | Swift 작업 공간: `RhwpKit`, 빌드·테스트 스크립트, 0단계 스파이크 |
+| `macos/` | Swift 작업 공간: 앱(`App/`), 패키지 `RhwpKit`(`RhwpRender`, `RhwpViewer` 포함), 빌드·테스트 스크립트 |
 | `samples/`, `pdf/` | 시험 문서와 같은 원본의 **한컴 출력 PDF**(렌더 충실도의 기준) |
 | `template/`, `saved/`, `ttfs/`, `assets/` | 빈 문서 틀, 저장 왕복 기준 파일, 재배포 가능한 글꼴, 글꼴 규칙 데이터·로고 |
 | `tests/` | 통합 시험. 새 시험은 `tests/cases/`에만 둔다 |
@@ -85,7 +86,8 @@ cargo test --locked --profile release-test --workspace --no-fail-fast --target-d
 
 ```bash
 macos/scripts/build-xcframework.sh --smoke   # Rust FFI → 정적 XCFramework → Swift 로 링크해 왕복 실행
-macos/scripts/test-rhwpkit.sh                # RhwpKit 단위 시험
+macos/scripts/test-rhwpkit.sh                # Swift 패키지 단위 시험(RhwpKit, RhwpRender, RhwpViewer)
+macos/scripts/build-app.sh                   # 앱 빌드(XcodeGen 필요). 앱을 바꿨다면 경고 없이 빌드되는지 본다
 ```
 
 C ABI(`bindings/Native`)를 바꾸면 헤더와 실제 내보낸 심볼이 같은지 확인하는 단위 시험이 함께 돈다. 열린
