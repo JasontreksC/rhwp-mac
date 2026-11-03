@@ -12,6 +12,9 @@ let package = Package(
     platforms: [.macOS(.v26)],
     products: [
         .library(name: "RhwpKit", targets: ["RhwpKit"]),
+        .library(name: "RhwpRender", targets: ["RhwpRender"]),
+        .library(name: "RhwpViewer", targets: ["RhwpViewer"]),
+        .executable(name: "rhwp-render", targets: ["rhwp-render"]),
     ],
     targets: [
         .binaryTarget(
@@ -22,9 +25,33 @@ let package = Package(
             name: "RhwpKit",
             dependencies: ["CRhwp"]
         ),
+        // 레이어 트리(PaintOp IR)를 CoreGraphics/CoreText로 그리는 렌더러. 엔진 호출은 하지 않고 모델만 소비한다.
+        .target(
+            name: "RhwpRender",
+            dependencies: ["RhwpKit"]
+        ),
+        // 뷰어 로직과 모델(확대·축소 단계, 쪽 배치, 쪽 그림 캐시, 문서 열기). UI 프레임워크에 의존하지 않아 샌드박스
+        // 없이 단위 시험이 가능하다. 화면(SwiftUI)은 앱 타깃이 맡는다.
+        .target(
+            name: "RhwpViewer",
+            dependencies: ["RhwpKit", "RhwpRender"]
+        ),
+        // 문서의 한 쪽을 PNG로 그리는 명령줄 도구(시각 검증의 입력을 만든다).
+        .executableTarget(
+            name: "rhwp-render",
+            dependencies: ["RhwpKit", "RhwpRender"]
+        ),
         .testTarget(
             name: "RhwpKitTests",
             dependencies: ["RhwpKit"]
+        ),
+        .testTarget(
+            name: "RhwpRenderTests",
+            dependencies: ["RhwpKit", "RhwpRender"]
+        ),
+        .testTarget(
+            name: "RhwpViewerTests",
+            dependencies: ["RhwpKit", "RhwpRender", "RhwpViewer"]
         ),
     ]
 )

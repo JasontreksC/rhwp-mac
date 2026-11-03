@@ -38,6 +38,10 @@ int32_t rhwp_document_page_count(const RhwpDocument *doc);
 // {"ok":true,"pageCount":N,"page":P,"layerTree":{...}}
 char *rhwp_document_page_layer_tree(const RhwpDocument *doc, uint32_t page);
 
+// 모든 쪽의 크기(px, 96dpi). 스크롤 영역과 썸네일 자리를 쪽 그림 없이 잡는 데 쓴다.
+// {"ok":true,"pageCount":N,"pages":[{"width":W,"height":H},...]}
+char *rhwp_document_page_sizes(const RhwpDocument *doc);
+
 // 핸들을 해제한다. NULL 은 무시한다.
 void rhwp_document_free(RhwpDocument *doc);
 

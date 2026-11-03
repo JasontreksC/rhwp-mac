@@ -110,6 +110,19 @@ pub unsafe extern "C" fn rhwp_document_page_layer_tree(
     ffi_result(|| with_document(doc, |doc| layer_tree_envelope(doc, page)))
 }
 
+/// 모든 쪽의 크기를 한 번에 돌려준다. 앱이 스크롤 영역과 썸네일 자리를 쪽 그림 없이 잡는 데 쓴다.
+///
+/// 반환 JSON: `{"ok":true,"pageCount":N,"pages":[{"width":W,"height":H},...]}` (px, 96dpi) 또는
+/// `{"ok":false,"error":"..."}`. `pages` 의 순서와 개수는 쪽 번호·`pageCount` 와 같다.
+///
+/// # Safety
+///
+/// `doc` 은 `rhwp_document_open*` 가 돌려준 아직 해제하지 않은 핸들이거나 널이어야 한다.
+#[no_mangle]
+pub unsafe extern "C" fn rhwp_document_page_sizes(doc: *const RhwpDocument) -> *mut c_char {
+    ffi_result(|| with_document(doc, |doc| Ok(page_sizes_envelope(doc))))
+}
+
 /// 핸들을 해제한다. 널은 무시한다.
 ///
 /// # Safety
@@ -222,6 +235,21 @@ fn layer_tree_envelope(doc: &HwpDocument, page: u32) -> Result<String, String> {
         "{{\"ok\":true,\"pageCount\":{},\"page\":{},\"layerTree\":{}}}",
         page_count, page, layer_tree
     ))
+}
+
+/// `rhwp_document_page_sizes` 의 응답. 소수점 셋째 자리까지 쓴다(레이어 트리의 `pageWidth` 와 같은 자릿수).
+fn page_sizes_envelope(doc: &HwpDocument) -> String {
+    let sizes = doc.page_sizes_native();
+    let pages = sizes
+        .iter()
+        .map(|(width, height)| format!("{{\"width\":{width:.3},\"height\":{height:.3}}}"))
+        .collect::<Vec<_>>()
+        .join(",");
+    format!(
+        "{{\"ok\":true,\"pageCount\":{},\"pages\":[{}]}}",
+        sizes.len(),
+        pages
+    )
 }
 
 fn select_pages(page_count: u32, target_page: Option<u32>) -> Result<Vec<u32>, String> {
@@ -490,6 +518,91 @@ mod tests {
             assert!(worker.join().unwrap(), "동시 호출에서 쪽수가 흔들림");
         }
         unsafe { rhwp_document_free(doc as *mut RhwpDocument) };
+    }
+
+    /// JSON 본문에서 `"key":` 바로 뒤의 숫자를 읽는다. 시험이 serde_json 없이 응답을 대조하기 위한 도우미다.
+    fn number_after(json: &str, key: &str) -> f64 {
+        let marker = format!("\"{key}\":");
+        let at = json
+            .find(&marker)
+            .unwrap_or_else(|| panic!("{key} 없음: {json:.120}"));
+        json[at + marker.len()..]
+            .chars()
+            .take_while(|c| c.is_ascii_digit() || *c == '.' || *c == '-')
+            .collect::<String>()
+            .parse()
+            .unwrap_or_else(|_| panic!("{key} 값을 숫자로 읽을 수 없음"))
+    }
+
+    /// 쪽 크기 응답의 `pages` 에서 쪽마다 `(너비, 높이)` 를 읽는다.
+    fn page_sizes_of(json: &str) -> Vec<(f64, f64)> {
+        let list = &json[json.find("\"pages\":[").expect("pages 없음")..];
+        list.split("{\"width\":")
+            .skip(1)
+            .map(|item| {
+                let (width, rest) = item.split_once(",\"height\":").expect("height 없음");
+                let height: String = rest
+                    .chars()
+                    .take_while(|c| c.is_ascii_digit() || *c == '.')
+                    .collect();
+                (width.parse().unwrap(), height.parse().unwrap())
+            })
+            .collect()
+    }
+
+    /// 쪽 크기 질의는 쪽마다 만든 레이어 트리의 `pageWidth/pageHeight` 와 같아야 한다.
+    /// 앱이 이 크기로 스크롤 자리를 잡고 레이어 트리로 그리므로, 어긋나면 쪽이 늘어나거나 잘려 보인다.
+    #[test]
+    fn page_sizes_match_every_layer_tree() {
+        for name in ["KTX.hwp", "exam_math.hwp"] {
+            let doc = open_sample(name);
+            let sizes_json = take_string(unsafe { rhwp_document_page_sizes(doc) });
+            assert!(sizes_json.starts_with("{\"ok\":true,"), "{sizes_json:.100}");
+
+            let count = unsafe { rhwp_document_page_count(doc) };
+            let sizes = page_sizes_of(&sizes_json);
+            assert_eq!(
+                number_after(&sizes_json, "pageCount") as i32,
+                count,
+                "{name}"
+            );
+            assert_eq!(
+                sizes.len() as i32,
+                count,
+                "{name}: pages 개수가 쪽수와 다름"
+            );
+
+            for (page, (width, height)) in sizes.iter().enumerate() {
+                let tree = take_string(unsafe { rhwp_document_page_layer_tree(doc, page as u32) });
+                let tree_width = number_after(&tree, "pageWidth");
+                let tree_height = number_after(&tree, "pageHeight");
+                assert!(
+                    (width - tree_width).abs() < 0.001 && (height - tree_height).abs() < 0.001,
+                    "{name} {page}쪽: 크기 질의 {width}x{height} != 레이어 트리 {tree_width}x{tree_height}"
+                );
+            }
+            unsafe { rhwp_document_free(doc) };
+        }
+    }
+
+    /// KTX 는 A4 세로다. 독립 기준(용지 규격 210x297mm = 96dpi 에서 793.70x1122.52px)과 대조한다.
+    #[test]
+    fn page_sizes_of_an_a4_document_match_the_paper_standard() {
+        let doc = open_sample("KTX.hwp");
+        let json = take_string(unsafe { rhwp_document_page_sizes(doc) });
+        unsafe { rhwp_document_free(doc) };
+        let (width, height) = page_sizes_of(&json)[0];
+        assert!(
+            (width - 793.70).abs() < 0.05 && (height - 1122.52).abs() < 0.05,
+            "{width}x{height}"
+        );
+    }
+
+    #[test]
+    fn page_sizes_reject_a_null_handle() {
+        let json = take_string(unsafe { rhwp_document_page_sizes(ptr::null()) });
+        assert!(json.starts_with("{\"ok\":false"), "{json}");
+        assert!(json.contains("null"), "{json}");
     }
 
     /// 헤더가 선언한 함수 집합과 실제로 내보내는 `extern "C"` 함수 집합이 같아야 한다.

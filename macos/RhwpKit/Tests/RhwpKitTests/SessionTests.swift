@@ -84,3 +84,48 @@ struct SessionTests {
         #expect(try await table.layerTree(page: 3).pageWidth > 0)
     }
 }
+
+@Suite("쪽 크기")
+struct PageSizeTests {
+    @Test("쪽 크기는 쪽수와 같은 개수이고 A4 규격이다")
+    func a4PageSizes() async throws {
+        let session = try await Fixtures.openSession("KTX.hwp")
+        let sizes = try await session.pageSizes()
+        #expect(sizes.count == 27)
+        // A4(210×297mm)를 96dpi px로 바꾼 값. 엔진 출력이 아니라 용지 규격에서 정한 기대값이다.
+        let first = try #require(sizes.first)
+        #expect(abs(first.width - 793.70) < 0.05)
+        #expect(abs(first.height - 1122.52) < 0.05)
+    }
+
+    @Test("쪽 크기는 모든 쪽의 레이어 트리 크기와 같다", arguments: ["KTX.hwp", "exam_math.hwp", "21868765_별표2_보건소_분장사무.hwp"])
+    func matchesEveryLayerTree(name: String) async throws {
+        let session = try await Fixtures.openSession(name)
+        let sizes = try await session.pageSizes()
+        #expect(sizes.count == (try await session.pageCount()))
+        for (page, size) in sizes.enumerated() {
+            let tree = try await session.layerTree(page: page)
+            #expect(abs(size.width - tree.pageWidth) < 0.001, "\(name) \(page)쪽 너비")
+            #expect(abs(size.height - tree.pageHeight) < 0.001, "\(name) \(page)쪽 높이")
+        }
+    }
+
+    @Test("pages 개수가 pageCount와 다른 응답은 스키마 위반으로 실패한다")
+    func rejectsMismatchedCount() {
+        let json = Data(#"{"ok":true,"pageCount":3,"pages":[{"width":1,"height":2}]}"#.utf8)
+        #expect {
+            _ = try NativeEnvelope.decodePageSizes(from: json)
+        } throws: { error in
+            guard case .malformedResponse = error as? RhwpError else { return false }
+            return true
+        }
+    }
+
+    @Test("오류 봉투는 native 오류로 전달된다")
+    func errorEnvelope() {
+        let json = Data(#"{"ok":false,"error":"문서 핸들이 null입니다."}"#.utf8)
+        #expect(throws: RhwpError.native("문서 핸들이 null입니다.")) {
+            _ = try NativeEnvelope.decodePageSizes(from: json)
+        }
+    }
+}

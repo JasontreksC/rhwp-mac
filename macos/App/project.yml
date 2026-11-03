@@ -1,0 +1,109 @@
+# RHWP 앱의 XcodeGen 정의. 프로젝트(RHWP.xcodeproj), Info.plist, 권한 파일은 이 파일에서 생성하며 커밋하지 않는다.
+#   생성·빌드: macos/scripts/build-app.sh
+#
+# 앱은 SwiftUI 로만 만든다. Rust 엔진은 로컬 Swift 패키지(../RhwpKit)가 정적 XCFramework 로 가져온다.
+name: RHWP
+
+options:
+  bundleIdPrefix: io.github.jasontreksc
+  deploymentTarget:
+    macOS: "26.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+
+packages:
+  RhwpKit:
+    path: ../RhwpKit
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # 로컬 개발용 임시(ad-hoc) 서명. 배포용 서명·공증은 10단계에서 한다.
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    ENABLE_HARDENED_RUNTIME: YES
+
+targets:
+  RHWP:
+    type: application
+    platform: macOS
+    sources:
+      - path: RHWP
+        excludes:
+          - Info.plist
+          - RHWP.entitlements
+    dependencies:
+      - package: RhwpKit
+        product: RhwpKit
+      - package: RhwpKit
+        product: RhwpRender
+      - package: RhwpKit
+        product: RhwpViewer
+    settings:
+      base:
+        PRODUCT_NAME: RHWP
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.jasontreksc.rhwp
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: RHWP/Info.plist
+        CODE_SIGN_ENTITLEMENTS: RHWP/RHWP.entitlements
+    entitlements:
+      path: RHWP/RHWP.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        # 문서 앱: 사용자가 연 파일을 읽고(이후 단계에서 저장도) 한다.
+        com.apple.security.files.user-selected.read-write: true
+    info:
+      path: RHWP/Info.plist
+      properties:
+        CFBundleDisplayName: RHWP
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        LSMinimumSystemVersion: "26.0"
+        LSApplicationCategoryType: public.app-category.productivity
+        NSHumanReadableCopyright: "MIT License. 한글, 한컴, HWP는 주식회사 한글과컴퓨터의 등록 상표이며 이 앱은 한글과컴퓨터와 관련이 없습니다."
+        # HWP·HWPX·HML 형식은 시스템에 정해진 UTI 가 없어 이 앱이 선언한다. 한컴 오피스의 기본 앱 지정을 가로채지
+        # 않도록 핸들러 순위는 Alternate 로 둔다.
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: 한컴 문서 (HWP)
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [io.github.jasontreksc.rhwp.hwp]
+          - CFBundleTypeName: 한컴 문서 (HWPX)
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [io.github.jasontreksc.rhwp.hwpx]
+          - CFBundleTypeName: 한컴 문서 (HML)
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [io.github.jasontreksc.rhwp.hml]
+        UTExportedTypeDeclarations:
+          - UTTypeIdentifier: io.github.jasontreksc.rhwp.hwp
+            UTTypeDescription: 한컴 문서 (HWP)
+            UTTypeConformsTo: [public.data]
+            UTTypeTagSpecification:
+              public.filename-extension: [hwp]
+              public.mime-type: [application/x-hwp, application/vnd.hancom.hwp]
+          - UTTypeIdentifier: io.github.jasontreksc.rhwp.hwpx
+            UTTypeDescription: 한컴 문서 (HWPX)
+            UTTypeConformsTo: [public.data]
+            UTTypeTagSpecification:
+              public.filename-extension: [hwpx]
+              public.mime-type: [application/vnd.hancom.hwpx]
+          - UTTypeIdentifier: io.github.jasontreksc.rhwp.hml
+            UTTypeDescription: 한컴 문서 (HML)
+            UTTypeConformsTo: [public.xml]
+            UTTypeTagSpecification:
+              public.filename-extension: [hml]
+
+schemes:
+  RHWP:
+    build:
+      targets:
+        RHWP: all
+    run:
+      config: Debug
+    test:
+      config: Debug

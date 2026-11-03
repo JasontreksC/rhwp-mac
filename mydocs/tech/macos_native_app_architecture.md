@@ -90,7 +90,7 @@ Rust가 만드는 레이어 트리(`PageLayerTree`, PaintOp IR) JSON만으로 Sw
 
 - `bindings/Native`에 `rhwp_page_layer_tree(path, page)`를 추가했다. 쪽의 레이어 트리 JSON을 돌려준다.
   스파이크용 무상태 표면이며 1단계의 핸들 기반 API로 대체된다.
-- `macos/Spikes/PaintOpSpike`가 이 JSON을 읽어 CoreGraphics/CoreText로 PNG에 재생한다.
+- 스파이크(`macos/Spikes/PaintOpSpike`, 3단계에서 `RhwpRender`와 `rhwp-render`로 대체되어 지웠다)가 이 JSON을 읽어 CoreGraphics/CoreText로 PNG에 재생했다.
   지원 op: `pageBackground`, `textRun`, `line`, `rectangle`, `ellipse`, `path`, `image`와 `clipRect` 노드.
 - 글자는 Rust가 계산한 `positions`(run 기준 글자별 x 오프셋)와 `placement.runToPage`의 원점·기준선에
   한 글자씩 놓는다. 줄 나눔·자간·장평 폭은 엔진 결과를 그대로 따르고 Swift는 글리프만 그린다.
@@ -138,7 +138,7 @@ Rust가 만드는 레이어 트리(`PageLayerTree`, PaintOp IR) JSON만으로 Sw
 ### 재현
 
 ```bash
-macos/Spikes/PaintOpSpike/build-and-run.sh samples/KTX.hwp 0 /tmp/ktx_p0.png
+macos/scripts/rhwp-render.sh samples/KTX.hwp 0 /tmp/ktx_p0.png
 ```
 
 Rust 툴체인(`rust-toolchain.toml`의 1.93.1)이 필요하다. `.json` 확장자를 주면 레이어 트리 원문만 저장한다.
@@ -228,6 +228,62 @@ XCFramework를 Swift로 링크해 열기·쪽수·레이어 트리·범위 밖 �
   큰 쪽(base64 그림)의 디코딩을 큐 밖으로 옮길지는 4단계에서 릴리스 빌드로 측정해 정한다.
 - 미검증: 릴리스 빌드 성능, Xcode 앱 프로젝트에서의 패키지 소비, 이미지 `crop`·`fillMode`의 의미(필드만 모델링).
 
+## 3단계: 앱 셸
+
+읽기 전용 뷰어 앱 `RHWP`(`macos/App`)가 문서를 열고 쪽 썸네일 사이드바와 쪽 스크롤 영역으로 보여 준다.
+빌드는 `macos/scripts/build-app.sh [--run <문서>]`(XCFramework → XcodeGen → xcodebuild, 임시 서명)다. 프로젝트·`Info.plist`·
+권한 파일은 `project.yml`에서 생성하며 커밋하지 않는다.
+
+**구성**
+
+| 모듈 | 역할 |
+| --- | --- |
+| `RhwpKit` | `RhwpDocumentSession.pageSizes()` 추가. 모든 쪽의 크기를 한 번에 읽는 C ABI `rhwp_document_page_sizes`를 쓴다 |
+| `RhwpRender` | `PageRenderer`: 레이어 트리 → CoreGraphics/CoreText. `RenderReport`가 그린/건너뛴 op와 글꼴 대체를 집계 |
+| `RhwpViewer` | `Zoom`, `PageLayout`, `RenderScalePolicy`, `LRUCache`, `ViewerModel`(열기·배율·쪽 그림 캐시). UI에 의존하지 않는다 |
+| `rhwp-render` | 한 쪽을 PNG/JSON으로 저장하는 도구(`macos/scripts/rhwp-render.sh`). 0단계 스파이크를 대체해 지웠다 |
+| `macos/App` | SwiftUI 화면만 둔다: `DocumentGroup(viewing:)`, `NavigationSplitView`, 사이드바 `List`, `ScrollView`, 도구 막대, 보기 메뉴 |
+
+**설계 결정**
+
+- **화면은 시스템 컴포넌트만 쓴다.** `DocumentGroup`, `NavigationSplitView`, 사이드바 `List`, `ScrollView`, 도구 막대의
+  `Button`·`Menu`다. Liquid Glass 도구 막대와 사이드바는 최신 SDK로 빌드하면 시스템이 입힌다. 직접 유리 효과를 그리지 않는다.
+- **쪽 크기를 먼저 알고 배치를 먼저 정한다.** 쪽 그림이 늦게 도착해도 스크롤 길이가 흔들리지 않는다. 배치는 값(`PageLayout`)이고
+  배율이 바뀌면 새로 만든다. 크기를 쪽마다 레이어 트리를 만들어 얻지 않고 조판 결과의 쪽 배치를 한 번에 읽는다.
+- **그림은 화면에 나타나는 쪽만, 비동기로.** `LazyVStack`이 가까운 쪽만 만들고 `.task(id:)`가 배율이 바뀌면 다시 받고 화면에서
+  사라지면 취소한다. 같은 쪽·배율의 동시 요청은 하나로 합치고(`inFlight`), 결과는 비용 상한(384MB)의 LRU에 둔다.
+  그리기는 메인 액터와 문서 큐 밖(`Task.detached`)에서 한다.
+- **모델을 앱이 아니라 패키지에 둔다.** `ViewerModel`은 SwiftUI에 의존하지 않는다. 앱 안에서 도는 시험은 샌드박스 때문에 저장소 샘플을
+  읽을 수 없으므로, 모델을 `RhwpViewer`에 두어 샌드박스 없이 `swift test`로 실제 문서를 열어 검증한다.
+- **너비 맞춤이 기본이고 직접 정하면 유지된다.** 열면 창 너비에 맞추고 창 크기가 바뀌면 따라간다. 확대·축소로 배율을 직접 정하면
+  그 배율을 유지하고, "너비에 맞춤"을 누르면 다시 따라간다. 확대 단계는 `Zoom.steps`의 다음 단계라 맞춤 배율(단계에 없는 값)에서도
+  한 번 누르면 달라진다.
+- **UTI는 앱이 선언한다.** HWP·HWPX·HML은 시스템에 정해진 UTI가 없다(`io.github.jasontreksc.rhwp.{hwp,hwpx,hml}`을 내보낸다).
+  한컴 오피스의 기본 앱 지정을 가로채지 않도록 핸들러 순위를 `Alternate`로 뒀다.
+- **샌드박스를 켜 둔다**(`app-sandbox`, `files.user-selected.read-write`). 문서 앱의 기본 형태이고 10단계에서 새로 켤 때의 놀람을
+  줄인다. 서명은 로컬용 임시 서명이며 배포 서명·공증은 10단계다.
+- **렌더러 이식은 픽셀로 증명했다.** 스파이크의 동적 딕셔너리 렌더러를 모델 위로 옮겼고, 스파이크가 만든 참조 PNG 9장(5개 문서, 텍스트·표·
+  그림·그라데이션·타원·경로 포함)과 출력이 **픽셀 단위로 모두 동일**하다. 달라진 규칙은 하나다: 선 전용 경로는 `PathOp.lineStyle`을
+  `style`의 테두리보다 우선한다(모델 문서의 약속이며 스파이크의 병합 규칙은 엔진이 `style.strokeWidth`를 항상 보내서 선을 그리지 못했을 것이다).
+
+**검증**
+
+- Swift 시험 69건 통과: `RhwpKit` 22, `RhwpRender` 14, `RhwpViewer` 33. 기대 픽셀은 엔진 출력이 아니라 손으로 만든 트리로 정했다
+  (채우기·배율·잘라내기·그라데이션 방향·`lineStyle`·엔진이 준 글자 위치). 실제 문서에서는 모든 op가 집계에 한 번씩 잡히는 불변식을 본다.
+- 결함 주입(모두 검출·원복): 쪽 크기 가로·세로 뒤바꿈(Rust 시험), 잘라내기 제거, 그라데이션 시작·끝 뒤바꿈, 진행 중 요청 합치기 제거.
+- 앱은 경고 없이 빌드(Swift 6 엄격 동시성)되고 HWP·HWPX·손상된 파일을 열어도 살아 있으며 크래시 리포트가 없다.
+- 앱을 실제로 띄워 `KTX.hwp`를 연 화면을 한 번 확인했다: 제목, 쪽 썸네일 사이드바, 본문 쪽, `85%` 배율 메뉴, `1 / 27쪽`이 보였다.
+
+**알려진 사항 / 4단계로 넘기는 것**
+
+- 화면 상호작용(사이드바 선택 → 스크롤, 스크롤 → 사이드바 선택, 확대 단축키, 핀치)은 **화면에서 직접 확인하지 못했다.** 자동 입력은 접근성
+  권한이 필요한데 승인하지 않았다. 논리(배치·배율·캐시)는 시험이 지키지만 SwiftUI 연결은 사람이 한 번 눌러 보아야 한다.
+- 핀치 확대는 손을 뗄 때 한 번에 바뀐다. 제스처 중 실시간 확대와 타일링 렌더러는 4단계다.
+- 쪽 비트맵 한 변은 4096px로 제한한다(큰 배율에서는 선명도가 낮아진다). 타일링으로 푼다.
+- 렌더러가 아직 하지 않는 것: 그림의 `crop`·`fillMode`·투명도·회전, 선의 회전, SVG 타원호의 정확한 호(끝점까지 직선으로 근사하고 집계),
+  세로쓰기·첨자·`tabLeader`·`textDecoration` 등 `.unsupported` op. 한컴 글꼴이 없어 대체 글꼴로 그리는 한계도 그대로다.
+- 앱 아이콘, 현지화, 서명·공증은 10단계다.
+
 ## 단계별 PR 계획
 
 | 단계 | 브랜치 | 내용 | 완료 기준 |
@@ -235,7 +291,7 @@ XCFramework를 Swift로 링크해 열기·쪽수·레이어 트리·범위 밖 �
 | 0 | `chore/macos-toolchain-spike` | 툴체인, FFI 스파이크, 렌더 방식 검증, 이 문서 | 샘플이 Swift로 그려지고 방식이 확정됨 (이 문서) |
 | 1 | `feat/native-ffi-handle` | 핸들 기반 C ABI(열기·쪽수·쪽 렌더·닫기), C 헤더와 일치 테스트, XCFramework 스크립트 | Rust 테스트와 Swift FFI 왕복 스모크 통과 |
 | 2 | `feat/rhwpkit-package` | `RhwpKit`(Sendable 모델, actor 세션, 오류 타입), 레이어 트리 Decodable 모델 | 샘플 열기·디코딩 단위 테스트 통과 |
-| 3 | `feat/app-shell` | Xcode 프로젝트, `DocumentGroup`, HWP/HWPX 열기, 쪽 썸네일 사이드바, 읽기 전용 뷰어 | 문서가 열리고 스크롤됨 |
+| 3 | `feat/app-shell` | Xcode 프로젝트, `DocumentGroup`, HWP/HWPX 열기, 쪽 썸네일 사이드바, 읽기 전용 뷰어 | 문서가 열리고 스크롤됨 (완료, 위 3단계 절) |
 | 4 | `feat/page-renderer` | 타일링 렌더러, 글꼴 공급, 미지원 op 보강 | 샘플 세트의 쪽별 일치율이 자동 측정됨 |
 | 5 | `feat/viewer-features` | 찾기, 이동, 개요, 책갈피, 하이퍼링크, 다크 모드 | 뷰어 기능 패리티 |
 | 6 | `feat/text-editing` | 캐럿·선택, IME, 입력·삭제, 실행 취소, 클립보드 | 한글 조합 입력과 저장 후 재열기 확인 |
