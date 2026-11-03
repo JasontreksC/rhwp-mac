@@ -162,7 +162,8 @@ public final class ViewerModel {
         if let fitted = fittedZoom() { applyZoom(fitted, anchor: CGPoint(x: viewport.size.width / 2, y: 0)) }
     }
 
-    private var viewportCenter: CGPoint? {
+    /// 보이는 영역의 중심(보이는 영역 좌표). 확대·축소 명령과 메뉴가 붙잡는 점이다. 영역을 모르면 nil.
+    public var viewportCenter: CGPoint? {
         viewport.isKnown ? CGPoint(x: viewport.size.width / 2, y: viewport.size.height / 2) : nil
     }
 

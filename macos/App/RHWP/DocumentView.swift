@@ -49,7 +49,7 @@ struct DocumentView: View {
                 .help("축소 (⌘−)")
             Menu(model.zoom.percentLabel) {
                 ForEach(Zoom.steps, id: \.self) { step in
-                    Button("\(Zoom(step).percentLabel)") { model.setZoom(Zoom(step)) }
+                    Button("\(Zoom(step).percentLabel)") { model.setZoom(Zoom(step), anchor: model.viewportCenter) }
                 }
                 Divider()
                 Button("실제 크기", action: model.actualSize)
