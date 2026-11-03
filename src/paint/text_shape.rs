@@ -52,17 +52,6 @@ pub trait FontResolver {
     }
 }
 
-#[derive(Debug, Default)]
-pub struct NoopFontResolver;
-
-impl FontResolver for NoopFontResolver {
-    fn resolve_font(&self, _request: &FontRequest) -> ResolvedFontFace {
-        ResolvedFontFace {
-            portability: FontPortabilityKind::UnresolvedFallback,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GlyphRunQuality {
     Exact,

@@ -61,11 +61,6 @@ pub fn attr_str(attr: &quick_xml::events::attributes::Attribute) -> String {
     }
 }
 
-/// 속성 값이 특정 문자열과 일치하는지 확인 (비교용)
-pub fn attr_eq(attr: &quick_xml::events::attributes::Attribute, val: &str) -> bool {
-    attr.value.as_ref() == val
-}
-
 pub fn parse_u8(attr: &quick_xml::events::attributes::Attribute) -> u8 {
     attr_str(attr).parse().unwrap_or(0)
 }

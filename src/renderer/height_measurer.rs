@@ -1664,15 +1664,6 @@ impl HeightMeasurer {
         }
     }
 
-    /// [#6175] 구역 문단에서 모은 용지/쪽 기준 어울림 개체 흐름 증거를 싣는다.
-    pub(crate) fn with_float_carve_evidence(
-        mut self,
-        evidence: Vec<crate::renderer::float_placement::FloatCarveEvidence>,
-    ) -> Self {
-        self.float_carve_evidence = evidence;
-        self
-    }
-
     pub fn with_hwp3_variant(mut self, enabled: bool) -> Self {
         self.is_hwp3_variant = enabled;
         self.use_hwp3_origin_flow_spacing_before = enabled;
@@ -2496,39 +2487,6 @@ impl HeightMeasurer {
 
     /// 재귀적 높이 제한
     const MAX_NESTED_DEPTH: usize = 10;
-
-    /// 셀 내 중첩 표들의 총 높이를 계산한다.
-    pub fn cell_controls_height(
-        &self,
-        paragraphs: &[Paragraph],
-        styles: &ResolvedStyleSet,
-        depth: usize,
-        // [#2195] 부모 셀 전폭(px, 스트레치 기준). 0.0 = 미적용.
-        _parent_cell_w: f64,
-    ) -> f64 {
-        if depth >= Self::MAX_NESTED_DEPTH {
-            return 0.0;
-        }
-        paragraphs
-            .iter()
-            .map(|p| {
-                p.controls
-                    .iter()
-                    .filter_map(|ctrl| {
-                        if let Control::Table(nested) = ctrl {
-                            let stretch =
-                                self.render_normalization.nested_table_width_scale(nested);
-                            let mt =
-                                self.measure_table_impl(nested, 0, 0, styles, depth + 1, stretch);
-                            Some(mt.total_height)
-                        } else {
-                            None
-                        }
-                    })
-                    .sum::<f64>()
-            })
-            .sum()
-    }
 
     /// 셀 내 중첩 표가 실제로 차지하는 하단 위치를 계산한다.
     ///
@@ -5452,80 +5410,6 @@ impl MeasuredSection {
         for (i, p) in self.fallback_paragraphs.iter_mut().enumerate() {
             p.para_index = i;
         }
-    }
-}
-
-impl HeightMeasurer {
-    /// 각주 영역의 총 높이를 추정한다.
-    ///
-    /// 각주 영역 = 구분선 여백 + 각주 문단들 높이 + 각주 간 간격
-    pub fn estimate_footnote_area_height(
-        &self,
-        footnotes: &[&Footnote],
-        footnote_shape: Option<&FootnoteShape>,
-    ) -> f64 {
-        if footnotes.is_empty() {
-            return 0.0;
-        }
-
-        // 기본값: FootnoteShape이 없으면 기본 여백 사용
-        let separator_margin_top = footnote_shape
-            .map(|s| hwpunit_to_px(s.separator_above_margin_hu() as i32, self.dpi))
-            .unwrap_or(8.0); // 약 0.6mm
-        let separator_margin_bottom = footnote_shape
-            .map(|s| hwpunit_to_px(s.separator_below_margin_hu() as i32, self.dpi))
-            .unwrap_or(4.0); // 약 0.3mm
-        let note_spacing = footnote_shape
-            .map(|s| hwpunit_to_px(s.between_notes_margin_hu() as i32, self.dpi))
-            .unwrap_or(2.0); // 약 0.15mm
-        let separator_height = 1.0; // 구분선 두께 (1px)
-
-        // 각주 문단 높이 합산
-        let mut footnote_content_height = 0.0;
-        for (i, footnote) in footnotes.iter().enumerate() {
-            // 각주 문단 높이 추정: LineSeg가 있으면 사용, 없으면 기본값
-            let mut fn_height = 0.0;
-            for para in &footnote.paragraphs {
-                if para.line_segs.is_empty() {
-                    fn_height += hwpunit_to_px(400, self.dpi); // 기본 약 14pt
-                } else {
-                    for seg in &para.line_segs {
-                        fn_height += hwpunit_to_px(seg.line_height, self.dpi);
-                    }
-                }
-            }
-            // 빈 각주도 최소 높이 보장
-            if fn_height <= 0.0 {
-                fn_height = hwpunit_to_px(400, self.dpi);
-            }
-            footnote_content_height += fn_height;
-
-            // 각주 간 간격 (마지막 각주 제외)
-            if i < footnotes.len() - 1 {
-                footnote_content_height += note_spacing;
-            }
-        }
-
-        // 총 높이 = 구분선 위 여백 + 구분선 + 구분선 아래 여백 + 각주 내용
-        separator_margin_top + separator_height + separator_margin_bottom + footnote_content_height
-    }
-
-    /// 단일 각주의 높이를 추정한다.
-    pub fn estimate_single_footnote_height(&self, footnote: &Footnote) -> f64 {
-        let mut fn_height = 0.0;
-        for para in &footnote.paragraphs {
-            if para.line_segs.is_empty() {
-                fn_height += hwpunit_to_px(400, self.dpi);
-            } else {
-                for seg in &para.line_segs {
-                    fn_height += hwpunit_to_px(seg.line_height, self.dpi);
-                }
-            }
-        }
-        if fn_height <= 0.0 {
-            fn_height = hwpunit_to_px(400, self.dpi);
-        }
-        fn_height
     }
 }
 

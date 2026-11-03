@@ -209,11 +209,6 @@ fn right_leader_body_target_rel(style: &TextStyle) -> Option<f64> {
     }
 }
 
-/// 탭 문자의 위치로부터 탭 리더 정보를 추출한다.
-pub fn extract_tab_leaders(text: &str, positions: &[f64], style: &TextStyle) -> Vec<TabLeaderInfo> {
-    extract_tab_leaders_with_extended(text, positions, style, &[])
-}
-
 /// 탭 리더 추출 (tab_extended 지원)
 /// tab_extended: HWPX 인라인 탭 또는 HWP 탭 확장 데이터
 /// (ext[0..2] = 탭 폭(UINT32), ext[2] = (탭 종류 << 8) | 채움 종류)

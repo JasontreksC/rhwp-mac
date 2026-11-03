@@ -1062,102 +1062,6 @@ fn legacy_hancom_product_prefix_starts(composed: &ComposedParagraph) -> Vec<usiz
     starts
 }
 
-/// 각주 마커를 해당 텍스트 위치의 런에 인라인 삽입
-/// 각주 위치에서 기존 런을 분할하고 마커 런("1)" 등)을 사이에 삽입
-fn inject_footnote_markers(lines: &mut [ComposedLine], positions: &[(usize, u16)]) {
-    for &(char_pos, number) in positions {
-        let marker_text = format!("{})", number);
-        // char_pos에 해당하는 줄과 런 찾기
-        for line in lines.iter_mut() {
-            let line_start = line.char_start;
-            let line_end = line_start
-                + line
-                    .runs
-                    .iter()
-                    .map(|r| r.text.chars().count())
-                    .sum::<usize>();
-            if char_pos < line_start || char_pos > line_end {
-                continue;
-            }
-
-            // 이 줄 내에서 char_pos에 해당하는 런 찾기
-            let mut run_char = line_start;
-            let mut target_run_idx = None;
-            let mut offset_in_run = 0;
-            for (ri, run) in line.runs.iter().enumerate() {
-                let run_len = run.text.chars().count();
-                if char_pos >= run_char && char_pos <= run_char + run_len {
-                    target_run_idx = Some(ri);
-                    offset_in_run = char_pos - run_char;
-                    break;
-                }
-                run_char += run_len;
-            }
-
-            if let Some(ri) = target_run_idx {
-                let orig_run = &line.runs[ri];
-                let cs_id = orig_run.char_style_id;
-                let lang = orig_run.lang_index;
-
-                // 런을 분할: [앞부분] [마커] [뒷부분]
-                let orig_text: Vec<char> = orig_run.text.chars().collect();
-                let before: String = orig_text[..offset_in_run].iter().collect();
-                let after: String = orig_text[offset_in_run..].iter().collect();
-
-                let marker_run = ComposedTextRun {
-                    text: marker_text.clone(),
-                    char_style_id: cs_id,
-                    lang_index: lang,
-                    char_overlap: None,
-                    footnote_marker: Some(number),
-                    display_text: None,
-                    supplemental_metrics_blocked: false,
-                    inserted_control_text: false,
-                    space_metric: crate::renderer::composer::SpaceMetric::Stored,
-                };
-
-                let mut new_runs = Vec::new();
-                // 앞부분에서 기존 런 교체
-                for (i, run) in line.runs.iter().enumerate() {
-                    if i == ri {
-                        if !before.is_empty() {
-                            new_runs.push(ComposedTextRun {
-                                text: before.clone(),
-                                char_style_id: cs_id,
-                                lang_index: lang,
-                                char_overlap: run.char_overlap.clone(),
-                                footnote_marker: None,
-                                display_text: None,
-                                supplemental_metrics_blocked: run.supplemental_metrics_blocked,
-                                inserted_control_text: run.inserted_control_text,
-                                space_metric: run.space_metric,
-                            });
-                        }
-                        new_runs.push(marker_run.clone());
-                        if !after.is_empty() {
-                            new_runs.push(ComposedTextRun {
-                                text: after.clone(),
-                                char_style_id: cs_id,
-                                lang_index: lang,
-                                char_overlap: run.char_overlap.clone(),
-                                footnote_marker: None,
-                                display_text: None,
-                                supplemental_metrics_blocked: run.supplemental_metrics_blocked,
-                                inserted_control_text: run.inserted_control_text,
-                                space_metric: run.space_metric,
-                            });
-                        }
-                    } else {
-                        new_runs.push(run.clone());
-                    }
-                }
-                line.runs = new_runs;
-                break; // 이 각주 처리 완료
-            }
-        }
-    }
-}
-
 // 저장 줄의 실제 점유 높이. 줄 구성과 저장 줄 소속 재사용 판정이 같은
 // 메트릭을 비교해야 글자 테두리로 높아진 정상 줄을 재조판 줄로 오인하지 않는다.
 fn stored_line_box_height(seg: &LineSeg) -> i32 {
@@ -3772,34 +3676,6 @@ pub(crate) fn shrunk_cell_horizontal_padding(
     };
     let new_right = new_total - new_left;
     (new_left, new_right)
-}
-
-fn missing_lineseg_legacy_bullet_requires_regenerated_space_metric(
-    para: &Paragraph,
-    composed: &ComposedParagraph,
-    styles: &ResolvedStyleSet,
-) -> bool {
-    let has_tight_leading_body_style = para.char_shapes.get(1).is_some_and(|cs_ref| {
-        cs_ref.start_pos <= 3
-            && styles
-                .char_styles
-                .get(cs_ref.char_shape_id as usize)
-                .map(|cs| cs.letter_spacing <= -3.0)
-                .unwrap_or(false)
-    });
-
-    para.line_segs.is_empty()
-        && para.controls.is_empty()
-        && para.text.starts_with('\u{F03C5}')
-        && has_tight_leading_body_style
-        && composed
-            .lines
-            .iter()
-            .flat_map(|line| &line.runs)
-            .any(|run| {
-                let style = run.text_style(styles);
-                hancom_regenerated_space_width(&style).is_some()
-            })
 }
 
 /// 단일 ComposedLine 을 셀 가용 너비에 맞춰 다중 ComposedLine 으로 분할.

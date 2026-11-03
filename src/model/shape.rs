@@ -15,7 +15,6 @@ pub(crate) mod common_obj_offsets {
     pub const H_OFFSET: std::ops::Range<usize> = 8..12;
     pub const WIDTH: std::ops::Range<usize> = 12..16;
     pub const HEIGHT: std::ops::Range<usize> = 16..20;
-    pub const Z_ORDER: std::ops::Range<usize> = 20..24;
     pub const MARGIN_LEFT: std::ops::Range<usize> = 24..26;
     pub const MARGIN_RIGHT: std::ops::Range<usize> = 26..28;
     pub const MARGIN_TOP: std::ops::Range<usize> = 28..30;

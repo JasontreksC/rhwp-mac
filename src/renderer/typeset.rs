@@ -181,16 +181,6 @@ fn raw_table_ctrl_height_px(table: &crate::model::table::Table, dpi: f64) -> Opt
 // Break Token — 조판 분할 지점 (Chromium LayoutNG 참고)
 // ========================================================
 
-/// 표 조판의 분할 재개 정보.
-/// 다음 페이지에서 이 토큰으로부터 이어서 조판한다.
-#[derive(Debug, Clone)]
-struct TableBreakToken {
-    /// 재개할 시작 행 인덱스
-    start_row: usize,
-    /// 인트라-로우 분할 시 각 셀의 콘텐츠 오프셋
-    cell_content_offsets: Option<Vec<f64>>,
-}
-
 /// RowBreak 표가 page boundary를 넘을 때 queue가 source order로 등록할 셀 각주.
 ///
 /// `fragment_split`은 native HWP5 cell-footnote의 실제 stored vpos reset을 그대로

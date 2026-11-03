@@ -74,8 +74,8 @@ pub use schema::{
     PAGE_LAYER_TREE_SCHEMA_MINOR_VERSION, PAGE_LAYER_TREE_SCHEMA_VERSION, PAGE_LAYER_TREE_UNIT,
 };
 pub use text_shape::{
-    FontRequest, FontResolver, GlyphRunQuality, NoopFontResolver, ResolvedFontFace,
-    ResolvedGlyphRun, TextShapeDiagnostic, TextShapeLowerer, TextShapeReport,
+    FontRequest, FontResolver, GlyphRunQuality, ResolvedFontFace, ResolvedGlyphRun,
+    TextShapeDiagnostic, TextShapeLowerer, TextShapeReport,
 };
 pub use text_v2::{
     TextV2CompatibilityProfile, TextV2Diagnostics, TextV2LineBreakRisk, TextV2LineBreakRiskLevel,

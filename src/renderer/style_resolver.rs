@@ -1056,19 +1056,6 @@ pub fn primary_font_name(font_family: &str) -> &str {
     font_family.split(',').next().unwrap_or(font_family).trim()
 }
 
-/// webhwp g_SubstFonts 기반 폰트 치환
-///
-/// HWP 문서의 원본 폰트 이름 + 타입(TTF/HFT) + 언어 카테고리를 기반으로
-/// @font-face에 등록된 최종 폰트로 치환한다.
-/// 체인이 이미 평탄화되어 1회 조회로 최종 결과를 반환한다.
-pub(crate) fn resolve_font_substitution(
-    name: &str,
-    alt_type: u8,
-    lang_index: usize,
-) -> Option<&'static str> {
-    resolve_font_substitution_decision(name, alt_type, lang_index).map(|(face, _, _)| face)
-}
-
 pub(crate) fn resolve_font_substitution_decision(
     name: &str,
     alt_type: u8,
@@ -1190,11 +1177,6 @@ pub(crate) fn is_medium_weight_face(font_family: &str) -> bool {
         || lower.contains("태고딕")
         || lower.contains("mediumgothic")
         || lower.contains("hymedium")
-}
-
-/// ParaShape → ResolvedParaStyle 목록
-fn resolve_para_styles(doc_info: &DocInfo, dpi: f64) -> Vec<ResolvedParaStyle> {
-    resolve_para_styles_with_variant(doc_info, dpi, false)
 }
 
 /// [Task #1001] 변환본 인지 ParaShape 해소

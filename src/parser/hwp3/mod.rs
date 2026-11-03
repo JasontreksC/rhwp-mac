@@ -4628,18 +4628,6 @@ fn parse_hwp3_inner(
     Ok(doc)
 }
 
-/// 비밀번호와 함께 HWP3 문서를 파싱한다.
-///
-/// 압축 HWP3 암호 본문은 이 모듈 경계에서만 복호화한 뒤 기존 HWP3 파서로 넘긴다.
-/// 일반 HWP3 문서에 비밀번호를 전달하면 기존 파서와 같은 결과를 반환한다.
-pub fn parse_hwp3_with_password(data: &[u8], password: &[u8]) -> Result<Document, Hwp3Error> {
-    parse_hwp3_with_open_body_limit_and_password(
-        data,
-        password,
-        DEFAULT_HWP3_DOCUMENT_OPEN_BODY_OUTPUT_BYTES,
-    )
-}
-
 /// 자동 포맷 감지 진입점이 선택한 HWP3 본문 출력 상한을 비밀번호 경로에도 적용한다.
 pub(crate) fn parse_hwp3_with_open_body_limit_and_password(
     data: &[u8],

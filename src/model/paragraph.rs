@@ -252,47 +252,6 @@ pub enum NumberingRestart {
     NewStart(u32),
 }
 
-/// 문단 텍스트 내 제어 문자 종류
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum CtrlChar {
-    /// 구역 정의/단 정의
-    SectionColumnDef,
-    /// 필드 시작
-    FieldBegin,
-    /// 필드 끝
-    FieldEnd,
-    /// 탭
-    Tab,
-    /// 줄 끝 (line break)
-    LineBreak,
-    /// 그리기 개체/표
-    DrawTableObject,
-    /// 문단 끝 (para break)
-    ParaBreak,
-    /// 숨은 설명
-    HiddenComment,
-    /// 머리말/꼬리말
-    HeaderFooter,
-    /// 각주/미주
-    FootnoteEndnote,
-    /// 자동 번호
-    AutoNumber,
-    /// 페이지 컨트롤
-    PageControl,
-    /// 책갈피
-    Bookmark,
-    /// 덧말/글자겹침
-    Ruby,
-    /// 하이픈
-    Hyphen,
-    /// 묶음 빈칸
-    NonBreakingSpace,
-    /// 고정폭 빈칸
-    FixedWidthSpace,
-    /// 일반 문자
-    Char(char),
-}
-
 /// 단 나누기 종류
 #[derive(Debug, Clone, Copy, Default, PartialEq, Serialize, Deserialize)]
 pub enum ColumnBreakType {

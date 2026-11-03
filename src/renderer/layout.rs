@@ -3864,12 +3864,6 @@ impl LayoutEngine {
         self.exact_font_sources.handle_for_slot(slot)
     }
 
-    pub(crate) fn exact_font_source_session(
-        &self,
-    ) -> crate::renderer::kerning::KerningSourceSession<'_> {
-        crate::renderer::kerning::KerningSourceSession::new(&self.exact_font_sources)
-    }
-
     pub(crate) fn exact_font_layout_session(
         &self,
     ) -> crate::renderer::kerning::KerningLayoutSession<'_> {
@@ -4015,36 +4009,6 @@ impl LayoutEngine {
             common.z_order,
             Self::object_stable_index(para_index, control_index),
         )
-    }
-
-    fn render_layer_from_control(
-        control: &Control,
-        para_index: usize,
-        control_index: usize,
-    ) -> Option<RenderLayerInfo> {
-        match control {
-            Control::Shape(shape) => Some(Self::render_layer_from_common(
-                shape.common(),
-                para_index,
-                control_index,
-            )),
-            Control::Picture(picture) => Some(Self::render_layer_from_common(
-                &picture.common,
-                para_index,
-                control_index,
-            )),
-            Control::Table(table) => Some(Self::render_layer_from_common(
-                &table.common,
-                para_index,
-                control_index,
-            )),
-            Control::Equation(equation) => Some(Self::render_layer_from_common(
-                &equation.common,
-                para_index,
-                control_index,
-            )),
-            _ => None,
-        }
     }
 
     fn control_common_attr(control: &Control) -> Option<&CommonObjAttr> {
@@ -4256,12 +4220,6 @@ impl LayoutEngine {
         }
     }
 
-    /// [Task #1246] 현재 섹션 미주의 between-notes 마진(HU)을 설정한다(섹션 렌더 셋업마다 호출).
-    /// HeightCursor 가 미주 사이 min-gap 보정에 사용. 0 = 미적용.
-    pub fn set_endnote_between_notes_hu(&self, between_notes_hu: i32) {
-        self.endnote_between_notes_hu.set(between_notes_hu.max(0));
-    }
-
     /// 현재 섹션 미주의 정규화된 "미주 모양" 여백을 설정한다.
     pub fn set_endnote_shape_margins_hu(
         &self,
@@ -4450,11 +4408,6 @@ impl LayoutEngine {
     /// 조판부호 표시 여부 설정
     pub fn set_show_control_codes(&self, enabled: bool) {
         self.show_control_codes.set(enabled);
-    }
-
-    /// 자동 번호 카운터 초기화
-    pub fn reset_auto_counter(&self) {
-        self.auto_counter.borrow_mut().reset();
     }
 
     /// 페이지 분할 결과와 원본 문단으로부터 렌더 트리를 생성한다.

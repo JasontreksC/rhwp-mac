@@ -85,15 +85,6 @@ impl DocumentSerializer for HwpSerializer {
     }
 }
 
-/// HWPX(ZIP+XML) 직렬화
-pub struct HwpxSerializer;
-
-impl DocumentSerializer for HwpxSerializer {
-    fn serialize(&self, doc: &Document) -> Result<Vec<u8>, SerializeError> {
-        serialize_hwpx(doc)
-    }
-}
-
 /// 현재 지원 포맷(HWP)으로 직렬화
 pub fn serialize_document(doc: &Document) -> Result<Vec<u8>, SerializeError> {
     HwpSerializer.serialize(doc)
