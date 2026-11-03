@@ -8,10 +8,8 @@
 - 동봉 라이선스: `screen/HapinessSans_License.pdf`,
   `f5bd344131ee034f3425517ea376ab6acea9126310e7b2cd74cd18673991b055`
 
-공식 archive member를 byte 그대로 추적한다. 기존 `assets/fonts/HappinessSansVF.woff2`를 변환하거나 font
-table·이름·outline을 수정하지 않는다. 공식 TTF와 WOFF2의 table 집합, glyph order, 3,889개 default outline,
-GPOS·GSUB·fvar·gvar가 일치하며 outline canonical digest는
-`8c213a9e959b0305bf6201dedbea39c1cfd3545cff817ec0b00fa8ca4e26b5b5`다.
+공식 archive member를 byte 그대로 추적한다. font table·이름·outline을 수정하지 않는다. 3,889개 default outline의
+canonical digest는 `8c213a9e959b0305bf6201dedbea39c1cfd3545cff817ec0b00fa8ca4e26b5b5`다.
 
-이 파일은 W10 variation shaping fixture의 exact source다. 제품 WASM·Studio font bundle에는 자동 포함하지
-않으며 폰트 자체를 판매하거나 파생 폰트를 만들지 않는다.
+이 파일은 variation shaping 시험의 원본 입력이다. 앱 번들에 자동으로 넣지 않으며 폰트 자체를 판매하거나 파생 폰트를
+만들지 않는다.

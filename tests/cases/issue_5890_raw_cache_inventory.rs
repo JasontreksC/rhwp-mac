@@ -1,6 +1,6 @@
 //! [#5890] raw 캐시 인벤토리 문서와 소스의 일치.
 //!
-//! `mydocs/eng/tech/raw_cache_inventory.md` 는 #5890 완료 정의의 절반 —
+//! `mydocs/tech/raw_cache_inventory.md` 는 #5890 완료 정의의 절반 —
 //! "남아 있는 raw 캐시의 목록(필드별 해석 상태)이 문서화된다" — 을 담는다.
 //! 문서는 손으로 유지하면 조용히 낡으므로, `src/model/**` 의 `pub raw_*` 필드
 //! 전수와 문서 표를 기계로 맞춘다. 필드를 더하거나 지우면 이 시험이 깨져
@@ -82,7 +82,7 @@ fn fields_in_source() -> BTreeMap<String, usize> {
 
 /// 문서 표의 행에서 같은 형태를 모은다 — `| name | mod.rs:line | …` 의 앞 두 칸.
 fn fields_in_doc() -> BTreeMap<String, usize> {
-    let path = repo().join("mydocs/eng/tech/raw_cache_inventory.md");
+    let path = repo().join("mydocs/tech/raw_cache_inventory.md");
     let text = std::fs::read_to_string(&path).expect("인벤토리 문서");
     let mut out: BTreeMap<String, usize> = BTreeMap::new();
     for line in text.lines() {
@@ -137,7 +137,7 @@ fn raw_cache_inventory_matches_model_fields() {
 
     assert!(
         missing.is_empty(),
-        "인벤토리 문서에 없는 raw 필드가 있다 — mydocs/eng/tech/raw_cache_inventory.md 의 표에 추가하라: {missing:?}"
+        "인벤토리 문서에 없는 raw 필드가 있다 — mydocs/tech/raw_cache_inventory.md 의 표에 추가하라: {missing:?}"
     );
     assert!(
         stale.is_empty(),
