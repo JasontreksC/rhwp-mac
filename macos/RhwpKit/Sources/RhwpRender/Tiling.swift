@@ -43,9 +43,12 @@ public struct TileIndex: Sendable, Hashable, Comparable {
 public struct TileGrid: Sendable, Equatable {
     /// 타일 한 변의 기본 크기(px). 뷰어가 쓰는 값이다.
     ///
-    /// 크면 타일 경계를 가로지르는 op를 두 번 그리는 낭비와 트리 순회 반복이 줄고, 작으면 한 장의 지연과
-    /// 메모리가 줄어든다. 512px는 비트맵 한 장이 1MB(RGBA)라 LRU 비용 단위로도 알맞다.
-    public static let defaultTileSize = 512
+    /// **측정으로 정한 값이다**(`rhwp-render --tile-tune`, 샘플 문서 35개·쪽 약 170장, 화면 2800×1800 장치 픽셀 채우기, 배율 2·4·8).
+    /// 타일을 키울수록 화면 하나를 채우는 시간과 일한 시간이 줄었다: 타일 수가 줄어 쪽마다 트리를 훑고 글자를 CoreText로 배치하는 고정 비용이
+    /// 덜 곱해지기 때문이다. 배율 2에서 동시 3장 기준 화면 채움 p90은 128px 497ms, 256px 153ms, 512px 48ms, 1024px 23ms이고 일한 시간의 합은
+    /// 64·32·17·12ms였다. 1024px에서 효과가 포화한다: 2048px는 p99만 (배율 4에서 156 → 82ms) 줄고 타일 비트맵이 16MB로 커서 스크롤 한 걸음에
+    /// 다시 그릴 양과 캐시 한 칸의 크기가 네 배가 된다. 1024px 한 장은 4MB(RGBA)라 384MB LRU에 96장이 든다.
+    public static let defaultTileSize = 1024
 
     /// 비트맵 한 변의 상한(px). 이 이상은 격자를 만들지 않는다(`isEmpty`).
     /// CoreGraphics는 좌표를 Float32로 래스터하므로 2^15px를 넘으면 1/512px보다 거칠어져 안티앨리어싱이 흔들린다.

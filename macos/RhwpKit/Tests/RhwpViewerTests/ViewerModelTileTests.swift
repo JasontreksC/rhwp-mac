@@ -156,11 +156,11 @@ struct ViewerModelTileTests {
     @Test("취소하면 줄 서 있던 나머지 타일을 시작하지 않는다")
     func cancellationStopsTheWindow() async throws {
         let model = try await openedModel(viewport: screen)
-        model.setZoom(Zoom(3.0))   // 타일이 많아지는 배율
+        model.setZoom(Zoom(4.0))   // 타일이 많아지는 배율(기본 타일이 1024px라 확대 4배(배율 8)에서야 수십 장이 된다)
         let scale = model.renderScale(page: 0, displayScale: 2)
         let grid = TileGrid(pageWidth: model.pageSizes[0].width, pageHeight: model.pageSizes[0].height, scale: scale)
         let all = (0..<grid.rows).flatMap { row in (0..<grid.columns).map { TileIndex(column: $0, row: row) } }
-        #expect(all.count > 40)
+        #expect(all.count > 40, "타일 \(all.count)장")
 
         let task = Task { await model.loadTiles(page: 0, scale: scale, indices: all, concurrency: 2) }
         // 첫 타일이 캐시에 들어오는 것을 보고 취소한다.

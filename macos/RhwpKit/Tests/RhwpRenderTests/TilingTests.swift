@@ -79,9 +79,12 @@ struct TileGridTests {
     @Test("4096px를 넘는 배율도 격자로 나뉜다")
     func gridBeyondTheOldCap() {
         // 쪽 하나가 한 변 4096px를 넘던 크기(A4 @ 8배 = 6350×8980)를 512px 타일로 나눈다.
-        let grid = TileGrid(pageWidth: 793.7, pageHeight: 1122.5, scale: 8)
+        let grid = TileGrid(pageWidth: 793.7, pageHeight: 1122.5, scale: 8, tileSize: 512)
         #expect(grid.pixelWidth > 4096 && grid.pixelHeight > 4096)
         #expect((grid.columns, grid.rows) == (13, 18))
+        // 기본 타일(1024px)이면 7열 × 9행이다.
+        let measured = TileGrid(pageWidth: 793.7, pageHeight: 1122.5, scale: 8)
+        #expect((measured.columns, measured.rows) == (7, 9))
     }
 
     @Test("타일이 덮는 쪽 영역은 비트맵 좌표를 배율로 나눈 값이다")

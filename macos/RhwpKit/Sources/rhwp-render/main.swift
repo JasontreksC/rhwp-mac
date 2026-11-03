@@ -8,6 +8,8 @@ import RhwpRender
 //   rhwp-render <문서> --all <출력폴더> [--pages 1-8] [--scale N]
 //   rhwp-render --pdf <PDF> <출력폴더> [--pages 1-8] [--scale N]
 //   rhwp-render --bench <문서> [--pages 1-8] [--scale N] [--tile N]
+//   rhwp-render --verify-tiles <문서> [--pages 1-8] [--scale N] [--tile N]
+//   rhwp-render --tile-tune <문서> [--pages 1-8] [--scale N] [--sizes 128,256,512] [--margins 0,0.5] [--jobs 1,3,6]
 //
 // 출력이 .json 이면 엔진이 돌려준 응답 원문(봉투 포함)만 저장하고(형식 확인용), .png 이면 CoreGraphics로 그린
 // 결과를 저장한다. 시각 검증(scripts/visual_sweep.py --png-pair)의 입력 PNG를 만드는 용도다.
@@ -27,6 +29,10 @@ let usage = """
   rhwp-render --pdf <PDF> <출력폴더> [--pages 1-8] [--scale N]      기준 PDF를 같은 형식의 PNG로 래스터(배율 1 = 96dpi)
   rhwp-render --bench <문서> [--pages 1-8] [--scale N] [--tile N]   쪽마다 엔진·디코딩·통째 렌더·타일 한 장의 시간과 메모리를
                                                                     잰다(릴리스 빌드로 실행할 것)
+  rhwp-render --verify-tiles <문서> [--pages 1-8] [--scale N] [--tile N]
+                                                                    걸러낸 타일이 걸러내지 않은 타일·통째 렌더와 같은지 픽셀 단위로 대조
+  rhwp-render --tile-tune <문서> [--pages 1-8] [--scale N] [--sizes 128,256,512] [--margins 0,0.5] [--jobs 1,3,6]
+                                                                    화면 하나를 채우는 시간을 타일 크기·여유·동시 수별로 잰다(TSV)
 """
 
 var arguments = Array(CommandLine.arguments.dropFirst())
@@ -51,6 +57,15 @@ if let text = takeValue("--tile", from: &arguments) {
     guard let value = Int(text), value >= 16, value <= PageRenderer.maxTileDimension else { fail(usage) }
     tileSize = value
 }
+func takeList<T>(_ flag: String, from arguments: inout [String], default fallback: [T], parse: (String) -> T?) -> [T] {
+    guard let text = takeValue(flag, from: &arguments) else { return fallback }
+    let values = text.split(separator: ",").compactMap { parse(String($0)) }
+    guard !values.isEmpty else { fail(usage) }
+    return values
+}
+let tuneSizes = takeList("--sizes", from: &arguments, default: [128, 256, 512, 1024]) { Int($0) }
+let tuneMargins = takeList("--margins", from: &arguments, default: [0.0, 0.5, 1.0]) { Double($0) }
+let tuneJobs = takeList("--jobs", from: &arguments, default: [1, 3, 6]) { Int($0) }
 var selection: PageSelection?
 if let text = takeValue("--pages", from: &arguments) {
     guard let parsed = PageSelection(text) else { fail("쪽 목록을 해석할 수 없음: \(text)\n\(usage)") }
@@ -67,7 +82,20 @@ func printReport(_ report: RenderReport) {
 }
 
 do {
-    if let flagIndex = arguments.firstIndex(of: "--bench") {
+    if let flagIndex = arguments.firstIndex(of: "--tile-tune") {
+        // 타일 값 측정: --tile-tune <문서>
+        arguments.remove(at: flagIndex)
+        guard arguments.count == 1 else { fail(usage) }
+        try await TileTune.run(
+            document: URL(fileURLWithPath: arguments[0]), pages: selection, scale: scale,
+            tileSizes: tuneSizes, margins: tuneMargins, concurrencies: tuneJobs, viewport: (1400, 900)
+        )
+    } else if let flagIndex = arguments.firstIndex(of: "--verify-tiles") {
+        // 타일 경로 검증: --verify-tiles <문서>
+        arguments.remove(at: flagIndex)
+        guard arguments.count == 1 else { fail(usage) }
+        try await VerifyTiles.run(document: URL(fileURLWithPath: arguments[0]), pages: selection, scale: scale, tileSize: tileSize)
+    } else if let flagIndex = arguments.firstIndex(of: "--bench") {
         // 계측: --bench <문서>
         arguments.remove(at: flagIndex)
         guard arguments.count == 1 else { fail(usage) }
