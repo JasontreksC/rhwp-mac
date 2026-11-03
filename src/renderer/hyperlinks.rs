@@ -62,25 +62,6 @@ pub(crate) fn clipped_rect(rect: BoundingBox, clip: BoundingBox) -> Option<Bound
     })
 }
 
-/// 외부 호출자가 주는 annotation도 페이지 경계와 실행 scheme을 검사한다.
-pub(crate) fn page_links(links: &[PdfLink], width: f64, height: f64) -> Vec<PdfLink> {
-    let page = BoundingBox {
-        x: 0.0,
-        y: 0.0,
-        width,
-        height,
-    };
-    links
-        .iter()
-        .filter_map(|link| {
-            Some(PdfLink {
-                uri: export_uri(&link.uri)?,
-                rect: clipped_rect(link.rect, page)?,
-            })
-        })
-        .collect()
-}
-
 /// 브라우저 인쇄용 SVG에도 같은 페이지 좌표를 사용한다. 잉크는 추가하지 않는다.
 pub(crate) fn append_svg_links(svg: &mut String, links: &[PdfLink]) {
     use std::fmt::Write;

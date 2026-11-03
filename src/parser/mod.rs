@@ -318,15 +318,6 @@ pub fn parse_hwp(data: &[u8]) -> Result<Document, ParseError> {
     parse_hwp_inner(data, None)
 }
 
-/// 비밀번호로 보호된 HWP 파일을 비밀번호와 함께 파싱한다.
-///
-/// `encrypted` 플래그와 EncryptVersion 4가 설정된 문서를 연다. 비밀번호가 틀리면
-/// `ParseError::CryptoError(CryptoError::WrongPassword)` 가 반환된다. 비밀번호가
-/// 필요 없는 일반/배포용 문서에 비밀번호를 전달해도 결과는 동일하다(무시됨).
-pub fn parse_hwp_with_password(data: &[u8], password: &[u8]) -> Result<Document, ParseError> {
-    parse_hwp_inner(data, Some(password))
-}
-
 fn validate_password_encryption(file_header: &header::FileHeader) -> Result<(), ParseError> {
     if file_header.flags.encrypted
         && file_header.encrypt_version != crypto::SUPPORTED_PASSWORD_ENCRYPT_VERSION
@@ -648,42 +639,6 @@ fn normalize_variant_paragraph_vpos(doc: &mut crate::model::document::Document) 
                 .vertical_pos
                 .saturating_add(last.line_height)
                 .saturating_add(last.line_spacing);
-        }
-    }
-}
-
-/// [Task #554] HWP3 → HWP5/HWPX 변환본 식별 휴리스틱 + 페이지 여백 보정
-///
-/// 한컴이 HWP3 → HWP5 로 변환할 때 한글97의 "마지막 줄 tolerance" (1600 HU)
-/// 동작이 누락되어 페이지 수가 +1 ~ +4 증가한다. 변환본을 식별 후 모든
-/// SectionDef.page_def.margin_bottom 을 1600 HU 줄여 한글97 페이지네이션과 정합.
-///
-/// ## 식별 휴리스틱 (Task #554 진단 결과)
-///
-/// 한컴은 HWP3 → HWP5 변환 시 ParaShape/CharShape 를 거의 재사용하지 않고 매우
-/// 적은 수만 생성하여 paragraph 대비 비율이 극도로 낮다. 직접 작성본은 작성자가
-/// 다양한 스타일을 사용하므로 비율이 paragraph 와 비슷하거나 더 높다.
-///
-/// - **`ParaShape/Paragraph < 0.05` AND `CharShape/Paragraph < 0.15`** → 변환본
-/// - **`Paragraph > 50`** 가드: 매우 짧은 문서는 비율이 왜곡되므로 제외
-///
-/// 27 fixture 검증에서 100% 정확 분류 (Stage 1 보고서 §3.2 참조).
-/// [Task #1001] 변환본의 line_segs 단위 보정.
-/// vertical_pos 만 ParaShape spacing 누적 영향으로 변환본에서 2배 단위.
-/// 나머지 필드 (line_height/text_height/baseline_distance/line_spacing/column_start/
-/// segment_width) 는 단위 동일 (HWP3 와 같음) 이라 보정 불필요.
-fn fixup_line_segs_for_variant(paragraphs: &mut [crate::model::paragraph::Paragraph]) {
-    for para in paragraphs.iter_mut() {
-        for ls in para.line_segs.iter_mut() {
-            ls.vertical_pos /= 2;
-        }
-        // 표 셀 내부 paragraph 재귀
-        for control in para.controls.iter_mut() {
-            if let crate::model::control::Control::Table(table) = control {
-                for cell in table.cells.iter_mut() {
-                    fixup_line_segs_for_variant(&mut cell.paragraphs);
-                }
-            }
         }
     }
 }
@@ -1510,44 +1465,6 @@ fn assign_auto_numbers_in_controls(
 /// 문서 파서 trait — 바이트 데이터를 Document IR로 변환
 pub trait DocumentParser {
     fn parse(&self, data: &[u8]) -> Result<Document, ParseError>;
-}
-
-/// HWP 5.0 바이너리 파서
-pub struct HwpParser;
-
-impl DocumentParser for HwpParser {
-    fn parse(&self, data: &[u8]) -> Result<Document, ParseError> {
-        parse_hwp(data)
-    }
-}
-
-/// HWPX (XML/ZIP) 파서
-pub struct HwpxParser;
-
-impl DocumentParser for HwpxParser {
-    fn parse(&self, data: &[u8]) -> Result<Document, ParseError> {
-        hwpx::parse_hwpx(data).map_err(ParseError::from)
-    }
-}
-
-/// HWP 3.0 파서
-pub struct Hwp3Parser;
-
-impl DocumentParser for Hwp3Parser {
-    fn parse(&self, data: &[u8]) -> Result<Document, ParseError> {
-        hwp3::parse_hwp3(data).map_err(ParseError::from)
-    }
-}
-
-/// Standalone HWPML XML parser.
-pub struct HmlParser;
-
-impl DocumentParser for HmlParser {
-    fn parse(&self, data: &[u8]) -> Result<Document, ParseError> {
-        hml::parse_hml(data)
-            .map(|result| result.document)
-            .map_err(ParseError::from)
-    }
 }
 
 /// HML 입력에서만 제공되는 열기 메타데이터와 손실 진단.

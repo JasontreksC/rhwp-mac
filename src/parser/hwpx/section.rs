@@ -2090,17 +2090,6 @@ const TITLE_MARK_PART_KEEP: &str = "\u{0008}0";
 /// pageNum/footer 슬롯. 일반 개체 `\u{0002}` 와 구분해 [#5251] 축에서만 0 으로 접는다.
 const PAGE_FOOTER_SLOT_PART: &str = "\u{0002}pf";
 
-/// <hp:t> 텍스트 컨텐츠를 읽는다.
-/// 탭 확장 데이터도 함께 반환 (HWPX 인라인 탭의 leader/type/width)
-fn read_text_content(reader: &mut Reader<&[u8]>) -> Result<String, HwpxError> {
-    let (parts, _, _) = read_text_content_with_tabs(reader)?;
-    Ok(parts
-        .into_iter()
-        .filter(|p| p != TITLE_MARK_PART_IGNORE && p != TITLE_MARK_PART_KEEP)
-        .filter(|p| !p.starts_with(MARKPEN_BEGIN_PART_PREFIX) && p.as_str() != MARKPEN_END_PART)
-        .collect())
-}
-
 fn decode_xml_general_ref(r: &BytesRef<'_>) -> String {
     if let Ok(Some(ch)) = r.resolve_char_ref() {
         return ch.to_string();
@@ -2246,18 +2235,6 @@ fn parse_tab_extension(e: &quick_xml::events::BytesStart) -> [u16; 7] {
     ext[2] = (tab_type << 8) | leader;
 
     ext
-}
-
-/// `<hp:tab width="0" leader="0" type="1"/>` — 서식기(`serializer/hwpx/section.rs`
-/// `TAB_NO_DATA_WIDTH_MARKER`)가 `tab_extended` 항목이 없던 "암묵적 기본 탭"을 내보낼 때
-/// 쓰는 정확한 마커다(#4403). 실제 탭은 폭 0 이 나올 수 없으므로(시각적으로 아무 효과가 없어
-/// 한컴도 만들지 않는다) 안전한 신호로 쓴다. `leader`/`type` 까지 우리 서식기의 고정 폴백값과
-/// 정확히 일치할 때만 마커로 인정해, width=0 인 (극히 드문) 진짜 캡처 데이터를 오인해 버리지
-/// 않도록 한다. [#7170] 이 마커는 `tab_extended` 에 **자리표로 실어** 뒤 탭의 순번을 지키고,
-/// 소비자가 `tab_ext_is_placeholder` 로 걸러 문단의 실제 `TabDef`/커서 위치 기준
-/// `find_next_tab_stop` 으로 탭 정지를 다시 계산하게 한다 — HWP5 바이너리 파서와 같은 규약.
-fn is_tab_no_data_marker(ext: &[u16; 7]) -> bool {
-    ext[0] == 0 && ext[2] == 0x0100
 }
 
 // ─── Table ───

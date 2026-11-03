@@ -425,17 +425,6 @@ impl Drop for SupplementalMetricStore {
     }
 }
 
-/// Exact descriptor prepared by Canvas, never an inferred fallback face name.
-pub fn canvas_measured_descriptor<'a>(style: &'a TextStyle, cluster: &str) -> Option<&'a str> {
-    let ch = single_scalar_cluster(cluster).ok()?;
-    let snapshot = style.supplemental_metrics.as_ref()?;
-    let entry = snapshot.lookup(snapshot.context(), style, ch)?;
-    match entry.evidence() {
-        MetricEvidence::BackendMeasured { descriptor } => Some(descriptor),
-        _ => None,
-    }
-}
-
 /// The current publication contract is scalar-positioned. Multi-scalar graphemes
 /// must stay wholly on the old path, rather than partially replacing one scalar.
 /// No additional segmentation/allocation occurs without an active snapshot.

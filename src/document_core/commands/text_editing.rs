@@ -2620,29 +2620,6 @@ impl DocumentCore {
         );
     }
 
-    /// 셀 분할로 폭이 바뀌어 저장 LINE_SEG가 stale해진 문단만 재조판한다.
-    ///
-    /// 일반 편집 reflow는 원래 control host line을 보존해야 한다. split 경로만 한컴의
-    /// 좁아진 셀 규칙(본문 뒤 inline control을 별도 line으로 저장)을 opt-in한다.
-    pub(crate) fn reflow_cell_paragraph_after_split(
-        &mut self,
-        section_idx: usize,
-        parent_para_idx: usize,
-        control_idx: usize,
-        cell_idx: usize,
-        cell_para_idx: usize,
-    ) {
-        self.reflow_cell_paragraph_with_edit(
-            section_idx,
-            parent_para_idx,
-            control_idx,
-            cell_idx,
-            cell_para_idx,
-            None,
-            true,
-        );
-    }
-
     /// 저장 LineSeg가 유효한 셀 텍스트 edit의 영향 줄부터만 재래핑한다.
     fn reflow_cell_paragraph_after_text_edit(
         &mut self,
@@ -3896,7 +3873,7 @@ impl DocumentCore {
         )))
     }
 
-    /// CLI/MCP의 문단 앞 쪽 나눔 속성 설정. Ctrl+Enter의 문단 분할과 구분한다.
+    /// 문단 앞 쪽 나눔 속성 설정. Ctrl+Enter의 문단 분할과 구분한다.
     /// 기존 텍스트/문단을 보존하고 다른 break 축과 명시적 저장 여부를 함께 갱신한다.
     /// 이미 같은 명시적 속성이 있으면 false를 반환한다.
     pub fn mark_page_break_at_paragraph_start_native(
@@ -3953,7 +3930,7 @@ impl DocumentCore {
         Ok(true)
     }
 
-    /// CLI/MCP의 문단 앞 단 나눔 속성 설정. 사용자 분할 명령과 구분한다.
+    /// 문단 앞 단 나눔 속성 설정. 사용자 분할 명령과 구분한다.
     /// 쪽/단은 직교하는 저장 비트이며 유효 조판 분류는 파서와 같은 Page 우선이다.
     pub fn mark_column_break_at_paragraph_start_native(
         &mut self,

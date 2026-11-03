@@ -1727,10 +1727,6 @@ fn materialize_autonum_fwspace_char_shape_offsets(
     report.autonum_fwspace_char_shape_offsets_materialized += 1;
 }
 
-fn adapt_paragraphs(paragraphs: &mut [Paragraph], report: &mut AdapterReport) {
-    adapt_paragraphs_with_context(paragraphs, report, ParagraphContext::Body);
-}
-
 fn adapt_paragraphs_with_context(
     paragraphs: &mut [Paragraph],
     report: &mut AdapterReport,

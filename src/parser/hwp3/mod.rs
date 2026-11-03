@@ -4108,7 +4108,7 @@ fn parse_hwp3_inner(
     // [보안] `info_block_length` 는 u16 이지만 **문서가 정하는 값**이라, 짧은/손상된
     // 파일에서 본문 시작 오프셋이 파일 끝을 넘길 수 있다. 종전엔 `&data[start..]` 가
     // 그대로 슬라이싱해 `range start index N out of range` 패닉(DoS)이었다 — 신뢰 경계
-    // 밖 `.hwp` 로 `parse_hwp3` 를 부르는 라이브러리·MCP 소비자를 죽인다. 경계를 확인해
+    // 밖 `.hwp` 로 `parse_hwp3` 를 부르는 라이브러리 소비자(앱)를 죽인다. 경계를 확인해
     // 파싱 오류로 끝낸다(오버플로 방지 위해 saturating_add).
     let body_start = 30usize
         .saturating_add(current_pos as usize)
@@ -4626,18 +4626,6 @@ fn parse_hwp3_inner(
     fixup_hwp3_heading_decoration(&mut doc);
 
     Ok(doc)
-}
-
-/// 비밀번호와 함께 HWP3 문서를 파싱한다.
-///
-/// 압축 HWP3 암호 본문은 이 모듈 경계에서만 복호화한 뒤 기존 HWP3 파서로 넘긴다.
-/// 일반 HWP3 문서에 비밀번호를 전달하면 기존 파서와 같은 결과를 반환한다.
-pub fn parse_hwp3_with_password(data: &[u8], password: &[u8]) -> Result<Document, Hwp3Error> {
-    parse_hwp3_with_open_body_limit_and_password(
-        data,
-        password,
-        DEFAULT_HWP3_DOCUMENT_OPEN_BODY_OUTPUT_BYTES,
-    )
 }
 
 /// 자동 포맷 감지 진입점이 선택한 HWP3 본문 출력 상한을 비밀번호 경로에도 적용한다.

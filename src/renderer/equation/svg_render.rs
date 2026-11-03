@@ -7,11 +7,6 @@ use super::ast::MatrixStyle;
 use super::layout::*;
 use super::symbols::{DecoKind, FontStyleKind};
 
-/// 수식 전용 font-family
-/// 순서: Latin Modern Math (LaTeX 설치 시) → STIX Two Text (Mac/STIX 설치 시) → STIX Two Math → Times New Roman (Windows 기본) → serif
-/// Cambria Math 는 Windows 에서 "볼드 인상" 을 유발해 제외. Pretendard 는 산세리프라 수식 부적합으로 제외. (Task #280)
-pub const DEFAULT_EQUATION_FONT_FAMILY_ATTR: &str =
-    "font-family=\"'Latin Modern Math', 'STIX Two Text', 'STIX Two Math', 'Times New Roman', 'Times', serif\"";
 const EQ_FONT_FAMILY: &str = " font-family=\"'Latin Modern Math', 'STIX Two Text', 'STIX Two Math', 'Times New Roman', 'Times', serif\"";
 
 /// 수식을 SVG 조각 문자열로 렌더링
@@ -446,15 +441,6 @@ fn integral_path(x: f64, y: f64, fs: f64, color: &str) -> String {
         "<path d=\"M{:.2},{:.2} C{:.2},{:.2} {:.2},{:.2} {:.2},{:.2}\" fill=\"none\" stroke=\"{}\" stroke-width=\"{:.2}\" stroke-linecap=\"round\"/>\n",
         p0x, p0y, c1x, c1y, c2x, c2y, p3x, p3y, color, g.stroke_w,
     )
-}
-
-fn font_size_from_box(lb: &LayoutBox, base_fs: f64) -> f64 {
-    // 박스 높이에서 폰트 크기 추정 (baseline 비율로)
-    if lb.height > 0.0 {
-        lb.height
-    } else {
-        base_fs
-    }
 }
 
 /// 늘림 괄호 렌더링

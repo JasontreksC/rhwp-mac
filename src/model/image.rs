@@ -209,15 +209,6 @@ pub enum ImageEffect {
     Pattern8x8,
 }
 
-/// 이미지 데이터 (실제 바이너리 데이터 보관)
-#[derive(Debug, Clone)]
-pub struct ImageData {
-    /// 이미지 형식
-    pub format: ImageFormat,
-    /// 바이너리 데이터
-    pub data: Vec<u8>,
-}
-
 /// 이미지 형식
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ImageFormat {

@@ -428,23 +428,6 @@ impl DocumentCore {
         new_id
     }
 
-    /// 폰트 이름으로 font_faces에서 ID를 찾는다.
-    pub(crate) fn find_font_id(&self, name: &str) -> Option<u16> {
-        let name_lower = name.to_lowercase();
-        // 한글 폰트 (인덱스 0)를 먼저, 영어 폰트 (인덱스 1)를 다음으로 검색
-        for lang_idx in 0..self.document.doc_info.font_faces.len() {
-            for (font_idx, font) in self.document.doc_info.font_faces[lang_idx]
-                .iter()
-                .enumerate()
-            {
-                if font.name.to_lowercase() == name_lower {
-                    return Some(font_idx as u16);
-                }
-            }
-        }
-        None
-    }
-
     /// 글꼴 이름으로 ID 를 찾고, 문서에 없으면 **새로 등록**해 그 ID 를 돌려준다.
     ///
     /// 붙여넣기 원본의 글꼴이 대상 문서에 없을 때 조용히 기본 글꼴로

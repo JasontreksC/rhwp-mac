@@ -33,9 +33,7 @@ use crate::renderer::layout::LayoutEngine;
 use crate::renderer::page_layout::PageLayoutInfo;
 use crate::renderer::pagination::{PaginationResult, Paginator};
 use crate::renderer::render_tree::PageRenderTree;
-use crate::renderer::style_resolver::{
-    resolve_font_substitution, resolve_styles, ResolvedStyleSet,
-};
+use crate::renderer::style_resolver::{resolve_styles, ResolvedStyleSet};
 use crate::renderer::svg::SvgRenderer;
 use crate::renderer::DEFAULT_DPI;
 

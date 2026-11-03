@@ -19,28 +19,6 @@ pub const META_INF_CONTAINER_XML: &str = concat!(
     r#"</ocf:container>"#,
 );
 
-/// META-INF/container.rdf — 패키지 내 파일 역할 RDF 선언
-pub const META_INF_CONTAINER_RDF: &str = concat!(
-    r#"<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>"#,
-    r#"<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">"#,
-    r#"<rdf:Description rdf:about="">"#,
-    r#"<ns0:hasPart xmlns:ns0="http://www.hancom.co.kr/hwpml/2016/meta/pkg#" rdf:resource="Contents/header.xml"/>"#,
-    r#"</rdf:Description>"#,
-    r#"<rdf:Description rdf:about="Contents/header.xml">"#,
-    r#"<rdf:type rdf:resource="http://www.hancom.co.kr/hwpml/2016/meta/pkg#HeaderFile"/>"#,
-    r#"</rdf:Description>"#,
-    r#"<rdf:Description rdf:about="">"#,
-    r#"<ns0:hasPart xmlns:ns0="http://www.hancom.co.kr/hwpml/2016/meta/pkg#" rdf:resource="Contents/section0.xml"/>"#,
-    r#"</rdf:Description>"#,
-    r#"<rdf:Description rdf:about="Contents/section0.xml">"#,
-    r#"<rdf:type rdf:resource="http://www.hancom.co.kr/hwpml/2016/meta/pkg#SectionFile"/>"#,
-    r#"</rdf:Description>"#,
-    r#"<rdf:Description rdf:about="">"#,
-    r#"<rdf:type rdf:resource="http://www.hancom.co.kr/hwpml/2016/meta/pkg#Document"/>"#,
-    r#"</rdf:Description>"#,
-    r#"</rdf:RDF>"#,
-);
-
 /// META-INF/manifest.xml — 빈 ODF manifest
 pub const META_INF_MANIFEST_XML: &str = concat!(
     r#"<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>"#,

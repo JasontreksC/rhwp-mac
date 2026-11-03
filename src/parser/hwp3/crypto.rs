@@ -62,11 +62,6 @@ pub fn is_hwp3_password_protected(input: &[u8]) -> Result<bool, Hwp3CryptoError>
     password_crypto::is_hwp3_password_protected(input).map_err(map_error)
 }
 
-/// HWP3의 UTF-16LE 비밀번호→DES 키 유도를 재현한다.
-pub fn derive_legacy_des_key(password: &str) -> [u8; 8] {
-    password_crypto::derive_hwp3_legacy_des_key(password)
-}
-
 /// 압축된 HWP3 비밀번호 문서의 본문을 복호화한다.
 pub fn decrypt_hwp3_password_document(
     input: &[u8],

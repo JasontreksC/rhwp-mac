@@ -26,9 +26,6 @@ pub mod table;
 /// HWP 내부 단위 (1/7200 인치, 부호 없음)
 pub type HwpUnit = u32;
 
-/// HWP 내부 단위 (1/7200 인치, 부호 있음)
-pub type SHwpUnit = i32;
-
 /// HWP 16비트 내부 단위 (부호 있음)
 pub type HwpUnit16 = i16;
 

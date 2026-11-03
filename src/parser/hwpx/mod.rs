@@ -42,13 +42,6 @@ fn hwpx_bin_data_extension(item: &content::PackageItem) -> String {
     }
 }
 
-fn normalize_internal_ole_data(item: &content::PackageItem, data: Vec<u8>) -> Vec<u8> {
-    if !is_internal_ole_package_item(item) {
-        return data;
-    }
-    normalize_ole_bytes(data)
-}
-
 /// 내부 OLE 바이트에서 선두 4-byte LE size prefix 를 제거한다.
 ///
 /// [Task #2263] 지연 로딩 시점에도 동일 정규화를 적용해야 하므로

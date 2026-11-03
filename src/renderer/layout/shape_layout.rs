@@ -130,27 +130,6 @@ fn should_suppress_group_textbox_construction_stroke(drawing: &DrawingObjAttr) -
         && drawing.fill.image.is_none()
 }
 
-fn push_placeholder_render_node(
-    tree: &mut PageLayoutContext,
-    parent: &mut RenderNode,
-    bbox: BoundingBox,
-    fill_color: u32,
-    stroke_color: u32,
-    label: String,
-) {
-    let node_id = tree.next_id();
-    let node = RenderNode::new(
-        node_id,
-        RenderNodeType::Placeholder(crate::renderer::render_tree::PlaceholderNode::new(
-            fill_color,
-            stroke_color,
-            label,
-        )),
-        bbox,
-    );
-    parent.children.push(node);
-}
-
 /// [#4694] 셀/글상자 안 ole 의 컨테이너 문맥. 비어 있으면(본문 직속) None —
 /// 방출도 비어 selection ref 가 3좌표로 유지된다(회귀 0).
 fn ole_cell_context(
@@ -188,21 +167,6 @@ fn push_ole_placeholder_render_node(
             control_index,
             ole_cell_context(parent_cell_path, para_index),
         )),
-        bbox,
-    );
-    parent.children.push(node);
-}
-
-fn push_raw_svg_render_node(
-    tree: &mut PageLayoutContext,
-    parent: &mut RenderNode,
-    bbox: BoundingBox,
-    svg: String,
-) {
-    let node_id = tree.next_id();
-    let node = RenderNode::new(
-        node_id,
-        RenderNodeType::RawSvg(crate::renderer::render_tree::RawSvgNode::new(svg)),
         bbox,
     );
     parent.children.push(node);

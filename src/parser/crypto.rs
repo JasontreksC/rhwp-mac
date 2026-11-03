@@ -13,16 +13,6 @@ use super::tags;
 /// 현재 지원하는 HWP5 비밀번호 암호화 방식(FileHeader EncryptVersion).
 pub use crate::password_crypto::HWP5_ENCRYPT_VERSION as SUPPORTED_PASSWORD_ENCRYPT_VERSION;
 
-/// 기존 crypto 호출자가 명시적으로 선택할 수 있도록 남긴 호환 상한값.
-///
-/// 새 호출은 consumer 경계에서 자기 자원 정책을 정한 뒤
-/// `decrypt_*_limited(..., max_bytes)`에 그 값을 전달해야 한다. crypto helper는 이 값을
-/// 자동으로 선택하지 않는다.
-#[deprecated(
-    note = "choose an explicit consumer-boundary limit and pass it to decrypt_*_limited(..., max_bytes); crypto helpers no longer select this default"
-)]
-pub const MAX_PASSWORD_DECOMPRESSED_STREAM_BYTES: usize = 512 * 1024 * 1024;
-
 #[derive(Debug)]
 pub enum CryptoError {
     NoDistributeData,
@@ -130,19 +120,6 @@ pub fn decrypt_password_stream(raw: &[u8], password: &[u8]) -> Vec<u8> {
     crate::password_crypto::decrypt_hwp5_stream(raw, password)
 }
 
-pub fn decrypt_password_protected(
-    raw: &[u8],
-    password: &[u8],
-    compressed: bool,
-) -> Result<Vec<u8>, CryptoError> {
-    let decrypted = decrypt_password_stream(raw, password);
-    if compressed {
-        decompress_stream(&decrypted).map_err(|_| CryptoError::WrongPassword)
-    } else {
-        Ok(decrypted)
-    }
-}
-
 pub fn decrypt_password_protected_limited(
     raw: &[u8],
     password: &[u8],
@@ -167,20 +144,6 @@ pub fn decrypt_password_protected_limited(
 #[cfg(test)]
 pub(super) fn encrypt_password_stream_for_test(raw: &[u8], password: &[u8]) -> Vec<u8> {
     crate::password_crypto::encrypt_hwp5_stream(raw, password)
-}
-
-/// 배포용 ViewText section을 복호화한다.
-pub fn decrypt_viewtext_section(
-    section_data: &[u8],
-    compressed: bool,
-) -> Result<Vec<u8>, CryptoError> {
-    let decrypted = decrypt_viewtext_payload(section_data)?;
-    if compressed {
-        decompress_stream(&decrypted)
-            .map_err(|error| CryptoError::DecompressError(error.to_string()))
-    } else {
-        Ok(decrypted)
-    }
 }
 
 pub fn decrypt_viewtext_section_limited(

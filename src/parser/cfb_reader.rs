@@ -206,16 +206,6 @@ impl CfbReader {
         self.read_stream_raw_limited(&section_path, max_bytes)
     }
 
-    /// 배포용 ViewText 섹션의 암호문 원본을 반환한다.
-    ///
-    /// 배포용 문서 열기 경계는 이 바이트를 crypto의 명시적 상한 경로로 전달한다.
-    /// ViewText가 없을 때 BodyText로 대체하지 않는다. 그 대체는 배포 플래그가 켜진
-    /// 손상 입력에서 일반 본문을 무제한 압축 해제할 수 있기 때문이다.
-    pub(crate) fn read_viewtext_section_raw(&mut self, index: u32) -> Result<Vec<u8>, CfbError> {
-        let path = format!("/ViewText/Section{}", index);
-        self.read_stream_raw(&path)
-    }
-
     /// 배포용 ViewText 암호문 원본을 caller 제공 상한까지 읽는다.
     pub(crate) fn read_viewtext_section_raw_limited(
         &mut self,
@@ -315,18 +305,6 @@ impl CfbReader {
             entries.push((path, size, is_stream));
         }
         entries
-    }
-
-    /// 미리보기 이미지 스트림 읽기 (PrvImage)
-    ///
-    /// BMP 또는 GIF 형식의 썸네일 이미지를 반환한다.
-    /// 스트림이 없으면 None을 반환한다.
-    pub fn read_preview_image(&mut self) -> Option<Vec<u8>> {
-        if self.has_stream("/PrvImage") {
-            self.read_stream_raw("/PrvImage").ok()
-        } else {
-            None
-        }
     }
 
     /// 미리보기 이미지 스트림을 `max_bytes` 바이트까지만 읽는다.
@@ -984,48 +962,6 @@ impl LenientCfbReader {
     /// FileHeader 스트림 읽기 (256바이트, 항상 비압축)
     pub fn read_file_header(&self) -> Result<Vec<u8>, CfbError> {
         self.read_stream("FileHeader")
-    }
-
-    /// 본문 섹션 스트림 읽기 (배포용 ViewText 지원)
-    pub fn read_body_text_section_full(
-        &self,
-        index: u32,
-        compressed: bool,
-        distribution: bool,
-    ) -> Result<Vec<u8>, CfbError> {
-        if distribution {
-            let viewtext_path = format!("/ViewText/Section{}", index);
-            // ViewText 하위 스트림 탐색
-            if self.has_stream(&viewtext_path) {
-                return self.read_stream(&viewtext_path);
-            }
-        }
-
-        let path = self.body_text_section_path(index);
-        decode_stream(self.read_stream(&path)?, compressed)
-    }
-
-    /// 배포용 ViewText 섹션의 암호문 원본을 반환한다.
-    ///
-    /// Lenient complete-open 경계는 이 값을 crypto의 명시적 상한 경로로 전달한다.
-    /// 손상된 배포 플래그에서 BodyText fallback을 하지 않는다.
-    pub(crate) fn read_viewtext_section_raw(&self, index: u32) -> Result<Vec<u8>, CfbError> {
-        let path = format!("ViewText/Section{}", index);
-        let root_id = self
-            .directory_entries
-            .iter()
-            .position(|entry| entry.obj_type == 5)
-            .ok_or_else(|| CfbError::StreamNotFound(path.clone()))?;
-        let viewtext_id = self
-            .find_child_entry_by_name(root_id, "ViewText")
-            .filter(|entry_id| self.directory_entries[*entry_id].obj_type == 1)
-            .ok_or_else(|| CfbError::StreamNotFound(path.clone()))?;
-        let section_name = format!("Section{}", index);
-        let section_id = self
-            .find_child_entry_by_name(viewtext_id, &section_name)
-            .filter(|entry_id| self.directory_entries[*entry_id].obj_type == 2)
-            .ok_or_else(|| CfbError::StreamNotFound(path.clone()))?;
-        self.read_directory_stream(section_id, &path)
     }
 
     /// 배포용 ViewText 암호문 원본을 caller 제공 상한까지 읽는다.

@@ -3907,54 +3907,6 @@ impl Renderer for SvgRenderer {
         self.output.push_str(&format!("<line {}/>\n", attrs));
     }
 
-    fn draw_ellipse(&mut self, cx: f64, cy: f64, rx: f64, ry: f64, style: &ShapeStyle) {
-        self.draw_ellipse_with_gradient(cx, cy, rx, ry, style, None);
-    }
-
-    fn draw_image(&mut self, data: &[u8], x: f64, y: f64, w: f64, h: f64) {
-        let mime_type = detect_image_mime_type(data);
-        let (render_data, render_mime): (std::borrow::Cow<[u8]>, &str) =
-            if mime_type == "image/x-wmf" {
-                match convert_wmf_to_svg(data) {
-                    Some(svg_bytes) => (std::borrow::Cow::Owned(svg_bytes), "image/svg+xml"),
-                    None => (std::borrow::Cow::Borrowed(data), mime_type),
-                }
-            } else if mime_type == "image/x-emf" {
-                match crate::emf::convert_to_standalone_svg(data) {
-                    Some(svg_bytes) => (std::borrow::Cow::Owned(svg_bytes), "image/svg+xml"),
-                    None => (std::borrow::Cow::Borrowed(data), mime_type),
-                }
-            } else if mime_type == "image/x-pcx" {
-                match pcx_bytes_to_png_bytes(data) {
-                    Some(png_bytes) => (std::borrow::Cow::Owned(png_bytes), "image/png"),
-                    None => (std::borrow::Cow::Borrowed(data), mime_type),
-                }
-            } else if mime_type == "image/bmp" {
-                match bmp_bytes_to_png_bytes(data) {
-                    Some(png_bytes) => (std::borrow::Cow::Owned(png_bytes), "image/png"),
-                    None => (std::borrow::Cow::Borrowed(data), mime_type),
-                }
-            } else if mime_type == "image/tiff" {
-                match tiff_bytes_to_png_bytes(data) {
-                    Some(png_bytes) => (std::borrow::Cow::Owned(png_bytes), "image/png"),
-                    None => (std::borrow::Cow::Borrowed(data), mime_type),
-                }
-            } else if mime_type == "application/postscript" {
-                match crate::renderer::image_resolver::eps_renderable_bytes(data) {
-                    Some((mime, bytes)) => (std::borrow::Cow::Owned(bytes), mime),
-                    None => (std::borrow::Cow::Borrowed(data), mime_type),
-                }
-            } else {
-                (std::borrow::Cow::Borrowed(data), mime_type)
-            };
-        let base64_data = base64::engine::general_purpose::STANDARD.encode(&*render_data);
-        let data_uri = format!("data:{};base64,{}", render_mime, base64_data);
-        self.output.push_str(&format!(
-            "<image x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" preserveAspectRatio=\"none\" href=\"{}\"/>\n",
-            x, y, w, h, data_uri,
-        ));
-    }
-
     fn draw_path(&mut self, commands: &[PathCommand], style: &ShapeStyle) {
         self.draw_path_with_gradient(commands, style, None);
     }

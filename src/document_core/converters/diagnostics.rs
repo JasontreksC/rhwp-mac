@@ -180,32 +180,6 @@ fn check_paragraph(
     }
 }
 
-/// 두 IR (HWPX 출처와 HWP 출처) 의 영역별 차이를 비교한다.
-///
-/// Stage 1: 골격만 — Stage 2 이후 영역별 비교 추가.
-pub fn diff_hwpx_vs_hwp(hwpx: &Document, hwp: &Document) -> DiffSummary {
-    let mut summary = DiffSummary::new();
-
-    // 섹션 수
-    if hwpx.sections.len() != hwp.sections.len() {
-        summary.push(IrFieldDiff {
-            area: "sections.len",
-            location: "doc".into(),
-            hwpx_value: format!("{}", hwpx.sections.len()),
-            hwp_value: format!("{}", hwp.sections.len()),
-        });
-    }
-
-    // 영역별 비교는 Stage 2 부터 본격 추가.
-    // 현재 단계는 단독 검사 (diff_hwpx_vs_serializer_assumptions) 가 주력.
-    let single = diff_hwpx_vs_serializer_assumptions(hwpx);
-    for it in single.items {
-        summary.push(it);
-    }
-
-    summary
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -66,21 +66,11 @@ impl<'a> ByteReader<'a> {
         self.cursor.read_i32::<LittleEndian>()
     }
 
-    /// i64 읽기 (LE)
-    pub fn read_i64(&mut self) -> io::Result<i64> {
-        self.cursor.read_i64::<LittleEndian>()
-    }
-
     /// 지정 길이의 바이트 읽기
     pub fn read_bytes(&mut self, len: usize) -> io::Result<Vec<u8>> {
         let mut buf = vec![0u8; len];
         self.cursor.read_exact(&mut buf)?;
         Ok(buf)
-    }
-
-    /// 읽기 위치를 직접 설정
-    pub fn set_position(&mut self, pos: usize) {
-        self.cursor.set_position(pos as u64);
     }
 
     /// N 바이트 건너뛰기
@@ -128,12 +118,6 @@ impl<'a> ByteReader<'a> {
     /// ColorRef 읽기 (4바이트, 0x00BBGGRR 형식)
     pub fn read_color_ref(&mut self) -> io::Result<u32> {
         self.read_u32()
-    }
-
-    /// 나머지 바이트 전부 읽기
-    pub fn read_remaining(&mut self) -> io::Result<Vec<u8>> {
-        let remaining = self.remaining();
-        self.read_bytes(remaining)
     }
 }
 

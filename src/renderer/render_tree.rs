@@ -66,7 +66,6 @@ pub fn tab_dot_leader_stroke(font_size: f64) -> (f64, f64, f64) {
 
 pub const REAL_PICTURE_WATERMARK_PAGE_OPACITY: f64 = 0.26;
 pub const REAL_PICTURE_WATERMARK_FILL_OPACITY: f64 = 0.15;
-pub const REAL_PICTURE_WATERMARK_OPACITY: f64 = REAL_PICTURE_WATERMARK_PAGE_OPACITY;
 pub const REAL_PICTURE_WATERMARK_SATURATION: f64 = 0.91646104;
 pub const REAL_PICTURE_WATERMARK_CONTRAST: f64 = 0.93125103;
 pub const REAL_PICTURE_WATERMARK_BRIGHTNESS: f64 = 1.80;
@@ -1970,25 +1969,10 @@ impl PageLayoutContext {
         )
     }
 
-    pub(crate) fn horizontal_shaping_sidecar(
-        &self,
-        node_id: NodeId,
-    ) -> Option<&std::sync::Arc<HorizontalShapingRunDecision>> {
-        self.horizontal_shaping_sidecars.get(node_id)
-    }
-
     /// LayerBuilder가 최종 RenderNode의 source id와 page-local decision을
     /// 대사할 때만 사용하는 읽기 전용 경계다. sidecar owner는 계속 frame이다.
     pub(crate) fn horizontal_shaping_sidecars(&self) -> &HorizontalShapingPageSidecars {
         &self.horizontal_shaping_sidecars
-    }
-
-    pub(crate) fn horizontal_shaping_sidecar_count(&self) -> usize {
-        self.horizontal_shaping_sidecars.len()
-    }
-
-    pub(crate) fn horizontal_shaping_sidecar_registry_generation(&self) -> Option<u64> {
-        self.horizontal_shaping_sidecars.registry_generation()
     }
 
     pub(crate) fn vertical_shaping_sidecar(
@@ -1996,14 +1980,6 @@ impl PageLayoutContext {
         node_id: NodeId,
     ) -> Option<&std::sync::Arc<BoundedVerticalHwp5TableCellSidecar>> {
         self.vertical_shaping_sidecars.get(node_id)
-    }
-
-    pub(crate) fn vertical_shaping_sidecar_count(&self) -> usize {
-        self.vertical_shaping_sidecars.len()
-    }
-
-    pub(crate) fn vertical_shaping_sidecar_registry_generation(&self) -> Option<u64> {
-        self.vertical_shaping_sidecars.registry_generation()
     }
 }
 

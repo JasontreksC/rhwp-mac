@@ -4356,10 +4356,8 @@ impl DocumentCore {
 
     /// 편집 API(누름틀 채움·전체 치환 등)가 `recompose_section` 으로 남긴 dirty
     /// 구역을 즉시 재페이지네이션하는 공개 표면 — 같은 인스턴스에서 편집 직후
-    /// 페이지 어휘(page_count·페이지 텍스트·렌더·grep 의 page 주소)를 읽는
-    /// 세션형 소비자(mcp-serve 핸들)가 호출한다. 무상태 CLI 는 편집 후 곧바로
-    /// 직렬화·종료하므로 부르지 않는다. batch 모드에서는 Command 흐름과 같은
-    /// 규약으로 미룬다.
+    /// 페이지 어휘(page_count·페이지 텍스트·렌더)를 읽는 세션형 소비자(C ABI 문서
+    /// 핸들)가 호출한다. batch 모드에서는 Command 흐름과 같은 규약으로 미룬다.
     pub fn repaginate_if_needed(&mut self) {
         self.paginate_if_needed();
     }
@@ -7696,9 +7694,6 @@ struct PageDumpSectionCtx<'a> {
 
 /// [#3697] dump-pages JSON 의 문단 미리보기 — 텍스트 덤프와 같은 제어문자 제거 + 40자.
 /// 기계 소비자용이므로 텍스트 덤프의 "(빈)" 대체 표기는 쓰지 않는다 (빈 문단 = "").
-///
-/// [세션 노드 경로 확장] `mcp_serve::session_doc_tree` 의 문단 노드 미리보기도 이 함수를
-/// 그대로 쓴다 — 같은 문서에서 미리보기 규칙(제어문자 제거·40자 절단)이 갈리면 안 된다.
 pub fn para_text_preview(para: Option<&Paragraph>) -> String {
     para.map(|p| {
         p.text
