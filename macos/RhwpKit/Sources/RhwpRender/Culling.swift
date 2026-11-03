@@ -68,8 +68,10 @@ enum Culling {
             return pad(rotationHull(rect, op.transform), by: margin + 2 * width + 2 * arcRadius)
         case let .image(op):
             return pad(rotationHull(op.bbox.cgRect, op.transform), by: margin)
-        case let .equation(op):
-            return pad(op.bbox.cgRect, by: margin)
+        case .equation:
+            // 수식은 SVG 조각을 bbox 원점에서 `contentScale` 배로 늘려 그린다. 그려지는 범위는 bbox가 아니라 SVG 내용×배율이라 bbox로 가둘 수 없다
+            // (hwp3-sample16 6쪽: 수식 bbox는 x 57~414인데 선은 x 738까지 칠해졌다). 모르면 그린다.
+            return nil
         case let .rawSvg(op):
             return pad(op.bbox.cgRect, by: margin)
         case let .footnoteMarker(op):
@@ -84,7 +86,15 @@ enum Culling {
             return pad(op.bbox.cgRect, by: margin)
         case let .tabLeader(op):
             guard op.rotation == 0, !op.isVertical else { return nil }
-            return pad(op.bbox.cgRect, by: margin)
+            // 리더 점은 `bbox.x + startX … bbox.x + endX` 에 찍힌다(`DrawingDecoration`). 엔진이 싣는 bbox 는 리더가 걸린 글자 run 의 폭이라
+            // 그 범위를 담는다는 보장이 없다: hwp3-sample16 2쪽 목차의 첫 리더는 bbox 가 x 186~256 인데 점은 268~624 에 찍힌다. bbox 만 보면
+            // 점이 있는 타일을 건너뛴다(샘플 전체 대조가 잡은 결함이다).
+            var rect = op.bbox.cgRect
+            for leader in op.leaders {
+                rect = including(CGPoint(x: op.bbox.x + leader.startX, y: rect.midY), in: rect)
+                rect = including(CGPoint(x: op.bbox.x + leader.endX, y: rect.midY), in: rect)
+            }
+            return pad(rect, by: margin)
         case .unsupported:
             return nil
         }

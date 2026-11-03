@@ -301,6 +301,45 @@ struct TileCompositionTests {
         #expect(tile.report.rendered["op:rectangle"] == 1)
     }
 
+    @Test("탭 리더의 점은 bbox 밖(startX…endX)에 찍혀도 걸러지지 않는다")
+    func tabLeaderDotsOutsideTheirBoxAreNotCulled() throws {
+        // 엔진이 싣는 bbox는 리더가 걸린 글자 run의 폭(x 10..40)인데 리더 구간은 bbox.x 기준 100…250이라 점은 x 110…260에 찍힌다
+        // (hwp3-sample16 2쪽 목차의 실제 모양: bbox 186~256, 점 268~624). y = 100 + 15 − 20 × 0.35 = 108.
+        let leader = ##"""
+        {"type":"tabLeader","bbox":{"x":10,"y":100,"width":30,"height":20},
+         "leaders":[{"startX":100,"endX":250,"fillType":1}],"color":"#000000","fontSize":20,"baseline":15,"rotation":0,"isVertical":false}
+        """##
+        let tree = try makeLeafTree(ops: [OpJSON.background(size: 300), leader], width: 300, height: 300)
+        // 타일 x 200..<240 은 bbox(+여백 24 → x ≤ 64)와 겹치지 않고 리더 점만 닿는다.
+        let tile = try PageRenderer().renderTile(tree, scale: 1, tile: PixelRect(x: 200, y: 100, width: 40, height: 20))
+        #expect(tile.report.rendered["op:tabLeader"] == 1, "리더를 그려야 한다")
+        let pixels = Pixels(tile.image)
+        #expect((6...10).contains { pixels.rgb(20, $0).g < 230 }, "리더 행에 잉크가 있어야 한다")
+        // 걸러내지 않은 타일과 같은 픽셀이다.
+        let everything = try Pixels(renderTileWithoutCulling(tree, scale: 1, tile: PixelRect(x: 200, y: 100, width: 40, height: 20)))
+        #expect(everything.compare(pixels, atX: 0, y: 0).differing == 0)
+    }
+
+    @Test("수식은 그려지는 범위가 bbox 밖으로 나가도 걸러지지 않는다")
+    func equationDrawnBeyondItsBoxIsNotCulled() throws {
+        // bbox는 (10,100) 20×10이고 고유 크기 20×10이라 배율은 1이다. 그런데 조각 안의 선은 x 0…250으로 bbox 밖까지 간다
+        // (hwp3-sample16 6쪽: 수식 bbox는 x 57~414인데 선은 x 738까지 칠해졌다). 그려지는 범위는 bbox가 아니라 SVG 내용이다.
+        let object: [String: Any] = [
+            "type": "equation", "bbox": ["x": 10, "y": 100, "width": 20, "height": 10],
+            "svgContent": ##"<line x1="0" y1="5" x2="250" y2="5" stroke="#ff0000" stroke-width="2"/>"##,
+            "color": "#ff0000", "fontSize": 5,
+            "layoutBox": ["x": 0, "y": 0, "width": 20, "height": 10, "baseline": 5, "kind": ["type": "row"]],
+        ]
+        let equation = String(decoding: try JSONSerialization.data(withJSONObject: object), as: UTF8.self)
+        let tree = try makeLeafTree(ops: [OpJSON.background(size: 300), equation], width: 300, height: 300)
+        let tile = PixelRect(x: 200, y: 100, width: 40, height: 20)
+        let culled = try PageRenderer().renderTile(tree, scale: 1, tile: tile)
+        #expect(culled.report.rendered["op:equation"] == 1, "수식을 그려야 한다")
+        #expect(Pixels(culled.image).rgb(20, 5).g < 100, "bbox에서 먼 타일에도 선이 있어야 한다")
+        let everything = try Pixels(renderTileWithoutCulling(tree, scale: 1, tile: tile))
+        #expect(everything.compare(Pixels(culled.image), atX: 0, y: 0).differing == 0)
+    }
+
     @Test("한 변이 16384px를 넘는 쪽도 타일은 그린다: 맨 끝 타일의 위치와 색")
     func tileFarFromTheOrigin() throws {
         // 300×200 쪽 @60배 = 18000×12000(통째 렌더는 거부한다). 오른쪽 아래 구석 쪽 좌표 1×1px 사각형을 빨갛게 하면
@@ -311,7 +350,8 @@ struct TileCompositionTests {
         ], width: 300, height: 200)
         #expect(throws: RenderError.self) { _ = try PageRenderer().render(tree, scale: 60) }
 
-        let grid = TileGrid(pageWidth: 300, pageHeight: 200, scale: 60)
+        // 손 계산(맨 끝 타일의 위치)은 512px 타일 기준이다. 뷰어 기본값은 측정으로 정한 1024px다.
+        let grid = TileGrid(pageWidth: 300, pageHeight: 200, scale: 60, tileSize: 512)
         #expect((grid.pixelWidth, grid.pixelHeight) == (18000, 12000))
         // 마지막 타일은 비트맵 (17920, 11776) 에서 시작하는 80×224px 다. 사각형은 그 안 (20, 164) 에서 시작한다.
         let last = TileIndex(column: grid.columns - 1, row: grid.rows - 1)

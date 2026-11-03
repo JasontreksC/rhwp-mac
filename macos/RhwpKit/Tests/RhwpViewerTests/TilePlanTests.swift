@@ -13,10 +13,30 @@ struct TilePlannerTests {
     private let size = PageSize(width: 1000, height: 1400)
     private let frame = PageFrame(x: 24, y: 24, width: 1000, height: 1400)
 
+    /// 이 시험의 손 계산은 512px 타일 기준이다. 뷰어의 기본값은 `TileGrid.defaultTileSize`(측정으로 정한 1024px)라 여기서는 명시한다.
+    private static func plan512(
+        pageSize: PageSize, frame: PageFrame, zoom: Zoom, scale: Double, visible: CGRect, overscan: Double = 0.5
+    ) -> TilePlan {
+        TilePlanner.plan(pageSize: pageSize, frame: frame, zoom: zoom, scale: scale, visible: visible, tileSize: 512, overscan: overscan)
+    }
+
+    @Test("뷰어의 기본 타일 크기는 측정으로 정한 1024px다")
+    func defaultTileSizeIsTheMeasuredValue() {
+        #expect(TileGrid.defaultTileSize == 1024)
+        // 기본값으로 계획하면 같은 화면이 더 적은 타일로 덮인다(A4 @ 배율 2 = 1588×2245px → 2열 × 3행).
+        let plan = TilePlanner.plan(
+            pageSize: PageSize(width: 793.7, height: 1122.5), frame: PageFrame(x: 0, y: 0, width: 793.7, height: 1122.5),
+            zoom: Zoom(1), scale: 2, visible: CGRect(x: 0, y: 0, width: 800, height: 1200), overscan: 0
+        )
+        #expect((plan.grid.columns, plan.grid.rows) == (2, 3))
+        #expect(plan.tiles.count == 6)
+    }
+
+
     @Test("보이는 영역과 겹치는 타일만 고른다(여유 없이)")
     func onlyVisibleTiles() {
         // 배율 1, 확대 1: 내용 좌표 (0,0,600,400)은 쪽 안 (−24,−24)~(576,376). 512px 타일 → 가로 0~1열, 세로 0행.
-        let plan = TilePlanner.plan(
+        let plan = Self.plan512(
             pageSize: size, frame: frame, zoom: Zoom(1), scale: 1, visible: CGRect(x: 0, y: 0, width: 600, height: 400), overscan: 0
         )
         #expect(plan.tiles == [TileIndex(column: 0, row: 0), TileIndex(column: 1, row: 0)])
@@ -25,7 +45,7 @@ struct TilePlannerTests {
     @Test("여유(overscan)는 보이는 영역을 사방으로 타일 크기의 비율만큼 넓힌다")
     func overscanWidensTheRegion() {
         // 반 타일(256px) 여유: 쪽 안 (−280,−280)~(832,632) → 0~1열, 0~1행 = 4장.
-        let plan = TilePlanner.plan(
+        let plan = Self.plan512(
             pageSize: size, frame: frame, zoom: Zoom(1), scale: 1, visible: CGRect(x: 0, y: 0, width: 600, height: 400), overscan: 0.5
         )
         #expect(Set(plan.tiles) == [
@@ -37,7 +57,7 @@ struct TilePlannerTests {
     func orderedByDistanceFromTheCenter() {
         // 쪽 안 (700,700) 근처만 본다 → 가운데 타일 (1,1)이 가장 가깝다.
         let visible = CGRect(x: 24 + 600, y: 24 + 600, width: 200, height: 200)
-        let plan = TilePlanner.plan(pageSize: size, frame: frame, zoom: Zoom(1), scale: 1, visible: visible, overscan: 0.5)
+        let plan = Self.plan512(pageSize: size, frame: frame, zoom: Zoom(1), scale: 1, visible: visible, overscan: 0.5)
         #expect(plan.tiles.first == TileIndex(column: 1, row: 1))
         // 반 타일 여유로 쪽 안 344~1056px: 열은 0~1(쪽 너비 1000px = 2열), 행은 0~2(쪽 높이 1400px = 3행) → 6장.
         #expect(plan.tiles.count == 6)
@@ -45,7 +65,7 @@ struct TilePlannerTests {
 
     @Test("쪽이 보이는 영역 밖에 있으면 타일이 없다")
     func pageOutsideTheViewport() {
-        let plan = TilePlanner.plan(
+        let plan = Self.plan512(
             pageSize: size, frame: frame, zoom: Zoom(1), scale: 1, visible: CGRect(x: 0, y: 5000, width: 600, height: 400)
         )
         #expect(plan.tiles.isEmpty)
@@ -55,8 +75,8 @@ struct TilePlannerTests {
     func higherScaleNeedsMoreTiles() {
         // 보이는 영역 600×400pt. 배율 1이면 600×400px(타일 2장), 배율 4이면 2400×1600px(타일 5열 × 4행).
         let visible = CGRect(x: 24, y: 24, width: 600, height: 400)
-        let low = TilePlanner.plan(pageSize: size, frame: frame, zoom: Zoom(1), scale: 1, visible: visible, overscan: 0)
-        let high = TilePlanner.plan(pageSize: size, frame: frame, zoom: Zoom(1), scale: 4, visible: visible, overscan: 0)
+        let low = Self.plan512(pageSize: size, frame: frame, zoom: Zoom(1), scale: 1, visible: visible, overscan: 0)
+        let high = Self.plan512(pageSize: size, frame: frame, zoom: Zoom(1), scale: 4, visible: visible, overscan: 0)
         #expect(low.tiles.count == 2)
         #expect(high.tiles.count == 5 * 4)
         #expect(high.grid.pixelWidth == 4000 && high.grid.pixelHeight == 5600)
@@ -65,7 +85,7 @@ struct TilePlannerTests {
     @Test("타일의 화면 사각형은 비트맵 픽셀에 zoom / scale을 곱한 값이다")
     func tileFrameInPoints() throws {
         // 확대 1, 배율 2(Retina): 1픽셀 = 0.5pt. 타일 (1,0)은 비트맵 x 512~1024 → 256pt~512pt.
-        let plan = TilePlanner.plan(
+        let plan = Self.plan512(
             pageSize: size, frame: frame, zoom: Zoom(1), scale: 2, visible: CGRect(x: 0, y: 0, width: 2000, height: 3000)
         )
         let inner = try #require(plan.frame(of: TileIndex(column: 1, row: 0), zoom: 1))
@@ -78,7 +98,7 @@ struct TilePlannerTests {
 
     @Test("모든 타일의 화면 사각형이 쪽 프레임을 빈틈·겹침 없이 덮는다")
     func tilesTileTheFrame() throws {
-        let plan = TilePlanner.plan(
+        let plan = Self.plan512(
             pageSize: size, frame: frame, zoom: Zoom(1.5), scale: 3, visible: CGRect(x: 0, y: 0, width: 5000, height: 5000), overscan: 0
         )
         var area = 0.0

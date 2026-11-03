@@ -362,10 +362,17 @@ public final class ViewerModel {
         return PageRenderPlan(tiles: wanted, missing: missing, items: items, cover: cover)
     }
 
+    /// 타일을 동시에 시작하는 기본 장수: 코어의 절반, 3~6장.
+    public static let defaultTileConcurrency = min(6, max(3, ProcessInfo.processInfo.activeProcessorCount / 2))
+
     /// `indices`의 타일을 이 순서대로(가까운 것부터) 그린다. 동시에 `concurrency`장까지만 시작하고, 호출한 작업이 취소되면
     /// 아직 시작하지 않은 타일은 그리지 않는다. 스크롤로 지나친 쪽의 타일 수십 장이 줄을 서서 CPU를 먹지 않게 하려는 것이다.
     /// 이미 시작한 타일은 끝까지 가서 캐시에 남는다.
-    public func loadTiles(page: Int, scale: Double, indices: [TileIndex], concurrency: Int = 3) async {
+    ///
+    /// 기본 동시 수는 `defaultTileConcurrency`다(코어의 절반을 3~6으로 묶는다). 측정(`--tile-tune`, 타일 1024px, 배율 2): 동시 3장 → 6장에서 화면 채움 p90 22.9 → 16.8ms,
+    /// p99 68 → 49ms로 줄고 일한 시간의 합은 11.6 → 12.6ms로 거의 그대로다. 코어가 적은 기계에서 UI 스레드를 굶기지 않게 코어의 절반으로 묶었다
+    /// (3·6만 쟀고 그 사이 값은 보간이다).
+    public func loadTiles(page: Int, scale: Double, indices: [TileIndex], concurrency: Int = ViewerModel.defaultTileConcurrency) async {
         await withTaskGroup(of: Void.self) { group in
             var next = indices.startIndex
             var running = 0
