@@ -61,7 +61,7 @@ Swift 쪽(Xcode와 Swift 6.2 이상이 필요하다):
 ```bash
 macos/scripts/build-xcframework.sh --smoke   # Rust FFI를 정적 XCFramework로 묶고 Swift로 왕복 실행
 macos/scripts/test-rhwpkit.sh                # RhwpKit 단위 시험
-macos/Spikes/PaintOpSpike/build-and-run.sh samples/KTX.hwp 0 /tmp/ktx_p0.png   # 한 쪽을 PNG로 그리기
+macos/scripts/rhwp-render.sh samples/KTX.hwp 0 /tmp/ktx_p0.png   # 한 쪽을 PNG로 그리기
 ```
 
 PR 전에 돌리는 전체 검증 묶음(포맷, Clippy, 빌드, 시험 매니페스트)은 [AGENTS.md](AGENTS.md)에 있다.

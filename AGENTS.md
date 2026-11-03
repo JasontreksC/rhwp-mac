@@ -98,7 +98,7 @@ C ABI(`bindings/Native`)를 바꾸면 헤더와 실제 내보낸 심볼이 같�
 
 - 기준: `samples/`·`pdf/`의 한컴 출력 PDF. 쪽 이미지는 Quartz 등으로 흰 배경에 래스터한다.
 - 도구: `scripts/visual_sweep.py`(`--silhouette-only --png-pair`)로 2px 이웃 관용 내용 실루엣 일치율을 낸다.
-  Swift 렌더러가 만든 PNG는 `macos/Spikes/PaintOpSpike/build-and-run.sh <문서> <쪽> <출력.png>`로 얻는다.
+  Swift 렌더러가 만든 PNG는 `macos/scripts/rhwp-render.sh <문서> <쪽> <출력.png>`로 얻는다.
 - 일치율이 어느 쪽이든 **90% 미만**이거나 측정할 수 없으면 새 회귀 시험이나 기준 파일(golden)을 추가하지 않고
   출력을 먼저 개선한다. 정확히 90%는 통과다. 전체 쪽수가 한컴 PDF와 다르면 점수와 무관하게 원인을 찾는다.
 - 현재 일치율은 한컴 글꼴이 이 Mac에 없어 **글꼴 대체가 지배적**이다. 이 한계는 4단계(글꼴 공급)에서 다루며,

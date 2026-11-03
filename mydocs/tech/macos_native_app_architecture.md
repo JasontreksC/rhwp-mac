@@ -90,7 +90,7 @@ Rust가 만드는 레이어 트리(`PageLayerTree`, PaintOp IR) JSON만으로 Sw
 
 - `bindings/Native`에 `rhwp_page_layer_tree(path, page)`를 추가했다. 쪽의 레이어 트리 JSON을 돌려준다.
   스파이크용 무상태 표면이며 1단계의 핸들 기반 API로 대체된다.
-- `macos/Spikes/PaintOpSpike`가 이 JSON을 읽어 CoreGraphics/CoreText로 PNG에 재생한다.
+- 스파이크(`macos/Spikes/PaintOpSpike`, 3단계에서 `RhwpRender`와 `rhwp-render`로 대체되어 지웠다)가 이 JSON을 읽어 CoreGraphics/CoreText로 PNG에 재생했다.
   지원 op: `pageBackground`, `textRun`, `line`, `rectangle`, `ellipse`, `path`, `image`와 `clipRect` 노드.
 - 글자는 Rust가 계산한 `positions`(run 기준 글자별 x 오프셋)와 `placement.runToPage`의 원점·기준선에
   한 글자씩 놓는다. 줄 나눔·자간·장평 폭은 엔진 결과를 그대로 따르고 Swift는 글리프만 그린다.
@@ -138,7 +138,7 @@ Rust가 만드는 레이어 트리(`PageLayerTree`, PaintOp IR) JSON만으로 Sw
 ### 재현
 
 ```bash
-macos/Spikes/PaintOpSpike/build-and-run.sh samples/KTX.hwp 0 /tmp/ktx_p0.png
+macos/scripts/rhwp-render.sh samples/KTX.hwp 0 /tmp/ktx_p0.png
 ```
 
 Rust 툴체인(`rust-toolchain.toml`의 1.93.1)이 필요하다. `.json` 확장자를 주면 레이어 트리 원문만 저장한다.
