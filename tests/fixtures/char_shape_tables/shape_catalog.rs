@@ -1,7 +1,7 @@
-//! DocInfo CHAR_SHAPE / HWPX hh:charPr 미리보기 카탈로그.
-//!
-//! 연속 동일-id 문단이 있는 파일과 #3500 샘플의 글자모양 테이블을
-//! 직렬화 시험이 그대로 소비한다. 값은 추출 스크립트 실측이다.
+// DocInfo CHAR_SHAPE / HWPX hh:charPr 미리보기 카탈로그.
+//
+// 연속 동일-id 문단이 있는 파일과 #3500 샘플의 글자모양 테이블을
+// 직렬화 시험이 그대로 소비한다. 값은 추출 스크립트 실측이다.
 
 /// HWP5 CHAR_SHAPE 미리보기.
 #[derive(Debug, Clone, Copy)]

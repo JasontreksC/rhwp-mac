@@ -9,16 +9,15 @@ use rhwp::document_core::DocumentCore;
 use rhwp::model::style::{CharShape, UnderlineType};
 use rhwp::parse_document;
 use rhwp::serializer::hwpx::char_shape_tables::{
-    attr_field, attr_flag, emphasis_id, issue_3500_row, lang_index, line_shape_id, line_shape_str,
-    outline_type_id, outline_type_str, set_attr_field, set_attr_flag, shadow_type_id,
-    shadow_type_str, strike_shape_str, sym_mark_str, underline_type_from_bits,
-    underline_type_from_hwpx, underline_type_str, underline_type_to_bits, ATTR_BIT_BOLD,
-    ATTR_BIT_ITALIC, ATTR_BIT_OUTLINE, ATTR_WIDTH_OUTLINE, BASE_SIZE_UNITS_PER_PT,
-    CHAR_PR_TOKEN_CASES, CHAR_SHAPE_MIN_BYTES, EMPHASIS_HWPX, ISSUE_3500_BODY_BASE_SIZE,
-    ISSUE_3500_NINE_PT_BASE_SIZE, ISSUE_3500_REFS, ISSUE_3500_SAMPLE, LANG_ATTRS, LANG_SLOTS,
+    attr_field, attr_flag, emphasis_id, lang_index, line_shape_id, line_shape_str, outline_type_id,
+    outline_type_str, set_attr_field, set_attr_flag, shadow_type_id, shadow_type_str,
+    strike_shape_str, sym_mark_str, underline_type_from_bits, underline_type_from_hwpx,
+    underline_type_str, underline_type_to_bits, ATTR_BIT_BOLD, ATTR_BIT_ITALIC, ATTR_BIT_OUTLINE,
+    ATTR_WIDTH_OUTLINE, BASE_SIZE_UNITS_PER_PT, CHAR_SHAPE_MIN_BYTES, EMPHASIS_HWPX,
+    ISSUE_3500_BODY_BASE_SIZE, ISSUE_3500_NINE_PT_BASE_SIZE, LANG_ATTRS, LANG_SLOTS,
     LINE_SHAPE_HWPX, OFF_ATTR, OFF_BASE_SIZE, OFF_CHAR_OFFSETS, OFF_FONT_IDS, OFF_RATIOS,
     OFF_RELATIVE_SIZES, OFF_SHADOW_X, OFF_SHADOW_Y, OFF_SPACINGS, OFF_STRIKE_COLOR, OFF_TEXT_COLOR,
-    OUTLINE_TYPE_HWPX, SAME_ID_PARAS, SHADOW_TYPE_HWPX, SHAPE_TABLES,
+    OUTLINE_TYPE_HWPX, SHADOW_TYPE_HWPX,
 };
 use rhwp::serializer::hwpx::char_shapes::{
     char_pr_xml, collapse_same_id, plan_run_boundaries, same_id_extra_count,
@@ -26,6 +25,14 @@ use rhwp::serializer::hwpx::char_shapes::{
 };
 use rhwp::serializer::hwpx::roundtrip::diff_documents;
 use rhwp::serializer::hwpx::serialize_hwpx;
+
+// 글자 모양 변환의 기준 데이터 표(샘플에서 뽑은 실측값). 시험만 쓰는 약 14,000줄이라 라이브러리가 아니라
+// 시험 곁(tests/fixtures/char_shape_tables)에 둔다. 예전에는 src/serializer/hwpx/char_shape_tables/ 에 있었다.
+// `mod`/`#[path]` 가 아니라 `include!` 로 불러오는 이유: 시험 묶음 정책(scripts/rust-test-suite-manifest.mjs)이
+// 모듈 선언이 있는 시험을 묶음에서 빼 독립 target 으로 만들기 때문이다.
+include!("../fixtures/char_shape_tables/encoding_matrix.rs");
+include!("../fixtures/char_shape_tables/same_id_corpus.rs");
+include!("../fixtures/char_shape_tables/shape_catalog.rs");
 
 const SAMPLE: &str = "samples/re-multisize-10-10-empty-hancom.hwp";
 const SAME_ID_JSONL: &str =
