@@ -7,7 +7,7 @@ fn standalone_native_reason() -> &'static str {
 
 fn stage4_e2e_manifest() -> serde_json::Value {
     serde_json::from_str(include_str!(
-        "../../mydocs/tech/investigations/issue-4961/font_decision_trace_e2e.json"
+        "../fixtures/investigations/issue-4961/font_decision_trace_e2e.json"
     ))
     .expect("Stage 4 E2E manifest JSON")
 }
@@ -223,7 +223,7 @@ fn public_fixture_trace_is_bounded_and_deterministic() {
         .any(|record| record["source"]["status"] == "complete"));
 
     let ledger: serde_json::Value = serde_json::from_str(include_str!(
-        "../../mydocs/tech/investigations/issue-4939/font_rule_ledger.json"
+        "../fixtures/investigations/issue-4939/font_rule_ledger.json"
     ))
     .expect("W1 ledger JSON");
     let rules = ledger["rules"].as_array().expect("ledger rules");

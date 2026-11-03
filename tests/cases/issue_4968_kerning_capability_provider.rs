@@ -25,10 +25,10 @@ const NOTO_REGULAR: &[u8] = include_bytes!("../../ttfs/opensource/NotoSansKR-Reg
 const NO_PAIR_TABLE: &[u8] = include_bytes!("../fixtures/fonts/RHWPBitmapSvgGlyphSmoke.ttf");
 const EXACT_KERNING_SMOKE: &[u8] = include_bytes!("../fixtures/fonts/RHWPExactKerningSmoke.ttf");
 const R4E_RUNTIME_FIXTURE: &[u8] = include_bytes!(
-    "../../mydocs/tech/investigations/issue-4968/fixtures/kerning_runtime_fixture.hwpx"
+    "../fixtures/investigations/issue-4968/kerning_runtime_fixture.hwpx"
 );
 const R4E_RUNTIME_MANIFEST: &str = include_str!(
-    "../../mydocs/tech/investigations/issue-4968/fixtures/kerning_runtime_fixture.manifest.json"
+    "../fixtures/investigations/issue-4968/kerning_runtime_fixture.manifest.json"
 );
 
 #[test]

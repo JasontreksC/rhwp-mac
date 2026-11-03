@@ -2,7 +2,7 @@
 kind: decision
 status: active
 canonical: mydocs/tech/macos_native_app_architecture.md
-last_verified: 2026-11-02
+last_verified: 2026-11-03
 ---
 
 # macOS 네이티브 앱 아키텍처 결정과 0단계 스파이크 결과
@@ -44,7 +44,8 @@ SwiftUI/AppKit 앱
 | #5 | Rust CLI와 에이전트 도구(MCP, 캡슐, RAG, 스킬), 무상태 export 함수 |
 | #6 | 웹 바인딩(wasm-bindgen), PDF·Skia·Canvas·HTML 출력. `wasm_api` → `document_api` 파사드 |
 | #7 | 에이전트 표면(아래), `rhwp-contracts` 크레이트와 `schema_registry`, 미사용 의존성 |
-| 예정 | 문서·지침(`mydocs`, `scripts`, `CLAUDE.md`, `AGENTS.md`, README), 죽은 코드 정리 |
+| #8 | 문서·지침: `mydocs` 23,657개 파일(작업 기록·PR 증적·번역·에이전트/웹 매뉴얼), 업스트림용 `scripts`, 웹 글꼴(`assets/fonts`), 다른 AI 도구 설정, 루트 문서를 지우고 `CLAUDE.md`·`AGENTS.md`·README·CONTRIBUTING·라이선스 목록을 다시 씀 |
+| 예정 | 죽은 코드 정리 |
 
 **에이전트 표면의 기준.** 앱의 편집기·뷰어가 쓰는지로 가른다. 지운 것은 LLM 에이전트가 문서를 읽고 검사하고
 채우는 데 쓰던 질의와 자동화다: 프롬프트 주입·위협·개인정보·은닉 문자 탐지(`injection_scan`, `threat_scan`,

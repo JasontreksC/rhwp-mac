@@ -37,7 +37,7 @@ fn body_runs(value: &serde_json::Value) -> Vec<&serde_json::Value> {
 #[test]
 fn issue_4968_kerning_intent_reaches_text_style_without_changing_positions() {
     let fixture = include_bytes!(
-        "../../mydocs/tech/investigations/issue-4968/fixtures/kerning_pair_fixture.hwpx"
+        "../fixtures/investigations/issue-4968/kerning_pair_fixture.hwpx"
     );
     let core = DocumentCore::from_bytes(fixture).expect("public kerning fixture parses");
     let json = core

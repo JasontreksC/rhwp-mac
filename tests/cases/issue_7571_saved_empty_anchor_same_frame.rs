@@ -13,7 +13,7 @@ fn descendants<'a>(node: &'a RenderNode, nodes: &mut Vec<&'a RenderNode>) {
 fn saved_empty_table_anchor_preserves_its_outer_box_in_the_same_frame() {
     let core = DocumentCore::from_bytes(
         &std::fs::read(
-            "mydocs/pr/assets/semanticist21-20261005/pr7504/pr7504-registered-arial.hwp",
+            "tests/fixtures/issue7571/pr7504-registered-arial.hwp",
         )
         .unwrap(),
     )

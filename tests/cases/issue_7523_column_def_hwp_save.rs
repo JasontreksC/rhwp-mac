@@ -159,7 +159,7 @@ fn collect_column_text<'a>(
 /// 확인한 입력이며, 절대 위치 대신 제목 뒤 순서·첫 단 소속·내용 보존을 검사한다.
 #[test]
 fn reflowed_paragraph_local_positions_do_not_advance_column() {
-    let core = load("mydocs/pr/assets/semanticist21-20261005/pr7527/pr7527-two-columns.hwp");
+    let core = load("tests/fixtures/issue7523/pr7527-two-columns.hwp");
     assert_eq!(core.page_count(), 3, "독립 Print와 전체 쪽수 일치");
     let trees: Vec<serde_json::Value> = (0..core.page_count())
         .map(|page| {
