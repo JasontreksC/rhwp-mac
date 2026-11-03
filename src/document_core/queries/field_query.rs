@@ -1795,24 +1795,6 @@ pub(crate) fn root_para_of(lists: &[ListEntry], entry: &ListEntry) -> usize {
     current.host_para_index
 }
 
-/// 커서 좌표(리스트 아이디 + 그 안의 문단 번호)가 가리키는 문단.
-///
-/// 리스트 표를 이미 만들어 둔 쪽에서 쓴다 — 표를 다시 만드는 비용을 부르는 쪽이 정한다.
-pub(crate) fn cursor_paragraph<'a>(
-    core: &'a DocumentCore,
-    lists: &[ListEntry],
-    list_id: u32,
-    para_in_list: usize,
-) -> Option<&'a Paragraph> {
-    if list_id == ROOT_LIST_ID {
-        let (si, pi) = root_para_location(core, para_in_list)?;
-        return core.document.sections.get(si)?.paragraphs.get(pi);
-    }
-    let entry = lists.iter().find(|l| l.list_id == list_id)?;
-    let path = cell_path_to_list(lists, list_id, para_in_list)?;
-    core.cell_paragraph_at_path(entry.section_index, root_para_of(lists, entry), &path)
-}
-
 /// 본문 문단 번호를 `(구역, 그 구역 안 문단)` 으로 푼다.
 ///
 /// **한글의 본문 리스트는 구역을 가로질러 하나로 이어진다.** rhwp 는 구역별로 나눠 들고 있어서
@@ -1904,67 +1886,6 @@ pub(crate) fn leading_anchor_pos(para: &Paragraph) -> usize {
 /// 확장 컨트롤 하나가 스트림에서 차지하는 코드 유닛 수.
 pub(crate) const EXTENDED_CTRL_UNITS: usize = 8;
 
-/// **블록**이 시작할 수 있는 첫 자리. 캐럿이 설 수 있는 자리([`leading_anchor_pos`])와 다르다.
-///
-/// 캐럿은 앞머리 자리차지 개체를 전부 건너뛰지만 블록은 그 개체들을 **담을 수 있어야** 한다 —
-/// 표를 통째로 잡는 것이 그런 경우다. 한글이 건너뛰는 것은 구역·단 정의처럼 자리만 차지하는
-/// 표식뿐이다(본문 첫 문단 `SelectAll` 실측: 캐럿 시작은 72, 블록 시작은 16 = 표식 둘).
-pub(crate) fn select_start_pos(para: &Paragraph) -> usize {
-    para.controls
-        .iter()
-        .take_while(|ctrl| matches!(ctrl, Control::SectionDef(_) | Control::ColumnDef(_)))
-        .count()
-        * EXTENDED_CTRL_UNITS
-}
-
-/// rhwp 의 글자 번호를 **한글이 보는 스트림 위치**(코드 유닛)로 옮긴다.
-///
-/// `char_offsets` 를 쓰지 않는다. 그 배열은 적재 때 안내문을 지우면서 추정으로 다시 쓰여
-/// 문단마다 다르게 세고(계획서 §4.6.1), 무엇보다 **rhwp 모델과 한글 스트림이 다른 문서**가
-/// 됐다는 사실을 담지 못한다.
-///
-/// 원본 바이트로 확인한 세 규칙(영수증 서식 6개 필드 전수 일치):
-///
-/// 1. 글자 하나는 1칸.
-/// 2. 확장 컨트롤(표·개체·누름틀 시작/끝)은 8칸. 누름틀 하나가 시작·끝 **두 개**를 낸다.
-/// 3. **빈 누름틀은 안내문 글자를 스트림에 담는다.** rhwp 는 적재 때 그것을 지우지만
-///    한글은 파일을 열며 다시 채운다 — 그래서 그 뒤 위치가 안내문 길이만큼 밀린다.
-pub(crate) fn stream_pos(para: &Paragraph, char_idx: usize) -> usize {
-    let control_positions = para.control_text_positions();
-    let mut units = char_idx + tab_padding(para, char_idx);
-
-    // 필드가 아닌 확장 컨트롤 — 자기 자리에서 8칸.
-    //
-    // (컨트롤의 **앵커 자리**를 구할 때는 이 셈을 쓰면 안 된다. 문단마다 자리표 글자를
-    // 남기는 것과 안 남기는 것이 섞여 있어서 여기서 갈라 주지 못한다 — 앵커는
-    // `controls_json` 이 컨트롤을 차례로 걸으며 따로 센다.)
-    for (ci, ctrl) in para.controls.iter().enumerate() {
-        if matches!(ctrl, Control::Field(_)) {
-            continue;
-        }
-        if control_positions
-            .get(ci)
-            .is_some_and(|pos| *pos <= char_idx)
-        {
-            units += ctrl_stream_units(ctrl);
-        }
-    }
-
-    // 누름틀 — 시작 코드, 끝 코드, 그리고 빈 필드면 안내문 글자.
-    for fr in &para.field_ranges {
-        if fr.start_char_idx <= char_idx {
-            units += EXTENDED_CTRL_UNITS;
-        }
-        if fr.end_char_idx <= char_idx {
-            units += EXTENDED_CTRL_UNITS;
-            if fr.start_char_idx == fr.end_char_idx {
-                units += guide_units(para, fr.control_idx);
-            }
-        }
-    }
-    units
-}
-
 /// 그리기 개체 하나가 여는 **글 리스트들** — 글상자와 **캡션**이다.
 ///
 /// 첫 값은 그 개체 안에서 몇 번째 리스트인지다. 리스트 표(`cell_index` 자리)와 컨트롤 사슬이
@@ -2028,17 +1949,6 @@ fn guide_units(para: &Paragraph, control_idx: usize) -> usize {
     }
 }
 
-/// 문단이 스트림에서 차지하는 코드 유닛 수 — 끝 문단 부호는 빼고 센다.
-///
-/// 앞머리 자리차지 자리를 **바닥으로 깐다.** 컨트롤 중에는 문단 텍스트에 자리표 글자를 남기지
-/// 않는 것이 있어서([`Paragraph::control_text_positions`] 가 자리를 못 주는 것들 — 구역·단
-/// 정의 같은 표식) 텍스트만 세면 문단이 실제보다 짧게 나온다. 본문 첫 문단이 그런 꼴인데,
-/// 그러면 시작(72)이 끝(24)보다 커지는 있을 수 없는 상태가 된다. 한글은 그 문단의 시작도 끝도
-/// 72 로 답한다(`MoveDocBegin`·`MoveSelParaEnd` 실측).
-pub(crate) fn stream_len(para: &Paragraph) -> usize {
-    stream_pos(para, para.text.chars().count()).max(leading_anchor_pos(para))
-}
-
 /// 누름틀 **내용이 시작하는** 스트림 위치.
 ///
 /// [`stream_pos`] 를 그대로 쓰면 안 된다 — 그 함수는 "그 자리의 글자"를 기준으로 세기 때문에
@@ -2079,97 +1989,6 @@ pub(crate) fn field_content_start(para: &Paragraph, field_range_index: usize) ->
     }
 
     units + EXTENDED_CTRL_UNITS // 자기 FIELD_BEGIN
-}
-
-/// 캐럿이 설 수 있는 자리들 — 한 글자 이동(`MoveNextChar` 류)이 딛는 눈금.
-///
-/// 한글 실측(영수증 서식 list 9): `0 · 8 · 22 · 23 · 24 · 25 · 33 · 47 · 48 · 49`.
-/// 규칙은 세 가지다.
-///
-/// - 글자마다 한 자리.
-/// - 누름틀은 **시작 코드 앞**과 **내용 시작**에 자리가 있다. 끝 코드 앞에는 없다 —
-///   빈 누름틀에서 한 칸 가면 안내문과 끝 코드를 **한꺼번에 건너뛴다**(8 → 22).
-/// - 문단 끝에 한 자리.
-pub(crate) fn caret_stops(para: &Paragraph) -> Vec<usize> {
-    let mut stops = Vec::new();
-    for (fri, _) in para.field_ranges.iter().enumerate() {
-        let content = field_content_start(para, fri);
-        stops.push(content.saturating_sub(EXTENDED_CTRL_UNITS)); // 시작 코드 앞
-        stops.push(content);
-    }
-    let len = para.text.chars().count();
-    for i in 0..len {
-        stops.push(stream_pos(para, i));
-    }
-    stops.push(stream_len(para));
-    stops.sort_unstable();
-    stops.dedup();
-    stops
-}
-
-/// 단어가 시작하는 자리들 — `MoveNextWord`·`MovePrevWord` 가 딛는 눈금.
-///
-/// 한글2022 실측(두 셀 · 두 방향 자기정합). 단어는 **공백으로 나뉜 덩어리**이고, 누름틀은
-/// 그 자체가 경계를 만든다.
-///
-/// | 자리 | 왜 |
-/// |---|---|
-/// | 문단 시작·끝 | 언제나 |
-/// | 앞이 공백인 글자 | 평문 규칙 — 문장부호는 단어를 안 가른다(`!@` 는 한 덩어리) |
-/// | 누름틀 시작 코드 자리 | 필드가 시작하면 새 단어 |
-/// | 누름틀 내용 시작 | 안내문/내용이 새 단어 |
-///
-/// 끝 코드(FIELD_END)는 경계가 **아니다** — 필드 바로 뒤 글자는 앞 단어에 붙는다
-/// (list 9 에서 22 번 '부' 가 단어 시작이 아니다).
-pub(crate) fn word_starts(para: &Paragraph) -> Vec<usize> {
-    let mut starts = vec![leading_anchor_pos(para)];
-
-    for (fri, _) in para.field_ranges.iter().enumerate() {
-        let content = field_content_start(para, fri);
-        starts.push(content.saturating_sub(EXTENDED_CTRL_UNITS));
-        starts.push(content);
-    }
-
-    // 공백 다음 글자가 단어 시작이다. 단 **스트림에서 바로 이웃**이어야 한다 — 사이에 누름틀이
-    // 끼면(공백 … 필드 … 글자) 그 글자는 앞 단어에 붙는다(list 9 의 47 번 '까').
-    let chars: Vec<char> = para.text.chars().collect();
-    for i in 1..chars.len() {
-        if chars[i - 1].is_whitespace()
-            && !chars[i].is_whitespace()
-            && stream_pos(para, i) == stream_pos(para, i - 1) + 1
-        {
-            starts.push(stream_pos(para, i));
-        }
-    }
-
-    starts.push(stream_len(para));
-    starts.sort_unstable();
-    starts.dedup();
-    starts
-}
-
-/// 지금 단어의 끝 — `MoveWordEnd` 가 가는 자리.
-///
-/// **다음 공백 글자의 자리**다(실측: `가나 다라마` 에서 4 → 6, 1 → 2). 마지막 단어면 문단 끝.
-pub(crate) fn word_end_from(para: &Paragraph, pos: usize) -> usize {
-    let chars: Vec<char> = para.text.chars().collect();
-    for (i, ch) in chars.iter().enumerate() {
-        let at = stream_pos(para, i);
-        if at >= pos && ch.is_whitespace() {
-            return at;
-        }
-    }
-    stream_len(para)
-}
-
-/// [`stream_pos`] 의 역 — 한글이 준 스트림 위치를 rhwp 의 글자 번호로 되돌린다.
-///
-/// 문단은 짧아서 훑어도 된다. 대응표를 따로 두면 편집 때마다 둘이 어긋난다.
-pub(crate) fn char_idx_at_stream_pos(para: &Paragraph, pos: usize) -> usize {
-    let len = para.text.chars().count();
-    (0..=len)
-        .find(|&i| stream_pos(para, i) >= pos)
-        .unwrap_or(len)
 }
 
 /// 글자 번호를 문단 안의 **코드 유닛 위치**로 옮긴다 (옛 경로).
@@ -2895,26 +2714,6 @@ mod tests {
     }
 
     #[test]
-    fn tab_occupies_eight_stream_units() {
-        // 한글 스트림에서 탭은 8칸인데 파서는 글자 하나로 담는다. 그 차이를 `stream_pos` 가
-        // 메우지 않으면 탭 뒤의 모든 자리가 탭 하나당 7칸씩 앞당겨진다 — 누름틀 좌표가
-        // 어긋나는 결함이다(오라클 실측: `InsertTab` 뒤 캐럿 3 → 11).
-        let para = Paragraph {
-            text: "AB\tCD".into(),
-            char_count: 13, // 글자 4 + 탭 8 + 문단끝 1
-            ..Default::default()
-        };
-        assert_eq!(stream_pos(&para, 0), 0);
-        assert_eq!(stream_pos(&para, 2), 2, "탭 앞은 그대로다");
-        assert_eq!(stream_pos(&para, 3), 10, "탭 하나를 지나면 8칸");
-        assert_eq!(stream_pos(&para, 5), 12);
-        assert_eq!(stream_len(&para), 12);
-        // 되짚기도 같은 자를 써야 한다.
-        assert_eq!(char_idx_at_stream_pos(&para, 10), 3);
-        assert_eq!(char_idx_at_stream_pos(&para, 12), 5);
-    }
-
-    #[test]
     fn remove_field_at_invalidates_raw_stream() {
         // 본문 필드 제거는 섹션 본문을 바꾸므로 raw_stream 이 무효화돼야 저장에 반영된다.
         // 무효화 라인을 제거하면 이 테스트가 실패한다(RED): 저장이 원본 바이트를 재방출해
@@ -3095,23 +2894,6 @@ mod tests {
         assert!(
             model.contains("\"topPos\":0"),
             "인라인 표 앞에서 멈춰 0이어야 한다: {model}"
-        );
-    }
-
-    #[test]
-    fn para_bounds_never_start_past_end() {
-        // 자리표 글자를 안 남기는 컨트롤이 있으면 텍스트만 세는 길이가 앞머리 자리차지보다
-        // 짧아져 시작 > 끝이라는 있을 수 없는 상태가 된다. 한글은 그런 문단의 시작도 끝도
-        // 같은 자리로 답한다.
-        let mut anchored = para_with_cells(vec![named_cell("a", vec![Paragraph::default()])]);
-        anchored.char_count = 9;
-        let core = core_with(vec![anchored]);
-
-        let bounds = core.para_bounds_json(0, 0);
-
-        assert_eq!(
-            bounds, r#"{"start":8,"end":8,"selectStart":0}"#,
-            "시작이 끝을 넘으면 안 된다: {bounds}"
         );
     }
 

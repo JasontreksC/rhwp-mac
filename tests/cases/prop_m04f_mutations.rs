@@ -18,6 +18,20 @@ const ROOT: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/proptest
 const SAMPLES: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/samples");
 const ACTIONS: [&str; 4] = ["fill_fields", "replace_text", "set_cell", "set_checkbox"];
 
+/// 본문·표 셀·글상자에서 `needle` 의 일치 목록을 돌려준다.
+/// (이전에는 `DocumentCore::grep` 을 썼으나 에이전트 표면 정리로 제거되어, 같은 범위를 훑는
+/// 검색 API `search_all_text_native` 로 대체했다. 치환 계열과 순회 범위·순서가 같다.)
+fn search_hits(core: &DocumentCore, needle: &str) -> Vec<serde_json::Value> {
+    let json = core
+        .search_all_text_native(needle, true, true)
+        .expect("검색은 실패하지 않아야 한다");
+    serde_json::from_str::<serde_json::Value>(&json)
+        .expect("검색 결과는 JSON 배열이다")
+        .as_array()
+        .cloned()
+        .expect("검색 결과는 JSON 배열이다")
+}
+
 fn read_jsonl(rel: &str) -> Vec<serde_json::Value> {
     let path = Path::new(ROOT).join(rel);
     fs::read_to_string(&path)
@@ -108,10 +122,10 @@ fn text_fixture_cell_is_skip_not_invented() {
 fn handwritten_hwpx_replace_sequence_roundtrips() {
     let bytes = fs::read(Path::new(SAMPLES).join("hwpx/ref/ref_text.hwpx")).unwrap();
     let mut core = DocumentCore::from_bytes(&bytes).unwrap();
-    assert!(!core.grep("Hello", true, None).is_empty());
+    assert!(!search_hits(&core, "Hello").is_empty());
     core.replace_all_native("Hello", "한국", true).unwrap();
-    assert!(core.grep("Hello", true, None).is_empty());
-    assert!(!core.grep("한국", true, None).is_empty());
+    assert!(search_hits(&core, "Hello").is_empty());
+    assert!(!search_hits(&core, "한국").is_empty());
     let edited = core.document().clone();
     let out = serialize_hwpx(&edited).unwrap();
     let reparsed = parse_hwpx(&out).unwrap();

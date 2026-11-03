@@ -55,6 +55,20 @@ enum ExistingRunStep {
     },
 }
 
+/// 본문·표 셀·글상자에서 `needle` 의 일치 목록을 돌려준다.
+/// (이전에는 `DocumentCore::grep` 을 썼으나 에이전트 표면 정리로 제거되어, 같은 범위를 훑는
+/// 검색 API `search_all_text_native` 로 대체했다. 치환 계열과 순회 범위·순서가 같다.)
+fn search_hits(core: &DocumentCore, needle: &str) -> Vec<serde_json::Value> {
+    let json = core
+        .search_all_text_native(needle, true, true)
+        .expect("검색은 실패하지 않아야 한다");
+    serde_json::from_str::<serde_json::Value>(&json)
+        .expect("검색 결과는 JSON 배열이다")
+        .as_array()
+        .cloned()
+        .expect("검색 결과는 JSON 배열이다")
+}
+
 fn prop_config() -> ProptestConfig {
     ProptestConfig {
         cases: CI_CASES,
@@ -151,7 +165,7 @@ fn apply_existing_step(core: &mut DocumentCore, step: &ExistingRunStep) -> Resul
             if find.is_empty() {
                 return Ok(false);
             }
-            let hits = core.grep(find, true, None);
+            let hits = search_hits(core, find);
             if hits.is_empty() {
                 return Ok(false);
             }
@@ -173,7 +187,7 @@ fn apply_existing_step(core: &mut DocumentCore, step: &ExistingRunStep) -> Resul
             text,
         } => apply_set_cell(core, *table, *row, *col, text),
         ExistingRunStep::SetCheckbox { occurrence } => {
-            let hits = core.grep("□", true, None);
+            let hits = search_hits(core, "□");
             if (*occurrence as usize) >= hits.len() {
                 return Ok(false);
             }
