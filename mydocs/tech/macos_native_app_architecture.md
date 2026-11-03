@@ -291,7 +291,7 @@ XCFramework를 Swift로 링크해 열기·쪽수·레이어 트리·범위 밖 �
 
 **측정 도구**
 
-- `macos/scripts/fidelity-sweep.py --discover --pages 1-6`: `pdf/`의 한컴 PDF와 같은 이름의 `samples/` 문서 589쌍을 찾아 우리 렌더러
+- `macos/scripts/fidelity-sweep.py --discover --pages 1-6`: `pdf/`의 한컴 PDF와 같은 이름의 `samples/` 문서 589쌍(이 단계 당시 규칙. 이후 짝짓기를 고쳐 지금은 1,296쌍·723개 문서, [쪽수 불일치 조사](page_count_mismatch_investigation.md))을 찾아 우리 렌더러
   (`rhwp-render <문서> --all`)와 한컴 PDF(`rhwp-render --pdf`, CGPDFDocument로 흰 배경에 래스터)의 쪽 PNG를 만들고
   `scripts/visual_sweep.py --silhouette-only --png-pair`로 쪽별 일치율을 낸다. 쪽수 불일치는 일치율과 따로 기록한다. 쪽별·문서별 TSV와
   건너뛴 op 종류별 평균 일치율, 대체된 글꼴 순위를 함께 낸다. 약 2.5분이 걸린다. 산출물은 git이 무시하는 `output/fidelity/`에 둔다.
