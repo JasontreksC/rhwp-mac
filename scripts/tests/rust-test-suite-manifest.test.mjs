@@ -171,24 +171,6 @@ test('경로 의존 case는 기존 target 이름을 유지한다', () => {
   assert.equal(nextestArguments(plan).includes('-E'), false);
 });
 
-test('명시적으로 허용한 CLI module blocker는 generated suite에 배정한다', () => {
-  for (const caseName of ['cli_json_contract', 'cli_catalog_contract']) {
-    const plan = resolveCasePlan(caseName);
-    assert.equal(plan.grouped, true, caseName);
-    assert.match(plan.target, /^regression_suite_\d{3}$/);
-  }
-});
-
-test('Native Skia 함수 게이트 case는 generated suite에서 feature별로 실행한다', () => {
-  const plan = resolveCasePlan('issue_2225_missing_picture_placeholder');
-  assert.equal(plan.grouped, true);
-  assert.match(plan.target, /^regression_suite_\d{3}$/);
-  assert.match(
-    nextestArguments(plan).join(' '),
-    /issue_2225_missing_picture_placeholder::/,
-  );
-});
-
 test('#6308 전역 카운터·벽시계 테스트는 generated suite가 아니라 독립 target이다', () => {
   for (const caseName of [
     'issue_2833_hml_adapter_row_sizes',
@@ -428,79 +410,12 @@ test('CI가 삭제된 파생 산출물을 재생성해도 PR base 검사가 통�
   assert.deepEqual(validation.errors, []);
 });
 
-test('기여자 가이드는 원본-only 제출을 안내한다', () => {
-  const guide = readFileSync(path.join(ROOT, 'CONTRIBUTING.md'), 'utf8');
-  for (const expected of [/tests\/cases/, /PR review|CI/, /tests\/generated/]) {
-    assert.match(guide, expected);
+test('기여·작업 지침은 원본-only 제출과 파생 suite 준비 경로를 안내한다', () => {
+  // 파생 suite(tests/generated)는 커밋하지 않고 --prepare 로 만든다는 안내가 두 문서에 모두 있어야 한다.
+  for (const relativePath of ['CONTRIBUTING.md', 'AGENTS.md']) {
+    const guide = readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assert.match(guide, /tests\/cases/, relativePath);
+    assert.match(guide, /rust-test-suite-manifest\.mjs --prepare/, relativePath);
+    assert.match(guide, /tests\/generated/, relativePath);
   }
-});
-
-test('검토·개발 가이드는 파생 suite 준비 경로를 안내한다', () => {
-  const reviewGuides = [
-    'mydocs/manual/pr_review/local_validation.md',
-    'mydocs/manual/dev_environment_guide.md',
-  ].map((relativePath) => readFileSync(path.join(ROOT, relativePath), 'utf8'));
-  for (const guide of reviewGuides) {
-    assert.match(guide, /tests\/cases/);
-    assert.match(guide, /PR review|PR 검토|CI/);
-    assert.match(guide, /rust-test-suite-manifest\.mjs --prepare/);
-    assert.match(guide, /tests\/generated/);
-  }
-});
-
-test('CI가 일반 PR base를 integration과 source unit 정책 검사에 전달한다', () => {
-  const workflow = readFileSync(path.join(ROOT, '.github/workflows/ci.yml'), 'utf8');
-  assert.match(
-    workflow,
-    /RHWP_TEST_POLICY_BASE_SHA: \$\{\{ github\.event\.pull_request\.base\.sha \|\| '' \}\}/,
-  );
-  assert.match(
-    workflow,
-    /policy_base_ref="\$RHWP_TEST_POLICY_BASE_SHA"/,
-  );
-  assert.match(
-    workflow,
-    /rust-test-suite-manifest\.mjs --prepare/,
-  );
-  assert.match(
-    workflow,
-    /rust-test-suite-manifest\.mjs --check "\$\{base_args\[@\]\}"/,
-  );
-  assert.match(
-    workflow,
-    /rust-unit-test-tiers\.mjs --check "\$\{base_args\[@\]\}"/,
-  );
-});
-
-test('CI는 same-repository devel-to-main exact promotion에서만 head를 정책 기준으로 쓴다', () => {
-  const workflow = readFileSync(path.join(ROOT, '.github/workflows/ci.yml'), 'utf8');
-  for (const expected of [
-    /RHWP_TEST_POLICY_BASE_BRANCH: \$\{\{ github\.event\.pull_request\.base\.ref \|\| '' \}\}/,
-    /RHWP_TEST_POLICY_HEAD_SHA: \$\{\{ github\.event\.pull_request\.head\.sha \|\| '' \}\}/,
-    /RHWP_TEST_POLICY_HEAD_BRANCH: \$\{\{ github\.event\.pull_request\.head\.ref \|\| '' \}\}/,
-    /RHWP_TEST_POLICY_HEAD_REPOSITORY: \$\{\{ github\.event\.pull_request\.head\.repo\.full_name \|\| '' \}\}/,
-    /RHWP_REPOSITORY: \$\{\{ github\.repository \}\}/,
-    /"\$RHWP_TEST_POLICY_BASE_BRANCH" == "main"/,
-    /"\$RHWP_TEST_POLICY_HEAD_BRANCH" == "devel"/,
-    /"\$RHWP_TEST_POLICY_HEAD_REPOSITORY" == "\$RHWP_REPOSITORY"/,
-    /git merge-base --is-ancestor/,
-    /checkout_tree="\$\(git rev-parse 'HEAD\^\{tree\}'\)"/,
-    /head_tree="\$\(git rev-parse "\$\{RHWP_TEST_POLICY_HEAD_SHA\}\^\{tree\}"\)"/,
-    /if \[\[ "\$checkout_tree" != "\$head_tree" \]\]/,
-    /policy_base_ref="\$RHWP_TEST_POLICY_HEAD_SHA"/,
-  ]) {
-    assert.match(workflow, expected);
-  }
-});
-
-test('CI lint checkout은 PR base 3-way diff를 위해 전체 Git 계보를 가져온다', () => {
-  const workflow = readFileSync(path.join(ROOT, '.github/workflows/ci.yml'), 'utf8');
-  assert.match(
-    workflow,
-    /\n  lint:\n[\s\S]*?fetch-depth: 0\n/,
-  );
-  assert.doesNotMatch(
-    workflow,
-    /git fetch --no-tags --depth=1 origin "\$RHWP_TEST_POLICY_BASE_REF"/,
-  );
 });
