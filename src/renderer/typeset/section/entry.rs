@@ -2,8 +2,8 @@
 use crate::renderer::typeset::{
     column_def_design_spacing_px, columndef_separator_between_floating_overlays,
     empty_table_carrier_column_break_before_page_table,
-    hwp5_origin_redundant_pagehide_break_marker, native_hwp5_figure_table_overlay_guide_empty,
-    para_has_visible_text, para_is_columndef_only_separator, para_is_non_tac_overlay_table_anchor,
+    native_hwp5_figure_table_overlay_guide_empty, para_has_visible_text,
+    para_is_columndef_only_separator, para_is_non_tac_overlay_table_anchor,
     para_is_post_paper_page_square_table_scaffold, para_is_pre_paper_page_square_table_scaffold,
     ColumnBreakType, ColumnDef, ColumnType, Control, PageDef, PageItem, PageLayoutInfo, Paragraph,
     ResolvedStyleSet, TypesetEngine, TypesetState,
@@ -261,20 +261,12 @@ impl TypesetEngine {
             }
         }
 
-        // HWP5-origin 문서는 section PageHide를 연 빈 marker와, 같은 쪽 장식 host의
-        // Page break를 함께 기록할 수 있다. marker의 break는 적용하되 marker
-        // 자체를 배치하지 않아 host가 그 새 쪽을 바로 소유하도록 한다.
-        if (profile.hwp5_stored_pagination_layout() || profile.hwpx_stored_layout())
-            && hwp5_origin_redundant_pagehide_break_marker(
-                para_idx,
-                para,
-                paragraphs,
-                profile.hwpx_stored_layout(),
-            )
-        {
-            st.hide_empty_paragraph(para_idx);
-            return None;
-        }
+        // 쪽 나누기와 PageHide 를 가진 빈 문단(구역 표식 뒤의 "PageHide marker")도 다른 쪽 나누기 문단과 같이
+        // 그 자리에 놓는다. 한때 이 자리에서 그런 marker 를 "같은 쪽 장식 host 의 중복 break"로 보고 건너뛰어
+        // 빈 쪽을 만들지 않았지만, 한컴은 marker 문단이 새 쪽을 열고 호스트의 Page break 가 그 쪽 위에서 다시
+        // 새 쪽을 여는 대로 **중간 빈 쪽을 만든다**: 2025 행정업무운영 편람(hwp)의 `5 질의 및 답변` 간지(구역 10)와
+        // `부 록` 간지(구역 11) 뒤에 한컴 PDF(`-hwp-2024.pdf`) 278·311쪽이 글자 없는 빈 쪽이다. 같은 모양의
+        // HWPX 부록 표지만 예외로 두던 규칙도(`hwpx_pagehide_blank_page_owner`) 이 하나의 원리의 한 경우였다.
 
         // [Task #1046] 사후 reflow 이월: layout 에서 본문 하단 overflow 로 판정된 항목은
         // 현재 페이지에 렌더링하지 않고 다음 페이지로 넘긴다. force_break_before 에 등록된

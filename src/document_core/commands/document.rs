@@ -816,7 +816,27 @@ impl DocumentCore {
                                     && first <= body_height_hu
                                     && first == prev_end.saturating_add(before)
                             });
-                    if !text_only_controls && !inline_reflowed_picture && !inline_saved_table {
+                    // 저장 줄을 하나도 갖지 않아 통째로 재조판한 **글자 문단**은 앞뒤 원본 앵커 사이의
+                    // 저장 간격 안에 자기 원본 높이를 품고 있다. 그 간격은 "빈 물리 공간"이 아니라 이 문단이
+                    // 저장 당시 차지한 높이이고, 재조판은 그 높이를 자기 줄 수로 이미 다시 셌다. 간격을
+                    // 뒤 앵커에 다시 얹으면(`max(running, anchored)`) 재조판이 더 짧게 센 만큼이 허공으로
+                    // 남아 뒤 흐름이 늘어난다.
+                    //
+                    // 실측(`36339092_low_slack_absorb_block.hwpx` pi=4~6, 별표 줄 문단 셋은 저장 줄이 없다):
+                    // 저장 간격 30465 → 44617HU = 188.7px 인데 재조판은 4줄 117.9px 로 센다. 한/글 2022 PDF 도
+                    // 그 문단들을 4줄(y=498·529·561·588)로 놓고 `붙임 1.` 을 644px 에 둔다 — 저장 간격이 아니라
+                    // 재조판 쪽이 맞다. 간격을 얹으면 뒤 문단 vpos 가 70.8px 올라가 본문 끝이 678px 로 복원되고
+                    // 351px 서명 틀이 2쪽으로 밀린다(한/글은 1쪽).
+                    //
+                    // 개체 문단·빈 문단은 건드리지 않는다: 개체가 차지한 자리와 빈 줄 사이의 저장 간격은
+                    // 앞 문단들이 이미 보존하던 대로 둔다.
+                    let wholly_reflowed_text = was_reflowed
+                        && orig_span[pi].is_none()
+                        && para.controls.is_empty()
+                        && !para.text.trim().is_empty();
+                    if (!text_only_controls && !inline_reflowed_picture && !inline_saved_table)
+                        || wholly_reflowed_text
+                    {
                         source_anchor_end = None;
                     }
                     let hosts_bottom_fixed_frame = para.controls.iter().any(|c| {
