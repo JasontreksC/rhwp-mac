@@ -36,6 +36,31 @@ SwiftUI/AppKit 앱
 `crates/*`), 앱이 쓰는 C ABI(`bindings/Native`), Swift 앱(`macos/`), 그리고 렌더 충실도 검증의 기준 자료인
 `samples`·`pdf`다. 삭제는 git 기록에 남아 되살릴 수 있다.
 
+### 정리 진행
+
+| PR | 내용 |
+| --- | --- |
+| #4 | 웹 편집기, 브라우저·에디터 확장, Tauri 앱, CI |
+| #5 | Rust CLI와 에이전트 도구(MCP, 캡슐, RAG, 스킬), 무상태 export 함수 |
+| #6 | 웹 바인딩(wasm-bindgen), PDF·Skia·Canvas·HTML 출력. `wasm_api` → `document_api` 파사드 |
+| #7 | 에이전트 표면(아래), `rhwp-contracts` 크레이트와 `schema_registry`, 미사용 의존성 |
+| 예정 | 문서·지침(`mydocs`, `scripts`, `CLAUDE.md`, `AGENTS.md`, README), 죽은 코드 정리 |
+
+**에이전트 표면의 기준.** 앱의 편집기·뷰어가 쓰는지로 가른다. 지운 것은 LLM 에이전트가 문서를 읽고 검사하고
+채우는 데 쓰던 질의와 자동화다: 프롬프트 주입·위협·개인정보·은닉 문자 탐지(`injection_scan`, `threat_scan`,
+`pii_scan`, `hidden_text`, `stego_scan`, `armor`, `text_security`), 주소가 붙은 검색·추출(`grep`, `extract_data`,
+`explain`, `explore`, `changed_pages`, `structure`, 표·차트 CSV), 문단 블록 템플릿 자동화(`paragraph_block`),
+시험지 빌더, 쪽 범위 추출, 글꼴 측정 커버리지 분석, 그리고 웹한글컨트롤 호환 커서 API(`hwpctrl_sets`)와 그
+파사드 래퍼. 글 편집·서식·표·개체·필드·책갈피·하이퍼링크·찾기와 바꾸기·개요 탐색·클립보드(HTML·한컴 문서모델)는 남겼다.
+
+**일부러 남긴 것.** `table_extract`와 `chart_extract`는 속성 테스트(저장 왕복 비교)와 차트 편집이 쓴다. 검색 순회가
+같은 범위를 훑으므로, `grep`을 오라클로 쓰던 테스트는 `search_all_text_native`로 옮겨 살렸다. `converters`,
+`hwpjson`, `canvas_metrics`(글꼴 측정 외부 공급 프로토콜)도 유지한다.
+
+**죽은 코드 찾는 법.** 루트 `Cargo.toml`이 `dead_code = "allow"`라서 컴파일러는 말해 주지 않는다. 지운 뒤 남은 고아를
+찾으려면 `[lints.rust]`의 `dead_code`를 잠시 `warn`으로 바꾸고, 모듈을 `pub(crate)`로 좁혀 `cargo check --lib`를
+돌린다. `pub` 항목은 통합 테스트가 쓸 수 있어 좁히지 않으면 경고가 나오지 않는다. 지우기 전에 `tests/`의 참조도 확인한다.
+
 ## 0단계 스파이크
 
 ### 질문
