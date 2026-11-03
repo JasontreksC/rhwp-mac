@@ -155,42 +155,6 @@ const EXEMPT: &[(&str, &str, Exempt, &str)] = &[
         "표시 글자를 보존한 제거 후보를 공통 commit helper로 적용한다. helper가 구역 raw_stream과 페이지 캐시를 무효화한다 (#6963).",
     ),
     (
-        "commands/paragraph_block/import_json.rs",
-        "import_paragraph_block_json_native",
-        Exempt::DelegatesTo("import_paragraph_block_native"),
-        "#3587: JSON 어댑터의 dry-run은 무변경, 실행은 native 가져오기의 DocInfo/구역 무효화 경로에 위임한다. issue_3587_template_operation과 실제 WASM import-wasm-contract에서 실패 무변경 및 저장 재열기를 검사한다.",
-    ),
-    (
-        "commands/paragraph_block/import.rs",
-        "import_paragraph_block_native",
-        Exempt::DelegatesTo("commit_block_content"),
-        "#3587: 자원 준비 후 Resources::commit은 DocInfo를 dirty로 표시하고, 공통 commit_block_content가 삽입한 구역 raw_stream을 무효화한다. 실패 무변경 및 HWP/HWPX 재열기는 issue_3587_block_import에서 검사한다.",
-    ),
-    (
-        "commands/paragraph_block/repeat.rs",
-        "repeat_paragraph_block_native",
-        Exempt::DelegatesTo("repeat_paragraph_block_prepared"),
-        "#3587: 준비 후 commit_paragraph_block이 삽입과 대상 구역 raw_stream 무효화를 함께 수행한다.",
-    ),
-    (
-        "commands/paragraph_block/template.rs",
-        "repeat_and_fill_paragraph_block_native",
-        Exempt::DelegatesTo("commit_paragraph_block"),
-        "#3587: detached 채우기 준비 후 공통 commit에서 삽입·구역 원본 스트림 무효화를 수행한다.",
-    ),
-    (
-        "commands/paragraph_block/template_operation.rs",
-        "apply_template_operation_json_native",
-        Exempt::DelegatesTo("execute_template_operation_native"),
-        "#3587: dry-run은 무변경 조회, 실제 실행은 typed 연산 디스패처로 위임한다.",
-    ),
-    (
-        "commands/paragraph_block/template_operation.rs",
-        "execute_template_operation_native",
-        Exempt::DelegatesTo("repeat_and_fill_paragraph_block_native"),
-        "#3587: 문단 복제는 공통 commit, 나머지 분기는 fill_template_native·repeat_and_fill_table_rows_native가 직접 구역 원본 스트림을 무효화한다. 세 경로의 저장·재열기는 issue_3587_template_plan 및 template_operation에서 검증한다.",
-    ),
-    (
         "commands/object_ops/table.rs",
         "delete_cell_picture_control_by_path_native",
         Exempt::DelegatesTo("delete_cell_control_by_path_native"),
@@ -245,13 +209,6 @@ const EXEMPT: &[(&str, &str, Exempt, &str)] = &[
         Exempt::SessionState,
         "dirty 구역을 다시 쪽으로 나눌 뿐(pagination·측정 캐시). 문서 IR 무변경 — \
          선행 편집 뮤테이터가 이미 무효화했다.",
-    ),
-    (
-        "queries/changed_pages.rs",
-        "pages_covering_paragraphs",
-        Exempt::SessionState,
-        "조판 커버리지를 읽어 페이지 번호만 돌려주는 조회. `&mut` 는 paginate_if_needed \
-         한 줄 때문이며 문서 IR 무변경 — 편집 IR은 선행 뮤테이터가 이미 무효화.",
     ),
     (
         "commands/clipboard.rs",
@@ -559,14 +516,6 @@ const EXEMPT: &[(&str, &str, Exempt, &str)] = &[
         "얇은 래퍼 — 실제 삽입·무효화는 `_impl` 이 수행.",
     ),
     (
-        "commands/page_extract.rs",
-        "extract_page_range",
-        Exempt::DelegatesTo("delete_paragraph_native"),
-        "[#3565] 지우는 일은 전부 문단 삭제 뮤테이터에 위임하고, 그쪽이 손댄 구역의 \
-         `raw_stream` 을 무효화한다. 한 문단도 지우지 않은 구역은 원본이 그대로 \
-         유효하므로 통과를 남기는 것이 맞다.",
-    ),
-    (
         "commands/text_editing.rs",
         "insert_text_in_cell_native_deferred_pagination",
         Exempt::DelegatesTo("replace_text_in_cell_native_impl"),
@@ -641,20 +590,6 @@ const EXEMPT: &[(&str, &str, Exempt, &str)] = &[
          (`insert_click_here_field_at_by_path`)가 한다.",
     ),
     (
-        "queries/hwpctrl_sets.rs",
-        "apply_char_format_at_cursor",
-        Exempt::DelegatesTo("apply_char_format_native"),
-        "좌표만 옮긴다(코드 유닛 → 글자 번호). 서식 적용과 무효화는 본문 경로 \
-         (`apply_char_format_native`)와 셀 경로(`apply_char_format_in_cell_by_path`)가 한다.",
-    ),
-    (
-        "queries/hwpctrl_sets.rs",
-        "split_para_at_cursor",
-        Exempt::DelegatesTo("split_paragraph_native"),
-        "좌표만 옮긴다(코드 유닛 → 글자 번호). 가르기와 무효화는 본문 경로 \
-         (`split_paragraph_native`)와 셀 경로(`split_paragraph_in_cell_by_path`)가 한다.",
-    ),
-    (
         "commands/table_ops.rs",
         "delete_table_control_native",
         Exempt::DelegatesTo("delete_control_native_impl"),
@@ -665,47 +600,6 @@ const EXEMPT: &[(&str, &str, Exempt, &str)] = &[
         "delete_control_native",
         Exempt::DelegatesTo("delete_control_native_impl"),
         "갈래 검사 없이 넘길 뿐이다. 지우기와 무효화는 `delete_control_native_impl` 이 한다.",
-    ),
-    (
-        "queries/hwpctrl_sets.rs",
-        "delete_control_at",
-        Exempt::DelegatesTo("delete_control_native"),
-        "본문 문단 번호를 구역·문단으로 풀어 넘길 뿐이다. 지우기와 무효화는 아래가 한다.",
-    ),
-    (
-        "queries/hwpctrl_sets.rs",
-        "insert_text_at_cursor",
-        Exempt::DelegatesTo("insert_text_native"),
-        "좌표만 옮긴다(코드 유닛 → 글자 번호). 끼우기와 무효화는 본문 경로 \
-         (`insert_text_native`)와 셀 경로(`insert_text_in_cell_by_path`)가 한다.",
-    ),
-    (
-        "queries/hwpctrl_sets.rs",
-        "table_merge_at_cursor",
-        Exempt::DelegatesTo("merge_table_cells_native"),
-        "리스트 아이디를 구역·문단·컨트롤·행·열로 풀어 넘길 뿐이다. 합치는 것과 무효화는 \
-         `merge_table_cells_native` 가 한다.",
-    ),
-    (
-        "queries/hwpctrl_sets.rs",
-        "table_edit_at_cursor",
-        Exempt::DelegatesTo("insert_table_row_native"),
-        "리스트 아이디를 구역·문단·컨트롤·행·열로 풀어 넘길 뿐이다. 표를 고치는 것과 무효화는 \
-         `insert_table_row_native`·`delete_table_row_native` 같은 표 편집 API 가 한다.",
-    ),
-    (
-        "queries/hwpctrl_sets.rs",
-        "delete_at_cursor",
-        Exempt::DelegatesTo("delete_text_native"),
-        "좌표만 옮긴다(코드 유닛 → 글자 번호). 삭제와 무효화는 본문 경로 \
-         (`delete_text_native`)와 셀 경로(`delete_range_in_cell_by_path`)가 한다.",
-    ),
-    (
-        "queries/hwpctrl_sets.rs",
-        "apply_para_format_at_cursor",
-        Exempt::DelegatesTo("apply_para_format_native"),
-        "리스트 아이디를 구역·문단으로 풀어 넘길 뿐이다. 서식 적용과 무효화는 본문 경로 \
-         (`apply_para_format_native`)와 셀 경로(`apply_para_format_in_cell_native`)가 한다.",
     ),
     // ── 판정 보류 ──────────────────────────────────────────────────────────
     (
