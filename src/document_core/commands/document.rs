@@ -2087,9 +2087,8 @@ impl DocumentCore {
 
     /// 스냅숏 HWP 저장 바이트와 바로 그 산출물의 내용 손실을 함께 반환한다 (#4430).
     ///
-    /// 명시적 WASM 저장은 이 경로를 사용한다. 어댑터와 직렬화가 복제본에서 실행되므로
-    /// 성공/실패와 무관하게 live Document IR은 바뀌지 않는다. MCP 등 byte-only 보조
-    /// 소비자는 이 이슈의 보고서 전달 범위 밖이다.
+    /// 명시적 저장은 이 경로를 사용한다. 어댑터와 직렬화가 복제본에서 실행되므로
+    /// 성공/실패와 무관하게 live Document IR은 바뀌지 않는다.
     pub fn export_hwp_with_adapter_snapshot_with_report(
         &self,
     ) -> Result<crate::serializer::SerializedDocument, HwpError> {

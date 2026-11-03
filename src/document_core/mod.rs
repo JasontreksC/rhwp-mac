@@ -328,8 +328,8 @@ impl DocumentCore {
     }
 }
 
-/// `DocumentCore` 는 스레드 경계 너머로 소유될 수 있어야 한다 — native 소비자(MCP 서버,
-/// 워커 풀)가 `Mutex<DocumentCore>` 를 다른 스레드로 보낸다. 내부 캐시 어딘가에 `Rc` 나
+/// `DocumentCore` 는 스레드 경계 너머로 소유될 수 있어야 한다 — native 소비자(C ABI 문서 핸들이
+/// 들고 있는 `Mutex<DocumentCore>`, Swift 쪽 문서 큐)가 이를 다른 스레드로 보낸다. 내부 캐시 어딘가에 `Rc` 나
 /// 다른 `!Send` 타입이 들어오면 이 단언이 컴파일 타임에 깨진다.
 /// 내부 가변성(`Cell`/`RefCell`)은 `!Sync` 만 만들 뿐 `Send` 는 유지하므로 여기서 의도대로 통과한다.
 const _: () = {

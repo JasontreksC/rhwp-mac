@@ -45,7 +45,8 @@ SwiftUI/AppKit 앱
 | #6 | 웹 바인딩(wasm-bindgen), PDF·Skia·Canvas·HTML 출력. `wasm_api` → `document_api` 파사드 |
 | #7 | 에이전트 표면(아래), `rhwp-contracts` 크레이트와 `schema_registry`, 미사용 의존성 |
 | #8 | 문서·지침: `mydocs` 23,657개 파일(작업 기록·PR 증적·번역·에이전트/웹 매뉴얼), 업스트림용 `scripts`, 웹 글꼴(`assets/fonts`), 다른 AI 도구 설정, 루트 문서를 지우고 `CLAUDE.md`·`AGENTS.md`·README·CONTRIBUTING·라이선스 목록을 다시 씀 |
-| 예정 | 죽은 코드 정리 |
+| #9 | 죽은 코드: 앱도 시험도 쓰지 않는 통째 항목 106개와 낡은 MCP·CLI 주석(아래 "죽은 코드 찾는 법") |
+| 남음 | 시험만 쓰는 죽은 덩어리(약 19,000줄)를 둘지, 필드·열거형 변형, 쓰이지 않는 `use` 줄 |
 
 **에이전트 표면의 기준.** 앱의 편집기·뷰어가 쓰는지로 가른다. 지운 것은 LLM 에이전트가 문서를 읽고 검사하고
 채우는 데 쓰던 질의와 자동화다: 프롬프트 주입·위협·개인정보·은닉 문자 탐지(`injection_scan`, `threat_scan`,
@@ -58,9 +59,24 @@ SwiftUI/AppKit 앱
 같은 범위를 훑으므로, `grep`을 오라클로 쓰던 테스트는 `search_all_text_native`로 옮겨 살렸다. `converters`,
 `hwpjson`, `canvas_metrics`(글꼴 측정 외부 공급 프로토콜)도 유지한다.
 
-**죽은 코드 찾는 법.** 루트 `Cargo.toml`이 `dead_code = "allow"`라서 컴파일러는 말해 주지 않는다. 지운 뒤 남은 고아를
-찾으려면 `[lints.rust]`의 `dead_code`를 잠시 `warn`으로 바꾸고, 모듈을 `pub(crate)`로 좁혀 `cargo check --lib`를
-돌린다. `pub` 항목은 통합 테스트가 쓸 수 있어 좁히지 않으면 경고가 나오지 않는다. 지우기 전에 `tests/`의 참조도 확인한다.
+**죽은 코드 찾는 법.** 루트 `Cargo.toml`이 `dead_code = "allow"`라서 컴파일러는 말해 주지 않는다. 절차는 이렇다.
+
+1. `[lints.rust]`의 `dead_code`를 잠시 `warn`으로 바꾸고, `src/lib.rs`에서 `document_api`를 뺀 최상위 모듈을 `pub(crate)`로
+   좁혀 `cargo check --lib --message-format json`을 돌린다. `pub` 항목은 통합 테스트가 쓸 수 있어 좁히지 않으면 경고가
+   나오지 않는다. 좁히면 앱이 쓰는 공개 표면(`document_api`, `DocumentCore`, 파싱·저장 함수)에서 닿지 않는 항목이 나온다.
+2. 통째 항목(함수·메서드·상수·구조체·열거형·트레이트·타입 별칭)만 후보로 삼는다. 필드와 열거형 변형은 지우면 생성자와
+   `match`가 줄줄이 바뀌므로 따로 다룬다.
+3. 후보 중 `tests/`·`bindings/`·`crates/`가 **이름을 단어 단위로 참조**하거나, `src/` 안의 단위 시험 코드
+   (`#[cfg(test)]`, `tests.rs`, `*_tests.rs`)가 참조하면 뿌리로 남긴다. 뿌리 본문에 이름이 나오는 다른 후보도
+   전이적으로 남긴다. 이 폐쇄를 계산하지 않으면 시험이 쓰는 함수의 보조 함수를 지워 컴파일이 수천 줄 깨진다.
+4. 나머지를 지우고 컴파일하면 새 후보가 나타난다(지운 항목만 쓰던 것들). 후보가 0이 될 때까지 되풀이한다.
+   지운 항목이 `pub use` 목록이나 트레이트 정의에 있었다면 컴파일 오류가 가리키므로 손으로 고친다.
+5. 설정을 원래대로 돌리고 `cargo check --workspace --all-targets`로 시험까지 컴파일되는지 확인한다.
+
+**`cargo fix`로 `use` 줄을 한꺼번에 정리하지 않는다.** `unused_imports`를 켜고 `cargo fix --all-targets`를 돌리면
+비시험 빌드에서 안 쓰이는 `use`(단위 시험이 `use super::*`로 받아 쓰는 것)까지 지워 lib test가 수십 곳 깨진다.
+사양을 옮긴 상수 표(`parser/tags.rs`, `parser/hwp_summary.rs`, 글자 모양 비트 표)와 레이어 트리 계약 상수
+(`paint/schema.rs`)는 쓰이지 않아도 남긴다. Swift 모델과 이후 서식 편집 단계가 같은 값을 쓴다.
 
 ## 0단계 스파이크
 

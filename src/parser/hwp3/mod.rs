@@ -4108,7 +4108,7 @@ fn parse_hwp3_inner(
     // [보안] `info_block_length` 는 u16 이지만 **문서가 정하는 값**이라, 짧은/손상된
     // 파일에서 본문 시작 오프셋이 파일 끝을 넘길 수 있다. 종전엔 `&data[start..]` 가
     // 그대로 슬라이싱해 `range start index N out of range` 패닉(DoS)이었다 — 신뢰 경계
-    // 밖 `.hwp` 로 `parse_hwp3` 를 부르는 라이브러리·MCP 소비자를 죽인다. 경계를 확인해
+    // 밖 `.hwp` 로 `parse_hwp3` 를 부르는 라이브러리 소비자(앱)를 죽인다. 경계를 확인해
     // 파싱 오류로 끝낸다(오버플로 방지 위해 saturating_add).
     let body_start = 30usize
         .saturating_add(current_pos as usize)

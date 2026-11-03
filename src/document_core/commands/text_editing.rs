@@ -3873,7 +3873,7 @@ impl DocumentCore {
         )))
     }
 
-    /// CLI/MCP의 문단 앞 쪽 나눔 속성 설정. Ctrl+Enter의 문단 분할과 구분한다.
+    /// 문단 앞 쪽 나눔 속성 설정. Ctrl+Enter의 문단 분할과 구분한다.
     /// 기존 텍스트/문단을 보존하고 다른 break 축과 명시적 저장 여부를 함께 갱신한다.
     /// 이미 같은 명시적 속성이 있으면 false를 반환한다.
     pub fn mark_page_break_at_paragraph_start_native(
@@ -3930,7 +3930,7 @@ impl DocumentCore {
         Ok(true)
     }
 
-    /// CLI/MCP의 문단 앞 단 나눔 속성 설정. 사용자 분할 명령과 구분한다.
+    /// 문단 앞 단 나눔 속성 설정. 사용자 분할 명령과 구분한다.
     /// 쪽/단은 직교하는 저장 비트이며 유효 조판 분류는 파서와 같은 Page 우선이다.
     pub fn mark_column_break_at_paragraph_start_native(
         &mut self,
