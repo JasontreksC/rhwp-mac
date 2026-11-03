@@ -30,10 +30,11 @@ let package = Package(
             name: "RhwpRender",
             dependencies: ["RhwpKit"]
         ),
-        // 뷰어 로직(확대·축소 단계, 쪽 배치). UI 프레임워크에 의존하지 않아 단위 시험이 가능하다.
+        // 뷰어 로직과 모델(확대·축소 단계, 쪽 배치, 쪽 그림 캐시, 문서 열기). UI 프레임워크에 의존하지 않아 샌드박스
+        // 없이 단위 시험이 가능하다. 화면(SwiftUI)은 앱 타깃이 맡는다.
         .target(
             name: "RhwpViewer",
-            dependencies: ["RhwpKit"]
+            dependencies: ["RhwpKit", "RhwpRender"]
         ),
         // 문서의 한 쪽을 PNG로 그리는 명령줄 도구(시각 검증의 입력을 만든다).
         .executableTarget(
@@ -50,7 +51,7 @@ let package = Package(
         ),
         .testTarget(
             name: "RhwpViewerTests",
-            dependencies: ["RhwpKit", "RhwpViewer"]
+            dependencies: ["RhwpKit", "RhwpRender", "RhwpViewer"]
         ),
     ]
 )
