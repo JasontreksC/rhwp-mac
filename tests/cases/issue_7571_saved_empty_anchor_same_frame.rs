@@ -12,10 +12,7 @@ fn descendants<'a>(node: &'a RenderNode, nodes: &mut Vec<&'a RenderNode>) {
 #[test]
 fn saved_empty_table_anchor_preserves_its_outer_box_in_the_same_frame() {
     let core = DocumentCore::from_bytes(
-        &std::fs::read(
-            "tests/fixtures/issue7571/pr7504-registered-arial.hwp",
-        )
-        .unwrap(),
+        &std::fs::read("tests/fixtures/issue7571/pr7504-registered-arial.hwp").unwrap(),
     )
     .unwrap();
     assert_eq!(core.page_count(), 1);

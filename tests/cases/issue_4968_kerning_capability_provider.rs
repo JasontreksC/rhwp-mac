@@ -24,12 +24,10 @@ use std::cell::Cell;
 const NOTO_REGULAR: &[u8] = include_bytes!("../../ttfs/opensource/NotoSansKR-Regular.ttf");
 const NO_PAIR_TABLE: &[u8] = include_bytes!("../fixtures/fonts/RHWPBitmapSvgGlyphSmoke.ttf");
 const EXACT_KERNING_SMOKE: &[u8] = include_bytes!("../fixtures/fonts/RHWPExactKerningSmoke.ttf");
-const R4E_RUNTIME_FIXTURE: &[u8] = include_bytes!(
-    "../fixtures/investigations/issue-4968/kerning_runtime_fixture.hwpx"
-);
-const R4E_RUNTIME_MANIFEST: &str = include_str!(
-    "../fixtures/investigations/issue-4968/kerning_runtime_fixture.manifest.json"
-);
+const R4E_RUNTIME_FIXTURE: &[u8] =
+    include_bytes!("../fixtures/investigations/issue-4968/kerning_runtime_fixture.hwpx");
+const R4E_RUNTIME_MANIFEST: &str =
+    include_str!("../fixtures/investigations/issue-4968/kerning_runtime_fixture.manifest.json");
 
 #[test]
 fn issue_4968_exact_slot_registry_roundtrips_provider_and_session() {
