@@ -10,13 +10,18 @@ import RhwpKit
 /// 이 렌더러는 그 위치에 글리프를 놓을 뿐 조판을 다시 계산하지 않는다.
 ///
 /// 0단계 스파이크의 동적 딕셔너리 렌더러를 2단계의 `PageLayerTree` 모델 위로 옮긴 것이다. 같은 입력에서
-/// 스파이크와 같은 픽셀을 내도록 그리기 규칙을 그대로 가져왔고, 아직 다루지 않는 것은 아래에 적었다.
+/// 스파이크와 같은 픽셀을 내도록 그리기 규칙을 그대로 가져왔고, 4단계에서 엔진의 SVG 렌더러가 하던 일을 옮겨 왔다.
 ///
-/// 아직 하지 않는 것(4단계 범위):
-/// - 그림의 잘라내기(`crop`)·채우기 방식(`fillMode`)·투명도·회전, 선의 회전·뒤집기
-/// - SVG 타원호(`arcTo`)의 정확한 호: 끝점까지의 직선으로 근사하고 `path:arcTo(approximated)`로 집계한다
-/// - 글자의 세로쓰기·회전·위/아래 첨자, 밑줄 위치 구분(`top`), 원형 그라데이션
-/// - 모델이 보존만 하는 op(`textDecoration`, `tabLeader`, `charOverlap`, `equation` 등): `op:<이름>`으로 집계한다
+/// 파일 구성: 이 파일은 트리 순회·도형·글자 run, `DrawingObjects`는 수식·원본 SVG·각주 표식·자리 표시·양식,
+/// `DrawingDecoration`은 밑줄·취소선·강조점·탭 리더, `DrawingImage`는 그림, `SVGFragmentDrawer`는 엔진이 SVG
+/// 조각으로 보내는 수식·차트·WMF/EMF 그림이다.
+///
+/// 아직 하지 않는 것(그릴 수 없는 입력은 `RenderReport`에 `op:<이름>`·`svg:<요소>` 등으로 집계된다):
+/// - 글자: 세로쓰기·회전·위/아래 첨자, 글자 겹침(`charOverlap`), 그림자·음영, 엔진이 글리프 단위로 특별 취급하는
+///   가운뎃점·사각 안 숫자·옛 글꼴 글머리표
+/// - 그림: 밝기·대비·그림 효과(`image:effect`), 세로쓰기 글자의 장식선
+/// - SVG 조각: 무늬·마스크·필터·`clipPath`와 `url(#…)` 칠
+/// - 타일링 렌더러(큰 쪽을 조각으로 나눠 그리기)는 이 렌더러가 아니라 뷰어의 배율 정책이 정한다.
 public struct PageRenderer: Sendable {
     private let fontResolver: FontResolver
 
@@ -70,7 +75,7 @@ public struct PageRenderer: Sendable {
 }
 
 /// 한 번의 그리기 동안의 상태. 렌더마다 새로 만들어 스레드 간에 공유하지 않는다.
-private struct Drawing {
+struct Drawing {
     let ctx: CGContext
     let fontResolver: FontResolver
     var report = RenderReport()
@@ -108,6 +113,13 @@ private struct Drawing {
         case let .ellipse(op): drawEllipse(op)
         case let .path(op): drawPath(op)
         case let .image(op): drawImage(op)
+        case let .equation(op): drawEquation(op)
+        case let .rawSvg(op): drawRawSvg(op)
+        case let .footnoteMarker(op): drawFootnoteMarker(op)
+        case let .placeholder(op): drawPlaceholder(op)
+        case let .formObject(op): drawFormObject(op)
+        case let .textDecoration(op): drawTextDecoration(op)
+        case let .tabLeader(op): drawTabLeader(op)
         case let .unsupported(type): report.countSkipped("op:\(type)")
         }
     }
@@ -124,6 +136,7 @@ private struct Drawing {
 
     private mutating func drawLine(_ op: LineOp) {
         ctx.saveGState()
+        applyShapeTransform(op.transform, about: op.bbox.cgRect)
         applyStroke(color: op.style.color, width: op.style.width, dash: op.style.dash)
         ctx.move(to: CGPoint(x: op.start.x, y: op.start.y))
         ctx.addLine(to: CGPoint(x: op.end.x, y: op.end.y))
@@ -158,17 +171,31 @@ private struct Drawing {
     private mutating func drawPath(_ op: PathOp) {
         let box = op.bbox.cgRect
         let path = CGMutablePath()
+        // 타원호는 현재 점에서 시작하므로 현재 점과 부경로 시작점을 따라간다.
+        var current = CGPoint.zero
+        var subpathStart = CGPoint.zero
         for command in op.commands {
             switch command {
-            case let .moveTo(p): path.move(to: p.cgPoint)
-            case let .lineTo(p): path.addLine(to: p.cgPoint)
+            case let .moveTo(p):
+                path.move(to: p.cgPoint)
+                current = p.cgPoint
+                subpathStart = current
+            case let .lineTo(p):
+                path.addLine(to: p.cgPoint)
+                current = p.cgPoint
             case let .curveTo(control1, control2, end):
                 path.addCurve(to: end.cgPoint, control1: control1.cgPoint, control2: control2.cgPoint)
-            case let .arcTo(_, _, _, _, _, end):
-                // SVG 타원호는 중심 매개변수 변환이 필요하다(4단계). 지금은 끝점까지 직선으로 근사하고 집계한다.
-                path.addLine(to: end.cgPoint)
-                report.countSkipped("path:arcTo(approximated)")
-            case .closePath: path.closeSubpath()
+                current = end.cgPoint
+            case let .arcTo(rx, ry, rotation, largeArc, sweep, end):
+                // SVG 타원호를 중심 매개변수로 바꿔 3차 베지어로 정확히 그린다(`SVGArc`).
+                SVGArc.append(
+                    to: path, from: current, radiusX: rx, radiusY: ry, rotationDegrees: rotation,
+                    largeArc: largeArc, sweep: sweep, to: end.cgPoint
+                )
+                current = end.cgPoint
+            case .closePath:
+                path.closeSubpath()
+                current = subpathStart
             case let .unsupported(type): report.countSkipped("path:\(type)")
             }
         }
@@ -205,10 +232,10 @@ private struct Drawing {
         }
     }
 
-    /// 선형 그라데이션을 그린다. 엔진의 SVG 렌더러처럼 원형(type 2)만 제외하고 줄무늬(1)·원뿔(3)·사각(4)은
-    /// 선형으로 근사한다. 원형은 지원하지 않으므로 false를 돌려 호출자가 단색 채우기로 되돌아가게 한다.
+    /// 그라데이션을 그린다. 원형(type 2)은 방사형으로, 줄무늬(1)·원뿔(3)·사각(4)은 엔진의 SVG 렌더러처럼 선형으로
+    /// 근사한다. 그릴 수 없는 입력(색이 2개 미만 등)이면 false를 돌려 호출자가 단색 채우기로 되돌아가게 한다.
     private mutating func fillGradient(_ gradient: Gradient, path: CGPath, bounds: CGRect) -> Bool {
-        guard gradient.gradientType != 2, gradient.colors.count >= 2, gradient.positions.count == gradient.colors.count,
+        guard gradient.colors.count >= 2, gradient.positions.count == gradient.colors.count,
               let cg = CGGradient(
                   colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
                   colors: gradient.colors.map(\.cgColor) as CFArray,
@@ -217,6 +244,25 @@ private struct Drawing {
         else {
             report.countSkipped("gradient:type\(gradient.gradientType)")
             return false
+        }
+        if gradient.gradientType == 2 {
+            // 엔진의 SVG 렌더러는 `radialGradient cx cy r=50%`를 상자 비율(objectBoundingBox)로 낸다. 중심은 상자의
+            // 백분율 위치, 반지름은 가로 `width/2`·세로 `height/2`인 **타원**이다. CoreGraphics의 방사형은 원이므로
+            // 중심으로 옮겨 상자 크기만큼 늘린 단위 좌표(반지름 0.5)에서 그린다. 끝 바깥은 끝 색으로 채운다(SVG pad).
+            ctx.saveGState()
+            ctx.addPath(path)
+            ctx.clip()
+            ctx.translateBy(
+                x: bounds.minX + bounds.width * CGFloat(gradient.centerX) / 100,
+                y: bounds.minY + bounds.height * CGFloat(gradient.centerY) / 100
+            )
+            ctx.scaleBy(x: bounds.width, y: bounds.height)
+            ctx.drawRadialGradient(
+                cg, startCenter: .zero, startRadius: 0, endCenter: .zero, endRadius: 0.5,
+                options: [.drawsAfterEndLocation]
+            )
+            ctx.restoreGState()
+            return true
         }
         // 축 방향은 엔진 정본(`linear_gradient_axis`)과 같은 규칙이다. 모델의 `linearAxis`가 그 규칙을 담고 있다.
         let axis = gradient.linearAxis(in: LayerRect(
@@ -244,32 +290,12 @@ private struct Drawing {
     }
 
     /// 도형 회전/뒤집기. 회전 중심은 bbox 중심이다.
-    private func applyShapeTransform(_ transform: ShapeTransform, about box: CGRect) {
+    func applyShapeTransform(_ transform: ShapeTransform, about box: CGRect) {
         guard !transform.isIdentity else { return }
         ctx.translateBy(x: box.midX, y: box.midY)
         ctx.rotate(by: CGFloat(transform.rotation * .pi / 180))
         ctx.scaleBy(x: transform.horzFlip ? -1 : 1, y: transform.vertFlip ? -1 : 1)
         ctx.translateBy(x: -box.midX, y: -box.midY)
-    }
-
-    // MARK: - 그림
-
-    private mutating func drawImage(_ op: ImageOp) {
-        guard let data = op.imageData,
-              let source = CGImageSourceCreateWithData(data as CFData, nil),
-              let image = CGImageSourceCreateImageAtIndex(source, 0, nil)
-        else {
-            report.countSkipped("op:image(undecodable)")
-            return
-        }
-        let box = op.bbox.cgRect
-        ctx.saveGState()
-        // y-down 컨텍스트에서 그림이 뒤집히지 않도록 bbox 안에서만 다시 뒤집는다.
-        ctx.translateBy(x: box.minX, y: box.maxY)
-        ctx.scaleBy(x: 1, y: -1)
-        ctx.draw(image, in: CGRect(x: 0, y: 0, width: box.width, height: box.height))
-        ctx.restoreGState()
-        report.countRendered("op:image")
     }
 
     // MARK: - 글자
@@ -311,31 +337,9 @@ private struct Drawing {
             ctx.restoreGState()
         }
 
-        // 밑줄/취소선: run 전체 폭 기준.
-        let runWidth = positions.last ?? 0
-        let size = style.fontSize
-        if style.underline != .none {
-            strokeHorizontal(
-                color: style.underlineColor?.cgColor ?? color, size: size,
-                from: originX, width: runWidth, y: baselineY + size * 0.12
-            )
-        }
-        if style.strikethrough {
-            strokeHorizontal(
-                color: style.strikeColor?.cgColor ?? color, size: size,
-                from: originX, width: runWidth, y: baselineY - size * 0.3
-            )
-        }
+        // 밑줄·취소선·강조점은 엔진이 별도 op(`textDecoration`)로 내므로 여기서 그리지 않는다.
         ctx.restoreGState()
         report.countRendered("op:textRun")
-    }
-
-    private func strokeHorizontal(color: CGColor, size: Double, from x: Double, width: Double, y: Double) {
-        ctx.setStrokeColor(color)
-        ctx.setLineWidth(max(size / 20, 0.5))
-        ctx.move(to: CGPoint(x: x, y: y))
-        ctx.addLine(to: CGPoint(x: x + width, y: y))
-        ctx.strokePath()
     }
 
     private func makeLine(_ string: String, font: CTFont, color: CGColor) -> CTLine {

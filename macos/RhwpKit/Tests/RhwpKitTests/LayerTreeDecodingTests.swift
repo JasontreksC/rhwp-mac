@@ -182,12 +182,12 @@ struct LayerTreeDecodingTests {
     func unknownKindsSurvive() throws {
         let json = Self.envelope(root: """
         {"bounds":{"x":0,"y":0,"width":10,"height":10},"kind":"leaf","ops":[
-          {"type":"tabLeader","bbox":{"x":0,"y":0,"width":1,"height":1}},
+          {"type":"charOverlap","bbox":{"x":0,"y":0,"width":1,"height":1}},
           {"type":"futureOp"}
         ]}
         """)
         let tree = try NativeEnvelope.decodeLayerTree(from: Data(json.utf8))
-        #expect(tree.root.allOps == [.unsupported(type: "tabLeader"), .unsupported(type: "futureOp")])
+        #expect(tree.root.allOps == [.unsupported(type: "charOverlap"), .unsupported(type: "futureOp")])
 
         let futureNode = try NativeEnvelope.decodeLayerTree(from: Data(Self.envelope(root: """
         {"bounds":{"x":0,"y":0,"width":1,"height":1},"kind":"hologram"}

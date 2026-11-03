@@ -97,12 +97,12 @@ struct SyntheticTreeTests {
     func unknownOpsAreReported() throws {
         let tree = try makeLeafTree(ops: [
             OpJSON.background(),
-            #"{"type":"tabLeader","bbox":{"x":0,"y":0,"width":1,"height":1}}"#,
-            #"{"type":"tabLeader","bbox":{"x":0,"y":0,"width":1,"height":1}}"#,
+            #"{"type":"charOverlap","bbox":{"x":0,"y":0,"width":1,"height":1}}"#,
+            #"{"type":"charOverlap","bbox":{"x":0,"y":0,"width":1,"height":1}}"#,
             #"{"type":"somethingNew"}"#,
         ])
         let report = try PageRenderer().render(tree, scale: 1).report
-        #expect(report.skipped["op:tabLeader"] == 2)
+        #expect(report.skipped["op:charOverlap"] == 2)
         #expect(report.skipped["op:somethingNew"] == 1)
         #expect(report.rendered["op:pageBackground"] == 1)
     }
