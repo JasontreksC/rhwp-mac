@@ -54,6 +54,15 @@ public actor RhwpDocumentSession {
         return try handle.pageCount()
     }
 
+    /// 모든 쪽의 크기(px). 순서와 개수는 쪽 번호·`pageCount()`와 같다.
+    ///
+    /// 쪽 그림(레이어 트리)을 만들지 않고 조판 결과의 쪽 배치만 읽으므로, 문서를 연 직후 스크롤 영역과
+    /// 썸네일 자리를 잡는 데 부른다.
+    public func pageSizes() throws -> [PageSize] {
+        assertOnOwnQueue()
+        return try NativeEnvelope.decodePageSizes(from: handle.pageSizesJSON())
+    }
+
     /// 한 쪽(0부터)의 레이어 트리.
     public func layerTree(page: Int) throws -> PageLayerTree {
         try NativeEnvelope.decodeLayerTree(from: layerTreeJSON(page: page))

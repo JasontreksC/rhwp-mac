@@ -2353,6 +2353,20 @@ impl DocumentCore {
         ))
     }
 
+    /// 모든 쪽의 크기 `(너비, 높이)`를 px(96dpi)로 돌려준다. 순서는 문서의 쪽 순서다.
+    ///
+    /// 앱이 스크롤 영역과 썸네일 자리를 쪽 그림을 받기 전에 잡으려면 모든 쪽의 크기를 미리 알아야 한다.
+    /// 쪽마다 `get_page_info_native` JSON을 파싱하거나 레이어 트리를 만들지 않도록 조판 결과의 쪽 배치
+    /// (`layout.page_width/page_height`)를 그대로 읽는다. 레이어 트리의 `pageWidth/pageHeight`가
+    /// 같은 값에서 나온다는 것은 bindings/Native 의 시험이 쪽마다 대조한다.
+    pub fn page_sizes_native(&self) -> Vec<(f64, f64)> {
+        self.pagination
+            .iter()
+            .flat_map(|section| section.pages.iter())
+            .map(|page| (page.layout.page_width, page.layout.page_height))
+            .collect()
+    }
+
     /// 페이지 정보 (네이티브 에러 타입)
     pub fn get_page_info_native(&self, page_num: u32) -> Result<String, HwpError> {
         use crate::model::page::PageBorderBasis;

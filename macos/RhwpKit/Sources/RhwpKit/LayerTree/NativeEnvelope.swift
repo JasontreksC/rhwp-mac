@@ -25,6 +25,31 @@ enum NativeEnvelope {
         return tree
     }
 
+    private struct PageSizesResponse: Decodable {
+        let ok: Bool
+        let error: String?
+        let pageCount: Int?
+        let pages: [PageSize]?
+    }
+
+    /// `{"ok":true,"pageCount":N,"pages":[{"width":W,"height":H},...]}` 를 읽는다.
+    /// `pages` 의 개수가 `pageCount` 와 다르면 스키마 위반으로 보고 실패시킨다(자리를 잘못 잡느니 멈춘다).
+    static func decodePageSizes(from json: Data) throws -> [PageSize] {
+        let response: PageSizesResponse
+        do {
+            response = try JSONDecoder().decode(PageSizesResponse.self, from: json)
+        } catch {
+            throw RhwpError.malformedResponse(describe(error))
+        }
+        guard response.ok else {
+            throw RhwpError.native(response.error ?? "알 수 없는 오류(오류 메시지 없음)")
+        }
+        guard let pages = response.pages, let pageCount = response.pageCount, pages.count == pageCount else {
+            throw RhwpError.malformedResponse("pages 개수가 pageCount와 다르거나 없음")
+        }
+        return pages
+    }
+
     /// 디코딩 오류를 어느 필드에서 났는지 알 수 있는 한 줄로 만든다.
     private static func describe(_ error: any Error) -> String {
         guard let decodingError = error as? DecodingError else { return String(describing: error) }

@@ -47,6 +47,15 @@ final class NativeDocumentHandle: @unchecked Sendable {
         return Data(bytes: raw, count: strlen(raw))
     }
 
+    /// 모든 쪽의 크기 응답 원문(JSON 봉투).
+    func pageSizesJSON() throws -> Data {
+        guard let raw = rhwp_document_page_sizes(pointer) else {
+            throw RhwpError.malformedResponse("네이티브가 null 문자열을 돌려줌")
+        }
+        defer { rhwp_string_free(raw) }
+        return Data(bytes: raw, count: strlen(raw))
+    }
+
     /// `out_error`로 받은 오류 문자열을 읽고 해제해, 사람이 읽을 메시지를 돌려준다.
     private static func errorMessage(takingOwnershipOf raw: UnsafeMutablePointer<CChar>?) -> String {
         guard let raw else { return "알 수 없는 오류(오류 메시지 없음)" }
