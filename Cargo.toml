@@ -203,7 +203,6 @@ path = "tests/overflow_cell_baseline.rs"
 # END RHWP GENERATED TEST TARGETS
 
 [dependencies]
-rhwp-contracts = { path = "crates/rhwp-contracts" }
 rhwp-ooxml-chart = { path = "crates/rhwp-ooxml-chart" }
 rhwp-password-crypto = { path = "crates/rhwp-password-crypto" }
 cfb = "0.15"
@@ -211,8 +210,6 @@ flate2 = "1.0"
 byteorder = "1.5"
 base64 = "0.23"
 aes = "0.9"
-cipher = "0.5"
-getrandom = "0.4"
 sha2 = "0.11"
 blake3 = "1"
 zip = { version = "8.5", default-features = false, features = ["deflate"] }

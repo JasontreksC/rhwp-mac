@@ -18,8 +18,9 @@ use crate::model::style::HeadType;
 use crate::renderer::layout::{
     default_outline_numbering, expand_numbering_format, resolve_numbering_id, NumberingState,
 };
+use crate::renderer::pagination::PageItem;
 
-/// 표 안 표를 따라 내려갈 최대 깊이. 다른 질의(`table_extract`, `hidden_text`)와 같은 값이다.
+/// 표 안 표를 따라 내려갈 최대 깊이. 다른 질의(`table_extract`)와 같은 값이다.
 const MAX_NEST_DEPTH: usize = 8;
 
 /// 개요 번호 탐색 결과.
@@ -277,6 +278,90 @@ fn build_outline_navigation(
 }
 
 impl DocumentCore {
+    /// `(구역, 문단) → 글로벌 페이지` 인덱스를 한 번에 만든다.
+    ///
+    /// 한 문단이 여러 쪽에 걸치면 **처음 등장한 쪽**을 쓴다 — 인용은 시작 위치가 기준이다.
+    ///
+    /// 개요 항목이 몇 쪽에 있는지 답하는 데 쓴다. (이 포크는 grep·extract_data 를 제거해
+    /// 개요 탐색이 유일한 소비자다.)
+    pub(crate) fn build_paragraph_page_index(&self) -> HashMap<(usize, usize), u32> {
+        let mut index: HashMap<(usize, usize), u32> = HashMap::new();
+        let mut global_offset = 0u32;
+        for (sec_idx, pr) in self.pagination.iter().enumerate() {
+            for (local_i, page) in pr.pages.iter().enumerate() {
+                let global_page = global_offset + local_i as u32;
+                for col in &page.column_contents {
+                    for item in &col.items {
+                        let para_index = match item {
+                            PageItem::FullParagraph { para_index }
+                            | PageItem::PartialParagraph { para_index, .. }
+                            | PageItem::Table { para_index, .. }
+                            | PageItem::PartialTable { para_index, .. }
+                            | PageItem::Shape { para_index, .. } => Some(*para_index),
+                            _ => None,
+                        };
+                        if let Some(p) = para_index {
+                            index.entry((sec_idx, p)).or_insert(global_page);
+                        }
+                    }
+                }
+            }
+            global_offset += pr.pages.len() as u32;
+        }
+        index
+    }
+
+    /// `(구역, 문단, 컨트롤) → [(시작 행, 끝 행, 글로벌 페이지)]` 인덱스.
+    ///
+    /// [#3403] 표가 쪽을 넘겨 이어지면 뒤쪽 행의 셀은 다음 쪽에 렌더되는데, 문단 단위
+    /// 페이지 인덱스는 표 호스트 문단의 **첫 쪽**만 알고 있다. 그래서 분할 표 안의
+    /// 개요 항목이 한 쪽 앞을 가리켰다. 행 범위를 함께 들고 있으면
+    /// 셀의 행 번호로 실제 렌더 쪽을 고를 수 있다.
+    ///
+    /// 분할되지 않은 표(`PageItem::Table`)도 전 행 범위로 함께 넣어, 셀 경로가 항상 같은
+    /// 조회를 쓰도록 한다.
+    pub(crate) fn build_table_row_page_index(
+        &self,
+    ) -> HashMap<(usize, usize, usize), Vec<(usize, usize, u32)>> {
+        let mut index: HashMap<(usize, usize, usize), Vec<(usize, usize, u32)>> = HashMap::new();
+        let mut global_offset = 0u32;
+        for (sec_idx, pr) in self.pagination.iter().enumerate() {
+            for (local_i, page) in pr.pages.iter().enumerate() {
+                let global_page = global_offset + local_i as u32;
+                for col in &page.column_contents {
+                    for item in &col.items {
+                        match item {
+                            PageItem::Table {
+                                para_index,
+                                control_index,
+                            } => {
+                                index
+                                    .entry((sec_idx, *para_index, *control_index))
+                                    .or_default()
+                                    .push((0, usize::MAX, global_page));
+                            }
+                            PageItem::PartialTable {
+                                para_index,
+                                control_index,
+                                start_row,
+                                end_row,
+                                ..
+                            } => {
+                                index
+                                    .entry((sec_idx, *para_index, *control_index))
+                                    .or_default()
+                                    .push((*start_row, *end_row, global_page));
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+            }
+            global_offset += pr.pages.len() as u32;
+        }
+        index
+    }
+
     /// 개요 번호 탐색 정보를 JSON으로 반환한다.
     ///
     /// 이 질의는 `HeadType::Outline`만 표시하며 일반 문단의 번호 문자열을 분석하지 않는다.

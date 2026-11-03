@@ -1410,8 +1410,6 @@ const REPORT_SAMPLE: &str = "samples/issue2006/1790387_prep_final_report.hwpx";
 /// 오류도 경고도 없었다. 죽지 않고 틀린 산출이라 눈으로 알아채기 어렵다.
 #[test]
 fn charts_with_partial_category_labels_keep_every_value() {
-    use rhwp::document_core::queries::chart_csv::{from_csv, to_csv};
-
     let path = manifest(REPORT_SAMPLE);
     let core = core_of(&path);
     let charts = collect_charts(core.document());
@@ -1434,10 +1432,6 @@ fn charts_with_partial_category_labels_keep_every_value() {
         "라벨을 가진 계열이 있는데 빈 목록이 나왔다 — series[0] 만 보고 있다"
     );
 
-    let names: Vec<String> = series
-        .iter()
-        .map(|s| s["name"].as_str().unwrap_or_default().to_string())
-        .collect();
     let values: Vec<Vec<String>> = series
         .iter()
         .map(|s| {
@@ -1449,12 +1443,9 @@ fn charts_with_partial_category_labels_keep_every_value() {
                 .collect()
         })
         .collect();
+    // 이전에는 여기서 CSV 왕복으로 값 보존을 재확인했으나 CSV 변환기는 에이전트 표면과 함께
+    // 제거했다. 계열마다 값 6개가 모두 읽히는 것으로 "값이 사라지지 않는다"를 검증한다.
     assert!(values.iter().all(|v| v.len() == 6), "계열마다 값 6개");
-
-    let csv = to_csv(&labels, &names, &values, false);
-    let back = from_csv(&csv).expect("되읽기");
-    assert_eq!(back.values, values, "CSV 왕복에서 값이 사라졌다");
-    assert_eq!(back.names, names);
 }
 
 /// 그 문서의 무편집 CSV 왕복도 한 칸도 바꾸지 않는다.

@@ -15,7 +15,6 @@ pub mod parser;
 pub use rhwp_password_crypto as password_crypto;
 pub mod document_api;
 pub mod renderer;
-pub mod schema_registry;
 pub mod serializer;
 pub mod wmf;
 

@@ -73,14 +73,6 @@ fn replace_char_range(text: &mut String, offset: usize, length: usize, replaceme
     *text = chars.into_iter().collect();
 }
 
-/// 문단 텍스트에서 query를 검색하여 모든 매치 오프셋을 반환한다.
-///
-/// [#3283] `grep`(주소를 가진 검색)이 같은 매칭 규칙을 쓰도록 크레이트에 공개한다 —
-/// 검색과 치환이 다른 규칙을 쓰면 "찾았는데 못 바꾸는" 어긋남이 생긴다.
-pub(crate) fn find_matches(text: &str, query: &str, case_sensitive: bool) -> Vec<usize> {
-    find_in_text(text, query, case_sensitive)
-}
-
 /// 문단 텍스트에서 query를 검색하여 모든 매치 오프셋을 반환
 fn find_in_text(text: &str, query: &str, case_sensitive: bool) -> Vec<usize> {
     if query.is_empty() || text.is_empty() {
@@ -914,12 +906,6 @@ mod tests {
     }
 
     #[test]
-    fn ignore_case_returns_original_char_offset_after_unicode_lowercase_expansion() {
-        // `İ`가 두 lower-case 문자로 확장돼도 `stan`의 시작은 원문 2번째 문자다.
-        assert_eq!(find_matches("Aİstanbul", "stan", false), vec![2]);
-    }
-
-    #[test]
     fn find_in_text_multiple_matches() {
         assert_eq!(find_in_text("abcabc", "abc", true), vec![0, 3]);
     }
@@ -957,6 +943,9 @@ mod tests {
         );
     }
 
+    // 수식 스크립트 안의 매치도 치환 대상이며, 반환된 count 가 실제 치환 수와 같아야 한다.
+    // (원래 이 테스트는 `grep` 질의의 범위와도 대조했으나, 에이전트 표면 정리로 grep 이 제거되어
+    // 그 대조만 뺐다. 검색·치환의 수식 범위 일치는 아래 전후 검색 건수 비교로 계속 검증한다.)
     #[test]
     fn replace_all_updates_equation_scripts_and_reports_actual_count() {
         bulk_replace_materializes_a_current_body_partition();
@@ -970,11 +959,6 @@ mod tests {
         .expect("수식 검색 JSON 파싱 실패");
         let expected = before.as_array().expect("검색 결과 배열").len();
         assert!(expected > 0, "교체 전 lim 수식이 있어야 함");
-        assert_eq!(
-            doc.grep("lim", true, None).len(),
-            expected,
-            "CLI dry-run(grep)과 실제 replace-all의 수식 검색 범위가 같아야 함"
-        );
 
         let result: serde_json::Value = serde_json::from_str(
             &doc.replace_all_native("lim", "LIMIT", true)

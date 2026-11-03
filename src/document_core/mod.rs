@@ -1,27 +1,16 @@
 //! 문서 핵심 도메인 모델
 //!
 //! HWP 문서의 도메인 상태와 로직을 캡슐화한다.
-//! WASM/PyO3/MCP 등 어떤 어댑터에서도 독립적으로 사용할 수 있다.
+//! 플랫폼에 의존하지 않으며, macOS 앱은 C ABI(`bindings/Native`)와 `document_api` 파사드를 거쳐 쓴다.
 
 pub(crate) mod helpers;
 pub(crate) use helpers::*;
 
-pub mod builders;
 mod canvas_metric_requests;
 mod canvas_metrics;
 mod font_environment;
 pub use canvas_metric_requests::{CanvasMetricBatch, CanvasMetricReply, CanvasMetricRequest};
 mod commands;
-pub use commands::paragraph_block::{
-    FillTemplateRequest, FillTemplateResult, ImportParagraphBlockLimits,
-    ImportParagraphBlockPreview, ImportParagraphBlockRequest, ImportParagraphBlockResult,
-    ImportResourceCounts, ParagraphBlockBudget, ParagraphBlockCopy, ParagraphBlockLimits,
-    ParagraphBlockMapping, ParagraphBlockPathStep, ParagraphBlockValidationError,
-    RepeatParagraphBlockRequest, RepeatParagraphBlockResult, RepeatTableRowsRequest,
-    RepeatTableRowsResult, TemplateBinding, TemplateFillPreview, TemplateFillRequest,
-    TemplateFillTarget, TemplateOperation, TemplateOperationResult, TemplateScope,
-    TEMPLATE_REQUEST_MAX_BYTES,
-};
 pub use commands::{TableColumnWidths, TableCreationOptions};
 pub mod converters;
 pub(crate) mod html_table_import;
@@ -30,7 +19,6 @@ pub mod hwpjson;
 pub mod hyperlink;
 pub mod queries;
 pub mod table_calc;
-pub mod text_security;
 pub mod validation;
 
 use crate::model::control::Control;
