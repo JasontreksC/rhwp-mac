@@ -109,17 +109,14 @@ Rust가 만드는 레이어 트리(`PageLayerTree`, PaintOp IR) JSON만으로 Sw
    정상 동작한다. 제품은 정적 XCFramework로 간다(1단계에서 구현). (기존 `bindings/swift`가 이름으로 링크하는
    방식이 이 환경에서 dylib를 고르면 같은 문제가 날 수 있으나 확인하지 않았다.)
 3. **Rust 정적 라이브러리의 배포 타깃 경고.** Rust를 기본값으로 빌드하면 `blake3_neon.o`가 macOS 27.2용으로
-   만들어져 최소 26.0 링크에서 경고가 난다. 1단계 빌드 스크립트는 `MACOSX_DEPLOYMENT_TARGET=26.0`을 지정하고,
-   그 결과 `blake3_neon.o`의 `minos`가 26.0이 되어 경고가 사라진 것을 확인했다.
-   **캐시 함정:** Cargo는 이 환경변수가 바뀌어도 `blake3`를 `Fresh`로 보고 이전 객체를 그대로 쓴다.
-   그래서 이미 27.2용으로 빌드된 `target/pr-review`에서는 변수를 줘도 경고가 남는다. 새 클론은 영향이 없고,
-   기존 캐시에서는 한 패키지만 무효화한다: `cargo clean -p blake3 --release --target-dir target/pr-review`
-   (이후 약 3분 재빌드).
-4. **미지원 op.** 4개 문서(HWP 2, HWPX 2)에서 고른 11쪽에서 건너뛴 op는 `textDecoration`과 `tabLeader`뿐이었다. SVG 타원호(`arcTo`)는
-   직선으로 근사했다. 4단계 구현 범위에 포함한다.
-5. **글꼴 공급이 렌더 충실도의 핵심 과제다.** Rust 조판은 글꼴 메트릭 DB로 배치하고 실제 글리프는
-   대체 글꼴로 그린다([폰트 fallback 전략](font_fallback_strategy.md)). 따라서 위치는 맞고 자형만 달라진다.
-   번들 가능한 글꼴 범위와 대체 규칙은 4단계에서 정한다. 한컴 글꼴 파일은 저장소에 넣지 않는다.
+   만들어져 최소 26.0 링크에서 경고가 난다. 빌드 스크립트는 `CFLAGS_aarch64_apple_darwin=-mmacosx-version-min=26.0`을
+   지정하고, 그 결과 `blake3_neon.o`의 `minos`가 26.0이 되어 경고가 사라진 것을 확인했다. cc 크레이트는 이 변수가
+   바뀌면 빌드 스크립트를 다시 돌린다.
+   **`MACOSX_DEPLOYMENT_TARGET=26.0`을 cargo 전체에 걸면 안 된다.** 이 값은 rustc가 만드는 proc-macro dylib
+   (`strum_macros`, `snafu_derive`, `zerocopy_derive` 등)의 `minos`도 26.0으로 바꾸고, macOS 27 dyld는 그 dylib를
+   위 2번과 같은 `mis-aligned LINKEDIT string pool`로 거부한다. 그러면 컴파일러가 `can't find crate for ...`로
+   실패한다. 캐시에 옛 dylib(`minos 11.0`)가 남아 있는 동안은 드러나지 않다가 캐시가 갱신될 때 터진다(#8에서
+   발견). 이미 `minos 26.0`으로 만들어진 dylib가 캐시에 있으면 `otool -l <dylib> | grep minos`로 찾아 지운다.
 
 ### 재현
 
@@ -155,7 +152,7 @@ C ABI로 바꿨다. 정본 구현은 `bindings/Native/src/lib.rs`, 정본 헤더
   이를 `final class`/`actor`로 감싸 `deinit`에서 `rhwp_document_free`를 부른다.
 
 `macos/scripts/build-xcframework.sh [--smoke]`가 정적 라이브러리를 `macos/build/RhwpNative.xcframework`로
-묶는다(Apple Silicon 슬라이스 하나, `MACOSX_DEPLOYMENT_TARGET=26.0`). 모듈은 `CRhwp`이며 `--smoke`는 이
+묶는다(Apple Silicon 슬라이스 하나, C 객체의 최소 OS는 `CFLAGS_aarch64_apple_darwin`으로 26.0). 모듈은 `CRhwp`이며 `--smoke`는 이
 XCFramework를 Swift로 링크해 열기·쪽수·레이어 트리·범위 밖 오류·바이트 열기·널 처리를 실제로 실행한다
 (`macos/scripts/ffi_smoke.swift`). 스파이크도 이제 이 XCFramework를 SwiftPM `binaryTarget`으로 소비하며,
 0단계와 같은 샘플 쪽을 픽셀 단위로 동일하게 그린다.

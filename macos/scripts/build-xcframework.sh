@@ -18,8 +18,14 @@ XCFRAMEWORK="$BUILD_DIR/RhwpNative.xcframework"
 HEADERS_STAGE="$BUILD_DIR/headers"
 
 # Liquid Glass 때문에 앱의 최소 OS 가 26 이다. Rust 의 C 빌드 스크립트(blake3 등)가 더 높은 OS 용
-# 객체를 만들어 링크 경고가 나지 않도록 같은 값으로 맞춘다.
-export MACOSX_DEPLOYMENT_TARGET=26.0
+# 객체를 만들어 링크 경고가 나지 않도록 **C 컴파일러 플래그로만** 같은 값을 준다.
+#
+# `MACOSX_DEPLOYMENT_TARGET=26.0` 을 cargo 전체에 걸면 안 된다. 그 값은 rustc 가 만드는 proc-macro
+# dylib(strum_macros, snafu_derive 등)의 최소 OS 도 26 으로 바꾸는데, macOS 27 의 dyld 는 이 dylib 를
+# `mis-aligned LINKEDIT string pool` 로 거부해 컴파일러가 "can't find crate" 로 실패한다.
+# (캐시에 옛 dylib 가 남아 있는 동안은 드러나지 않다가, 캐시가 갱신될 때 터진다.)
+# cc 크레이트는 `CFLAGS_<target>` 을 읽고 값이 바뀌면 빌드 스크립트를 다시 돌린다.
+export CFLAGS_aarch64_apple_darwin="-mmacosx-version-min=26.0"
 # rustup 은 keg-only 로 설치되어 PATH 에 없다.
 export PATH="/opt/homebrew/opt/rustup/bin:$PATH"
 
