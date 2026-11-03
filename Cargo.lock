@@ -819,18 +819,15 @@ dependencies = [
  "blake3",
  "byteorder",
  "cfb",
- "cipher",
  "codepage",
  "embedded-io",
  "encoding_rs",
  "flate2",
- "getrandom 0.4.3",
  "image",
  "paste",
  "pcx",
  "proptest",
  "quick-xml",
- "rhwp-contracts",
  "rhwp-ooxml-chart",
  "rhwp-password-crypto",
  "roxmltree",
@@ -847,13 +844,6 @@ dependencies = [
  "unicode-segmentation",
  "unicode-width",
  "zip",
-]
-
-[[package]]
-name = "rhwp-contracts"
-version = "0.1.0"
-dependencies = [
- "serde_json",
 ]
 
 [[package]]
