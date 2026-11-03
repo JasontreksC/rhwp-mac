@@ -101,10 +101,12 @@ C ABI(`bindings/Native`)를 바꾸면 헤더와 실제 내보낸 심볼이 같�
 - 기준: `samples/`·`pdf/`의 한컴 출력 PDF. 쪽 이미지는 Quartz 등으로 흰 배경에 래스터한다.
 - 도구: `scripts/visual_sweep.py`(`--silhouette-only --png-pair`)로 2px 이웃 관용 내용 실루엣 일치율을 낸다.
   Swift 렌더러가 만든 PNG는 `macos/scripts/rhwp-render.sh <문서> <쪽> <출력.png>`로 얻는다.
+- 샘플 전체의 쪽별 일치율은 `macos/scripts/fidelity-sweep.py --discover --pages 1-6`가 자동으로 잰다(문서·한컴 PDF 쌍 589개, 약 2.5분).
+  렌더러를 바꾸면 전후 수치를 같은 명령으로 비교해 PR에 적고, 나빠진 쪽은 원인을 가려 적는다(평균만으로 통과를 선언하지 않는다).
 - 일치율이 어느 쪽이든 **90% 미만**이거나 측정할 수 없으면 새 회귀 시험이나 기준 파일(golden)을 추가하지 않고
   출력을 먼저 개선한다. 정확히 90%는 통과다. 전체 쪽수가 한컴 PDF와 다르면 점수와 무관하게 원인을 찾는다.
-- 현재 일치율은 한컴 글꼴이 이 Mac에 없어 **글꼴 대체가 지배적**이다. 이 한계는 4단계(글꼴 공급)에서 다루며,
-  글꼴 때문인 차이와 배치 결함을 구분해 적는다. 표 괘선·문단 시작·그림 경계가 어긋나면 글꼴과 무관한 배치
+- 한컴 글꼴은 이 Mac에 없고 번들하지 않는다. 글꼴은 대체 표(`macos/RhwpKit/Sources/RhwpRender/FontSubstitution.swift`)로 푸는데,
+  후보를 바꿔도 ±0.1점이라 글꼴은 남은 차이의 지렛대가 아니다. 글꼴 때문인 차이와 배치 결함을 구분해 적는다. 표 괘선·문단 시작·그림 경계가 어긋나면 글꼴과 무관한 배치
   결함이다.
 - 기준 PDF를 새로 만들어야 하면 [한컴 변환 사용법](mydocs/manual/mcp_hwp2024Convert_usage.md)과
   [시각 검증 지도](mydocs/manual/verification/README.md)를 본다. 이 절차에 쓰인 CLI·WASM 경로는 이 포크에서

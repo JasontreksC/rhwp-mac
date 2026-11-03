@@ -16,6 +16,13 @@ public struct RenderReport: Sendable, Equatable {
 
     public init() {}
 
+    /// 다른 쪽의 집계를 합친다. 여러 쪽을 그린 결과를 한 번에 보고할 때 쓴다.
+    public mutating func merge(_ other: RenderReport) {
+        rendered.merge(other.rendered, uniquingKeysWith: +)
+        skipped.merge(other.skipped, uniquingKeysWith: +)
+        fontSubstitutions.merge(other.fontSubstitutions) { current, _ in current }
+    }
+
     mutating func countRendered(_ key: String) { rendered[key, default: 0] += 1 }
     mutating func countSkipped(_ key: String) { skipped[key, default: 0] += 1 }
 

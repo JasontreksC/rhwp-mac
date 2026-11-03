@@ -64,3 +64,11 @@ enum NativeEnvelope {
         return "\(path): \(context.debugDescription)"
     }
 }
+
+extension PageLayerTree {
+    /// 엔진 응답 봉투(`layerTreeJSON(page:)`가 돌려주는 원문)에서 레이어 트리를 읽는다.
+    /// 원문을 따로 저장해 두었다가(진단·골든 비교) 같은 해석을 다시 적용할 때 쓴다.
+    public static func decode(envelope json: Data) throws -> PageLayerTree {
+        try NativeEnvelope.decodeLayerTree(from: json)
+    }
+}
