@@ -112,11 +112,27 @@ struct RenderScalePolicyTests {
         #expect(RenderScalePolicy.scale(zoom: Zoom(0.5), displayScale: 2, pageSize: a4) == 1.0)
     }
 
-    @Test("한 변이 상한을 넘지 않게 낮춘다")
-    func capsPixelDimension() {
+    @Test("쪽을 타일로 나눠 그리므로 옛 4096px 상한을 넘는 배율도 그대로 쓴다")
+    func scaleIsNoLongerCappedAt4096() {
+        // A4(793.7×1122.5)를 4배 확대한 Retina 화면: 배율 8 → 6350×8980px. 옛 정책은 4096/1122.5 = 3.65로 낮췄다.
         let scale = RenderScalePolicy.scale(zoom: Zoom(4.0), displayScale: 2, pageSize: a4)
+        #expect(scale == 8.0)
+        #expect(scale * a4.height > 4096)
+    }
+
+    @Test("한 변이 좌표 정밀도 상한(32768px)을 넘는 아주 큰 쪽만 배율을 낮춘다")
+    func capsOnlyAbsurdlyLargePages() {
+        let poster = PageSize(width: 3000, height: 4500)   // A0 쯤
+        let scale = RenderScalePolicy.scale(zoom: Zoom(4.0), displayScale: 2, pageSize: poster)
         #expect(scale < 8.0)
-        #expect(scale * a4.height <= RenderScalePolicy.maxPixelDimension + 1e-6)
+        #expect(abs(scale * 4500 - 32_768) < 1e-6)
+    }
+
+    @Test("흐린 밑그림은 긴 변이 1024px이고 작은 쪽도 1을 넘기지 않는다")
+    func coverScale() {
+        #expect(abs(RenderScalePolicy.coverScale(pageSize: a4) * a4.height - 1024) < 1e-6)
+        #expect(RenderScalePolicy.coverScale(pageSize: PageSize(width: 200, height: 100)) == 1)
+        #expect(RenderScalePolicy.coverScale(pageSize: PageSize(width: 0, height: 0)) == 1)
     }
 
     @Test("화면 배율이 1보다 작게 보고돼도 1로 본다")
