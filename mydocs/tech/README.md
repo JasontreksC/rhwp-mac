@@ -24,6 +24,7 @@ last_verified: 2026-11-03
 | 문서 | 내용 |
 | --- | --- |
 | [typesetting_architecture.md](typesetting_architecture.md) | 조판 코드의 책임 경계와 변경 지도 |
+| [page_count_mismatch_investigation.md](page_count_mismatch_investigation.md) | 한컴 PDF와 쪽수가 다른 문서 25쌍의 분류·원인 단서·미해결 |
 | [rendering_engine_design.md](rendering_engine_design.md) | 렌더링 엔진 구조 |
 | [shared_layout_measurement_engine.md](shared_layout_measurement_engine.md) | 페이지네이터와 렌더러가 같은 측정을 쓰게 하는 설계 |
 | [table_layout_rules.md](table_layout_rules.md), [hwp_table_rendering.md](hwp_table_rendering.md) | 표 조판 규칙 |
